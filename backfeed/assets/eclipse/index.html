@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Eclipse ERP — Summit Electrical Sales</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Eclipse ERP system for electrical distribution order management">
+  <link rel="stylesheet" href="eclipse.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       TITLE BAR
+  ============================================================ -->
+  <header id="eclipse-titlebar">
+    <div class="titlebar-left">
+      <div class="eclipse-logo">
+        <i class="fa-solid fa-bolt"></i>
+        <span class="logo-text">Eclipse</span>
+      </div>
+      <span class="titlebar-title">Eclipse ERP — Summit Electrical Sales — [T4 : G.Miller]</span>
+    </div>
+    <div class="titlebar-controls">
+      <button class="titlebar-btn minimize" title="Minimize"><i class="fa-solid fa-minus"></i></button>
+      <button class="titlebar-btn maximize" title="Maximize"><i class="fa-regular fa-square"></i></button>
+      <button class="titlebar-btn close" title="Close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MENU BAR
+  ============================================================ -->
+  <nav id="eclipse-menubar">
+    <ul class="menu-items">
+      <li class="menu-item" data-menu="file">
+        <span class="menu-label"><u>F</u>ile</span>
+        <ul class="menu-dropdown">
+          <li data-action="new-order"><i class="fa-solid fa-file-circle-plus"></i> New Order <span class="shortcut">Ctrl+N</span></li>
+          <li data-action="new-quote"><i class="fa-solid fa-file-lines"></i> New Quote <span class="shortcut">Ctrl+Q</span></li>
+          <li class="menu-divider"></li>
+          <li data-action="save"><i class="fa-solid fa-floppy-disk"></i> Save <span class="shortcut">Ctrl+S</span></li>
+          <li data-action="print"><i class="fa-solid fa-print"></i> Print <span class="shortcut">Ctrl+P</span></li>
+          <li class="menu-divider"></li>
+          <li data-action="exit"><i class="fa-solid fa-right-from-bracket"></i> Exit <span class="shortcut">Alt+F4</span></li>
+        </ul>
+      </li>
+      <li class="menu-item" data-menu="edit">
+        <span class="menu-label"><u>E</u>dit</span>
+        <ul class="menu-dropdown">
+          <li data-action="undo"><i class="fa-solid fa-rotate-left"></i> Undo <span class="shortcut">Ctrl+Z</span></li>
+          <li data-action="redo"><i class="fa-solid fa-rotate-right"></i> Redo <span class="shortcut">Ctrl+Y</span></li>
+          <li class="menu-divider"></li>
+          <li data-action="cut"><i class="fa-solid fa-scissors"></i> Cut <span class="shortcut">Ctrl+X</span></li>
+          <li data-action="copy"><i class="fa-solid fa-copy"></i> Copy <span class="shortcut">Ctrl+C</span></li>
+          <li data-action="paste"><i class="fa-solid fa-paste"></i> Paste <span class="shortcut">Ctrl+V</span></li>
+        </ul>
+      </li>
+      <li class="menu-item" data-menu="view">
+        <span class="menu-label"><u>V</u>iew</span>
+        <ul class="menu-dropdown">
+          <li data-action="open-dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</li>
+          <li data-action="refresh"><i class="fa-solid fa-arrows-rotate"></i> Refresh <span class="shortcut">F5</span></li>
+          <li class="menu-divider"></li>
+          <li data-action="toggle-statusbar"><i class="fa-solid fa-check"></i> Status Bar</li>
+          <li data-action="toggle-fkeys"><i class="fa-solid fa-check"></i> Function Key Bar</li>
+        </ul>
+      </li>
+      <li class="menu-item" data-menu="orders">
+        <span class="menu-label"><u>O</u>rders</span>
+        <ul class="menu-dropdown">
+          <li data-action="new-order"><i class="fa-solid fa-file-circle-plus"></i> New Order <span class="shortcut">F2</span></li>
+          <li data-action="order-search"><i class="fa-solid fa-magnifying-glass"></i> Search Orders <span class="shortcut">F3</span></li>
+          <li class="menu-divider"></li>
+          <li data-action="new-quote"><i class="fa-solid fa-file-lines"></i> New Quote</li>
+          <li data-action="quote-search"><i class="fa-solid fa-magnifying-glass"></i> Search Quotes</li>
+        </ul>
+      </li>
+      <li class="menu-item" data-menu="inventory">
+        <span class="menu-label"><u>I</u>nventory</span>
+        <ul class="menu-dropdown">
+          <li data-action="open-inventory"><i class="fa-solid fa-warehouse"></i> Inventory Inquiry</li>
+          <li data-action="open-price-lookup"><i class="fa-solid fa-dollar-sign"></i> Price Lookup</li>
+          <li class="menu-divider"></li>
+          <li data-action="warehouse-status"><i class="fa-solid fa-boxes-stacked"></i> Warehouse Status</li>
+        </ul>
+      </li>
+      <li class="menu-item" data-menu="customers">
+        <span class="menu-label"><u>C</u>ustomers</span>
+        <ul class="menu-dropdown">
+          <li data-action="open-customer-search"><i class="fa-solid fa-magnifying-glass"></i> Customer Lookup <span class="shortcut">F3</span></li>
+          <li data-action="new-customer"><i class="fa-solid fa-user-plus"></i> New Customer</li>
+        </ul>
+      </li>
+      <li class="menu-item" data-menu="reports">
+        <span class="menu-label"><u>R</u>eports</span>
+        <ul class="menu-dropdown">
+          <li data-action="report-sales"><i class="fa-solid fa-chart-line"></i> Sales Report</li>
+          <li data-action="report-aging"><i class="fa-solid fa-clock-rotate-left"></i> Aging Report</li>
+          <li data-action="report-inventory"><i class="fa-solid fa-clipboard-list"></i> Inventory Report</li>
+        </ul>
+      </li>
+      <li class="menu-item" data-menu="help">
+        <span class="menu-label"><u>H</u>elp</span>
+        <ul class="menu-dropdown">
+          <li data-action="help-contents"><i class="fa-solid fa-circle-question"></i> Help Contents <span class="shortcut">F1</span></li>
+          <li class="menu-divider"></li>
+          <li data-action="about"><i class="fa-solid fa-circle-info"></i> About Eclipse ERP</li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ============================================================
+       TOOLBAR
+  ============================================================ -->
+  <div id="eclipse-toolbar">
+    <button class="toolbar-btn" data-action="new-order" title="New Order (F2)"><i class="fa-solid fa-file-circle-plus"></i><span>New Order</span></button>
+    <button class="toolbar-btn" data-action="open-customer-search" title="Customer Search (F3)"><i class="fa-solid fa-users"></i><span>Customers</span></button>
+    <button class="toolbar-btn" data-action="open-inventory" title="Inventory Inquiry"><i class="fa-solid fa-warehouse"></i><span>Inventory</span></button>
+    <button class="toolbar-btn" data-action="open-price-lookup" title="Price Lookup"><i class="fa-solid fa-dollar-sign"></i><span>Prices</span></button>
+    <div class="toolbar-separator"></div>
+    <button class="toolbar-btn" data-action="save" title="Save (F7)"><i class="fa-solid fa-floppy-disk"></i><span>Save</span></button>
+    <button class="toolbar-btn" data-action="print" title="Print (F6)"><i class="fa-solid fa-print"></i><span>Print</span></button>
+    <button class="toolbar-btn" data-action="refresh" title="Refresh (F5)"><i class="fa-solid fa-arrows-rotate"></i><span>Refresh</span></button>
+    <div class="toolbar-separator"></div>
+    <button class="toolbar-btn" data-action="help-contents" title="Help (F1)"><i class="fa-solid fa-circle-question"></i><span>Help</span></button>
+  </div>
+
+  <!-- ============================================================
+       MAIN WORK AREA (MDI)
+  ============================================================ -->
+  <main id="eclipse-main">
+    <!-- Tab Bar -->
+    <div id="tab-bar">
+      <!-- Tabs inserted dynamically -->
+    </div>
+    <!-- Tab Content Panels -->
+    <div id="tab-content">
+      <!-- Screen content inserted dynamically -->
+    </div>
+  </main>
+
+  <!-- ============================================================
+       FUNCTION KEY BAR
+  ============================================================ -->
+  <div id="eclipse-fkeybar">
+    <button class="fkey-btn" data-fkey="F1"><span class="fkey-key">F1</span><span class="fkey-label">Help</span></button>
+    <button class="fkey-btn" data-fkey="F2"><span class="fkey-key">F2</span><span class="fkey-label">New</span></button>
+    <button class="fkey-btn" data-fkey="F3"><span class="fkey-key">F3</span><span class="fkey-label">Search</span></button>
+    <button class="fkey-btn" data-fkey="F4"><span class="fkey-key">F4</span><span class="fkey-label">Edit</span></button>
+    <button class="fkey-btn" data-fkey="F5"><span class="fkey-key">F5</span><span class="fkey-label">Refresh</span></button>
+    <button class="fkey-btn" data-fkey="F6"><span class="fkey-key">F6</span><span class="fkey-label">Print</span></button>
+    <button class="fkey-btn" data-fkey="F7"><span class="fkey-key">F7</span><span class="fkey-label">Save</span></button>
+    <button class="fkey-btn" data-fkey="F8"><span class="fkey-key">F8</span><span class="fkey-label">Delete</span></button>
+    <button class="fkey-btn" data-fkey="F9"><span class="fkey-key">F9</span><span class="fkey-label">Post</span></button>
+    <button class="fkey-btn" data-fkey="F10"><span class="fkey-key">F10</span><span class="fkey-label">Exit</span></button>
+  </div>
+
+  <!-- ============================================================
+       STATUS BAR
+  ============================================================ -->
+  <footer id="eclipse-statusbar">
+    <div class="status-section status-user">
+      <i class="fa-solid fa-user"></i>
+      <span>G.Miller</span>
+    </div>
+    <div class="status-section status-terminal">
+      <i class="fa-solid fa-desktop"></i>
+      <span>Terminal T4</span>
+    </div>
+    <div class="status-section status-message" id="status-message">
+      <span>Ready</span>
+    </div>
+    <div class="status-section status-scenario" id="status-scenario" style="display:none;">
+      <i class="fa-solid fa-stopwatch"></i>
+      <span id="scenario-timer">00:00</span>
+    </div>
+    <div class="status-section status-clock">
+      <i class="fa-regular fa-clock"></i>
+      <span id="status-clock">--:--:-- --</span>
+    </div>
+    <div class="status-section status-connection" id="status-connection">
+      <span class="conn-dot connecting"></span>
+      <span>Connecting...</span>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       SCENARIO PANEL (collapsible)
+  ============================================================ -->
+  <div id="scenario-toggle" title="Demo Scenarios">
+    <i class="fa-solid fa-gear"></i>
+  </div>
+  <div id="scenario-panel" class="hidden">
+    <div class="scenario-panel-header">
+      <h3><i class="fa-solid fa-list-check"></i> Demo Scenarios</h3>
+      <button id="scenario-panel-close" title="Close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="scenario-panel-body">
+      <div id="scenario-list">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+    <div class="scenario-panel-footer">
+      <button id="scenario-clear" class="scenario-btn-clear"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL OVERLAY (reusable)
+  ============================================================ -->
+  <div id="modal-overlay" class="hidden">
+    <div id="modal-dialog">
+      <div id="modal-titlebar">
+        <span id="modal-icon"><i class="fa-solid fa-circle-exclamation"></i></span>
+        <span id="modal-title">Alert</span>
+        <button id="modal-close-btn" title="Close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="modal-body">
+        <p id="modal-message"></p>
+      </div>
+      <div id="modal-footer">
+        <!-- Buttons inserted dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCRIPTS
+  ============================================================ -->
+  <script src="../shared/data.js"></script>
+  <script src="../shared/scenarios.js"></script>
+  <script src="eclipse.js"></script>
+</body>
+</html>

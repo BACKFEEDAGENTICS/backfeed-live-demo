@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backfeed Sentinel Security Operations Desktop</title>
+    <meta name="description" content="Simulated Windows 11 Desktop environment showcasing Backfeed Security Sentinel blocking email threats.">
+    <!-- Font Awesome for modern UI icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom styling -->
+    <link rel="stylesheet" href="fraud_shield.css">
+</head>
+<body class="desktop-env">
+
+    <!-- Windows 11 Desktop Workspace -->
+    <div class="desktop-area" id="desktop-area">
+        
+        <!-- Desktop Shortcuts -->
+        <div class="desktop-shortcuts">
+            <div class="shortcut" id="shortcut-edge" title="Double click to open Edge Browser">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" alt="Edge" class="shortcut-icon">
+                <span class="shortcut-label">Microsoft Edge</span>
+            </div>
+            <div class="shortcut" id="shortcut-terminal" title="Double click to open Terminal">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/PowerShell_Core_6.0_logo.png" alt="PowerShell" class="shortcut-icon">
+                <span class="shortcut-label">PowerShell Terminal</span>
+            </div>
+            <div class="shortcut" id="shortcut-sentinel" title="Double click to open Sentinel Console">
+                <i class="fa-solid fa-shield-halved shortcut-icon-fa" style="color: #69f0ae;"></i>
+                <span class="shortcut-label">Sentinel Gatekeeper</span>
+            </div>
+        </div>
+
+        <!-- APP WINDOW 1: MICROSOFT EDGE (OUTLOOK) -->
+        <div class="win-frame" id="win-outlook" style="top: 2vh; left: 2vw; width: 62vw; height: 84vh; z-index: 12;">
+            <div class="win-titlebar" id="win-outlook-header">
+                <div class="win-title-left">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" alt="Edge" style="width: 14px; height: 14px;">
+                    <span class="window-title-text">Inbox - Outlook - Microsoft Edge</span>
+                </div>
+                <div class="window-controls">
+                    <div class="win-btn win-min"><i class="fa-solid fa-minus"></i></div>
+                    <div class="win-btn win-max"><i class="fa-regular fa-square"></i></div>
+                    <div class="win-btn win-close"><i class="fa-solid fa-xmark"></i></div>
+                </div>
+            </div>
+            
+            <!-- Browser address bar chrome -->
+            <div class="browser-address-bar">
+                <div class="browser-nav-icons">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <i class="fa-solid fa-rotate-right"></i>
+                </div>
+                <div class="address-input-box">
+                    <i class="fa-solid fa-lock" style="color: #107c41; font-size: 11px;"></i>
+                    <span class="address-text">https://outlook.office.com/mail/inbox</span>
+                </div>
+            </div>
+
+            <!-- Window Client Area -->
+            <div class="win-client-content" style="display: flex; flex-direction: column; height: calc(100% - 70px);">
+                <!-- Outlook Blue Web Header Bar -->
+                <header class="app-header">
+                    <div class="brand-section">
+                        <span class="brand-icon"><i class="fa-solid fa-table-cells" style="font-size: 16px;"></i></span>
+                        <div class="brand-title">
+                            <h1 style="font-family: var(--font-sans); font-size: 15px; font-weight: 600;">Outlook</h1>
+                        </div>
+                    </div>
+
+                    <!-- Search Bar in Header -->
+                    <div class="header-search-container">
+                        <div class="header-search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" placeholder="Search" disabled>
+                        </div>
+                    </div>
+
+                    <div class="header-nav">
+                        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Portal</a>
+                        <div class="header-user-avatar">KP</div>
+                    </div>
+                </header>
+
+                <div class="outlook-mail-workspace" style="height: calc(100% - 40px); background: #ffffff;">
+                    <!-- Outlook Command Bar (Ribbon) -->
+                    <div class="outlook-command-bar">
+                        <button class="cmd-btn primary"><i class="fa-solid fa-envelope-open-text"></i> New mail</button>
+                        <button class="cmd-btn" id="cmd-delete"><i class="fa-solid fa-trash-can"></i> Delete</button>
+                        <button class="cmd-btn" id="cmd-archive"><i class="fa-solid fa-box-archive"></i> Archive</button>
+                        <button class="cmd-btn" id="cmd-junk"><i class="fa-solid fa-shield-halved"></i> Junk</button>
+                        <button class="cmd-btn" id="cmd-sweep"><i class="fa-solid fa-broom"></i> Sweep</button>
+                        <button class="cmd-btn" id="cmd-move"><i class="fa-solid fa-folder-open"></i> Move to</button>
+                        <button class="cmd-btn" id="cmd-categorize"><i class="fa-solid fa-tag"></i> Categorize</button>
+                    </div>
+
+                    <div class="outlook-split-view">
+                        <!-- Folders Column -->
+                        <div class="outlook-folders-pane">
+                            <div class="folders-group">
+                                <span class="group-title">Favorites</span>
+                                <div class="folder-item active"><i class="fa-solid fa-inbox"></i> Inbox <span class="folder-badge" id="inbox-unread-count">4</span></div>
+                                <div class="folder-item"><i class="fa-solid fa-paper-plane"></i> Sent Items</div>
+                                <div class="folder-item"><i class="fa-solid fa-file-pen"></i> Drafts</div>
+                            </div>
+                            <div class="folders-group" style="margin-top: 10px;">
+                                <span class="group-title">Folders</span>
+                                <div class="folder-item"><i class="fa-solid fa-inbox"></i> Inbox</div>
+                                <div class="folder-item" id="folder-junk"><i class="fa-solid fa-triangle-exclamation"></i> Junk Email <span class="folder-badge warning" id="junk-unread-count">2</span></div>
+                                <div class="folder-item"><i class="fa-solid fa-box-archive"></i> Archive</div>
+                                <div class="folder-item"><i class="fa-solid fa-trash-can"></i> Deleted Items</div>
+                            </div>
+                        </div>
+
+                        <!-- Mail List Pane -->
+                        <div class="outlook-mail-list-pane">
+                            <div class="pane-search-bar">
+                                <div class="search-input-wrapper">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <input type="text" placeholder="Search Mail..." disabled>
+                                </div>
+                            </div>
+
+                            <div class="outlook-tab-selectors">
+                                <span class="outlook-tab active">Focused</span>
+                                <span class="outlook-tab">Other</span>
+                            </div>
+
+                            <div class="mail-items-container" id="mail-items-list">
+                                <!-- Dynamic rendering by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Reading Pane -->
+                        <div class="outlook-reading-pane">
+                            <div class="outlook-warning-banner" id="outlook-security-banner">
+                                <!-- Injected dynamically by JS -->
+                            </div>
+
+                            <div class="reading-header">
+                                <div class="reading-subject-row">
+                                    <h2 id="email-subject">RFQ: Bulk Inventory Catalog & Price Sheets Verification Request</h2>
+                                </div>
+                                <div class="reading-sender-row">
+                                    <div class="sender-avatar" id="sender-avatar-initial">P</div>
+                                    <div class="sender-info-text">
+                                        <div class="sender-name-line">
+                                            <span id="sender-name-label">Purchasing Manager</span>
+                                            <span class="sender-email">&lt;<span id="email-from">purchasing-manager@unverified-bids-portal.xyz</span>&gt;</span>
+                                        </div>
+                                        <div class="sender-to-line">To: <span style="color: var(--outlook-blue);">sales@summitsales.com</span></div>
+                                    </div>
+                                    <div class="reading-date" id="email-date">June 4, 2026 9:30 PM</div>
+                                </div>
+                                
+                                <div class="attachment-badge-row" id="attachment-badge-container" style="display: none;">
+                                    <div class="attachment-file-card" id="attachment-card">
+                                        <i class="fa-solid fa-file-zipper"></i>
+                                        <div>
+                                            <span id="attachment-name">statement_WD.zip</span>
+                                            <div style="font-size: 9px; font-weight: normal; color: var(--outlook-text-light);">1.4 MB</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="reading-body" id="email-body-text">We are auditing logistics and supply chain vendors for regional contract bids. Please provide a complete pricing matrix and volume discounts for all represented electrical strut channels, copper building wire, and fittings. We require immediate exports of all current pricing sheets to register your company as a vendor.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP WINDOW 2: WINDOWS POWERSHELL -->
+        <div class="win-frame" id="win-terminal" style="top: 38vh; left: 20vw; width: 44vw; height: 48vh; z-index: 15;">
+            <div class="win-titlebar" id="win-terminal-header">
+                <div class="win-title-left">
+                    <i class="fa-solid fa-terminal" style="color: #40a0ff; font-size: 13px;"></i>
+                    <span class="window-title-text">Windows PowerShell</span>
+                </div>
+                <div class="window-controls">
+                    <div class="win-btn win-min"><i class="fa-solid fa-minus"></i></div>
+                    <div class="win-btn win-max"><i class="fa-regular fa-square"></i></div>
+                    <div class="win-btn win-close"><i class="fa-solid fa-xmark"></i></div>
+                </div>
+            </div>
+            
+            <div class="win-client-content console-area" id="console-logs-container" style="height: calc(100% - 32px);">
+                <!-- Dynamic PowerShell logs -->
+            </div>
+        </div>
+
+        <!-- APP WINDOW 3: SENTINEL ADMIN CONSOLE -->
+        <div class="win-frame" id="win-sentinel" style="top: 2vh; left: 65vw; width: 33vw; height: 84vh; z-index: 10;">
+            <div class="win-titlebar" id="win-sentinel-header">
+                <div class="win-title-left">
+                    <i class="fa-solid fa-shield-halved" style="color: #69f0ae; font-size: 13px;"></i>
+                    <span class="window-title-text">Backfeed Sentinel Analytics</span>
+                </div>
+                <div class="window-controls">
+                    <div class="win-btn win-min"><i class="fa-solid fa-minus"></i></div>
+                    <div class="win-btn win-max"><i class="fa-regular fa-square"></i></div>
+                    <div class="win-btn win-close"><i class="fa-solid fa-xmark"></i></div>
+                </div>
+            </div>
+
+            <div class="win-client-content sentinel-column" style="height: calc(100% - 32px);">
+                <div class="sentinel-header">
+                    <h2>Sentinel Shield Core</h2>
+                    <span class="sentinel-active-badge"><i class="fa-solid fa-circle-check"></i> Gateway Active</span>
+                </div>
+
+                <!-- Dynamic Risk Circle Gauge -->
+                <div class="risk-gauge-card">
+                    <span class="decision-card-title">Threat Risk Index</span>
+                    <div class="risk-gauge-container">
+                        <svg class="gauge-svg" viewBox="0 0 100 100">
+                            <circle class="gauge-bg" cx="50" cy="50" r="40"></circle>
+                            <circle class="gauge-fill" id="risk-gauge-circle" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
+                        </svg>
+                        <div class="gauge-text">
+                            <span class="gauge-percent" id="risk-percent-text">0%</span>
+                            <span class="gauge-label" id="risk-label-text">SCANNING</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mitigate Action Outcome Badge -->
+                <div class="decision-badge-card">
+                    <span class="decision-card-title">Automated Shield Decision</span>
+                    <div class="decision-outcome-badge" id="decision-badge-value">Quarantine & Verify ID</div>
+                </div>
+
+                <!-- SecOps Override Controls -->
+                <div class="secops-actions-card">
+                    <span class="decision-card-title">SecOps Override Controls</span>
+                    <div class="override-button-grid">
+                        <button class="override-btn secops-btn-safe" id="btn-release"><i class="fa-solid fa-paper-plane"></i> Release & Deliver</button>
+                        <button class="override-btn secops-btn-danger" id="btn-hard-delete"><i class="fa-solid fa-trash-can"></i> Hard Delete Mail</button>
+                        <button class="override-btn secops-btn-warn" id="btn-whitelist"><i class="fa-solid fa-user-check"></i> Whitelist Sender</button>
+                        <button class="override-btn secops-btn-decoy" id="btn-decoy"><i class="fa-solid fa-mask"></i> Trigger Decoy Feed</button>
+                        <button class="override-btn secops-btn-block" id="btn-block-ip"><i class="fa-solid fa-ban"></i> Terminate Sender IP</button>
+                    </div>
+                </div>
+
+                <!-- Scanned Variables checklist -->
+                <div class="variables-audit-card">
+                    <span class="decision-card-title">Evaluated Threat Variables</span>
+                    
+                    <div class="variable-row">
+                        <span class="var-label">SPF/DKIM Authentications</span>
+                        <span class="var-status-badge" id="var-spf">FAIL</span>
+                    </div>
+                    <div class="variable-row">
+                        <span class="var-label">WHOIS Domain Age Check</span>
+                        <span class="var-status-badge" id="var-whois">WARNING</span>
+                    </div>
+                    <div class="variable-row">
+                        <span class="var-label">Homoglyph / Typosquatting</span>
+                        <span class="var-status-badge" id="var-homoglyph">SAFE</span>
+                    </div>
+                    <div class="variable-row">
+                        <span class="var-label">NLP Threat / Urgency Score</span>
+                        <span class="var-status-badge" id="var-nlp">SAFE</span>
+                    </div>
+                    <div class="variable-row" id="var-attachment-row" style="display: none;">
+                        <span class="var-label">Attachment Detonation Audit</span>
+                        <span class="var-status-badge" id="var-attachment">SAFE</span>
+                    </div>
+                </div>
+
+                <!-- Cognitive Reasoning Block -->
+                <div class="reasoning-list-card">
+                    <span class="decision-card-title">Cognitive Defensive Reasoning</span>
+                    <div class="flags-list" id="red-flags-container">
+                        <!-- Dynamic rendering by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DEMO CONTROL WIDGET WINDOW -->
+        <div class="win-frame demo-controller-win" id="win-controller" style="top: 70vh; left: 3vw; width: 22vw; height: 14vh; z-index: 20;">
+            <div class="win-titlebar" id="win-controller-header" style="background: #111; border-color: #222;">
+                <div class="win-title-left">
+                    <i class="fa-solid fa-play" style="color: #22c55e;"></i>
+                    <span class="window-title-text" style="font-weight: bold; color: #22c55e;">Demo Recording Director</span>
+                </div>
+            </div>
+            <div class="win-client-content controller-body" style="padding: 12px; display: flex; flex-direction: column; gap: 10px;">
+                <p style="font-size: 11.5px; color: #eee;">Use this controller to run the automated agent diagnostics demo for screen recording.</p>
+                <div style="display: flex; gap: 8px;">
+                    <button class="ctrl-btn play" id="trigger-demo-btn">
+                        <i class="fa-solid fa-play"></i> Run Autoplay Simulation
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Windows 11 Taskbar -->
+    <div class="win11-taskbar">
+        <div class="taskbar-icons-container">
+            <!-- Start button -->
+            <div class="tb-icon" id="tb-start" title="Start Menu">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Windows_logo_-_2021.svg" alt="Start" style="width: 18px; height: 18px;">
+            </div>
+            <!-- Edge / Outlook -->
+            <div class="tb-icon active" id="tb-edge" title="Outlook Mail (Microsoft Edge)">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" alt="Edge" style="width: 20px; height: 20px;">
+            </div>
+            <!-- Terminal / PowerShell -->
+            <div class="tb-icon active" id="tb-terminal" title="PowerShell Terminal">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/PowerShell_Core_6.0_logo.png" alt="PowerShell" style="width: 20px; height: 20px;">
+            </div>
+            <!-- Sentinel Console -->
+            <div class="tb-icon active" id="tb-sentinel" title="Sentinel Threat Portal">
+                <i class="fa-solid fa-shield-halved" style="color: #69f0ae; font-size: 18px;"></i>
+            </div>
+            <!-- Director -->
+            <div class="tb-icon active" id="tb-controller" title="Demo Director">
+                <i class="fa-solid fa-video" style="color: #ff5252; font-size: 18px;"></i>
+            </div>
+        </div>
+
+        <!-- System tray -->
+        <div class="system-tray">
+            <div class="tray-icons">
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-volume-high"></i>
+                <i class="fa-solid fa-battery-three-quarters"></i>
+            </div>
+            <div class="tray-time">
+                <span id="tray-clock">09:30 PM</span>
+                <span id="tray-date" style="font-size: 9px; opacity: 0.7;">6/4/2026</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Windows Notification Center Slide-in -->
+    <div class="win11-notification" id="win11-notification">
+        <div class="notif-header">
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-shield-halved" style="color: #ff5252;"></i>
+                <strong>Sentinel Gateway Alert</strong>
+            </div>
+            <span class="notif-time">Just now</span>
+        </div>
+        <div class="notif-body">
+            <h4 id="notif-title">CEO Phishing Attempt Blocked</h4>
+            <p id="notif-desc">Incoming mail from look-alike domain was quarantined automatically.</p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Script Sources -->
+    <script src="fraud_shield.js"></script>
+</body>
+</html>

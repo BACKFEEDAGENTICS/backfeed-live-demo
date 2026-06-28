@@ -1,0 +1,2734 @@
+/* ERP Distribution - Outlook Web App CSS Skin */
+
+:root {
+    --outlook-blue: #0078d4;
+    --outlook-blue-hover: #106ebe;
+    --outlook-bg-main: #ffffff;
+    --outlook-bg-light: #fafbfc;
+    --outlook-bg-hover: #f3f2f1;
+    --outlook-border: #edebe9;
+    --text-primary: #323130;
+    --text-secondary: #605e5c;
+    --text-light: #a19f9d;
+    
+    --accent-electric: #ff9f1c;
+    --accent-cyan: #2ec4b6;
+    --color-danger: #ef4444;
+    --color-warning: #f59e0b;
+    --color-safe: #22c55e;
+    
+    --font-sans: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    --font-mono: 'Consolas', 'Courier New', monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-sans);
+    color: var(--text-primary);
+    background-color: var(--desktop-color, #f3f2f1);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+/* App Container Layout */
+.outlook-app-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: var(--outlook-bg-main);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+
+@media (min-width: 1400px) {
+    .outlook-app-container {
+        width: calc(100% - 40px);
+        height: calc(100% - 40px);
+        border-radius: 8px;
+        border: 1px solid var(--outlook-border);
+    }
+}
+
+/* Microsoft 365 Header */
+.m365-header {
+    height: 48px;
+    background: var(--outlook-blue);
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    z-index: 100;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.app-launcher-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+}
+
+.app-launcher-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.brand-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.m365-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.backfeed-connected-badge {
+    font-size: 10.5px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.static-preview-badge {
+    font-size: 10.5px;
+    font-weight: 700;
+    background: rgba(2, 132, 199, 0.2);
+    color: #38bdf8;
+    border: 1px solid rgba(2, 132, 199, 0.4);
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: help;
+}
+
+
+.header-middle {
+    flex: 1;
+    max-width: 500px;
+    margin: 0 24px;
+}
+
+.search-box-container {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+}
+
+.search-box-container:focus-within {
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.search-box-container i {
+    color: #ffffff;
+    font-size: 13px;
+}
+
+.search-box-container:focus-within i {
+    color: var(--text-secondary);
+}
+
+.search-box-container input {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 13px;
+    width: 100%;
+    outline: none;
+    font-family: var(--font-sans);
+}
+
+.search-box-container:focus-within input {
+    color: var(--text-primary);
+}
+
+.search-box-container input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-box-container:focus-within input::placeholder {
+    color: var(--text-light);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-icon-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+.header-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.user-avatar-badge {
+    width: 32px;
+    height: 32px;
+    background: var(--accent-electric);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1.5px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Commodities & News Ticker Banner */
+.commodities-news-banner {
+    height: 32px;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--outlook-border);
+    display: grid;
+    grid-template-columns: 1.2fr 1.8fr;
+    align-items: center;
+    padding: 0 16px;
+    font-size: 11px;
+}
+
+.commodities-ticker-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+}
+
+.commodities-ticker-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.ticker-label {
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.ticker-val {
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+}
+
+.ticker-chg {
+    font-family: var(--font-mono);
+    font-weight: bold;
+}
+
+.ticker-chg.up {
+    color: var(--color-safe);
+}
+
+.ticker-chg.down {
+    color: var(--color-danger);
+}
+
+.news-ticker-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+    border-left: 1px solid var(--outlook-border);
+    padding-left: 16px;
+}
+
+.news-tag {
+    font-weight: 700;
+    color: var(--outlook-blue);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.marquee-wrapper {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.marquee-content {
+    white-space: nowrap;
+    position: absolute;
+    animation: newsMarquee 35s linear infinite;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.marquee-content:hover {
+    animation-play-state: paused;
+    cursor: pointer;
+}
+
+@keyframes newsMarquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Main Workspace Grid */
+.outlook-main-workspace {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 80px);
+    position: relative;
+}
+
+/* Left Nav Rail */
+.outlook-nav-rail {
+    width: 48px;
+    background: #fafbfc;
+    border-right: 1px solid var(--outlook-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 8px;
+    gap: 4px;
+    z-index: 10;
+}
+
+.rail-btn {
+    background: none;
+    border: none;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 4px;
+    position: relative;
+}
+
+.rail-btn:hover {
+    background: var(--outlook-bg-hover);
+    color: var(--outlook-blue);
+}
+
+.rail-btn.active {
+    background: #eff6fc;
+    color: var(--outlook-blue);
+    border-left: 3px solid var(--outlook-blue);
+    border-radius: 0 4px 4px 0;
+}
+
+.rail-tooltip {
+    display: none;
+    position: absolute;
+    left: 54px;
+    background: #323130;
+    color: #ffffff;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+    z-index: 200;
+}
+
+.rail-btn:hover .rail-tooltip {
+    display: block;
+}
+
+/* Folders Pane */
+.outlook-folders-pane {
+    width: 200px;
+    background: #fafbfc;
+    border-right: 1px solid var(--outlook-border);
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0;
+}
+
+.pane-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    padding: 0 16px 12px 16px;
+}
+
+.folder-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.folder-group-title {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    padding: 4px 16px;
+    letter-spacing: 0.5px;
+}
+
+.folder-item {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 12px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+}
+
+.folder-item:hover {
+    background: var(--outlook-bg-hover);
+    color: var(--text-primary);
+}
+
+.folder-item.active {
+    background: #edebe9;
+    color: var(--outlook-blue);
+    font-weight: 600;
+}
+
+.folder-item i {
+    font-size: 14px;
+    width: 16px;
+    text-align: center;
+}
+
+.folder-name {
+    flex: 1;
+}
+
+.folder-badge {
+    background: #edebe9;
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.folder-item.active .folder-badge {
+    background: var(--outlook-blue);
+    color: #ffffff;
+}
+
+.folder-badge.warning {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.add-in-link {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.add-in-link:hover {
+    background: var(--outlook-bg-hover);
+    color: var(--text-primary);
+}
+
+/* Middle List Pane */
+.outlook-list-pane {
+    width: 320px;
+    border-right: 1px solid var(--outlook-border);
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    flex-shrink: 0;
+}
+
+.list-pane-header {
+    padding: 12px 16px 8px 16px;
+    border-bottom: 1px solid var(--outlook-border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.list-actions-row {
+    display: flex;
+    gap: 8px;
+}
+
+.new-mail-btn {
+    background: var(--outlook-blue);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    height: 32px;
+    padding: 0 16px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.new-mail-btn:hover {
+    background: var(--outlook-blue-hover);
+}
+
+.list-secondary-btn {
+    background: #ffffff;
+    border: 1px solid var(--outlook-border);
+    border-radius: 4px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.list-secondary-btn:hover {
+    background: var(--outlook-bg-hover);
+}
+
+.list-filters-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+
+.tab-selectors {
+    display: flex;
+    gap: 12px;
+}
+
+.filter-tab {
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding-bottom: 4px;
+    font-weight: 600;
+}
+
+.filter-tab:hover {
+    color: var(--text-primary);
+}
+
+.filter-tab.active {
+    color: var(--outlook-blue);
+    border-bottom: 2px solid var(--outlook-blue);
+}
+
+.filter-dropdown {
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.list-search-bar input {
+    width: 100%;
+    height: 28px;
+    border-radius: 4px;
+    border: 1px solid var(--outlook-border);
+    padding: 0 8px;
+    font-size: 12px;
+    outline: none;
+}
+
+.list-items-container {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Mail Item Styling */
+.mail-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--outlook-border);
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    border-left: 3px solid transparent;
+    transition: background-color 0.15s ease, border-left-color 0.15s ease;
+}
+
+.mail-item:hover {
+    background: var(--outlook-bg-hover);
+}
+
+.mail-item.active {
+    background: #eff6fc;
+    border-left-color: var(--outlook-blue);
+}
+
+.mail-item-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.mail-sender {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 12.5px;
+}
+
+.mail-item.unread .mail-sender {
+    color: var(--outlook-blue);
+}
+
+.mail-item.unread::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--outlook-blue);
+}
+
+.mail-subject {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mail-item.unread .mail-subject {
+    font-weight: 700;
+}
+
+.mail-snippet {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+}
+
+.mail-badges-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.mail-icons-group {
+    display: flex;
+    gap: 6px;
+    color: var(--text-light);
+    font-size: 11px;
+}
+
+.mail-risk-score-badge {
+    font-size: 9px;
+    font-weight: bold;
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+.mail-risk-score-badge.danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.mail-risk-score-badge.warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.mail-risk-score-badge.safe {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+/* Contact List Item */
+.contact-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--outlook-border);
+    cursor: pointer;
+}
+
+.contact-list-item:hover {
+    background: var(--outlook-bg-hover);
+}
+
+.contact-list-item.active {
+    background: #edebe9;
+}
+
+.contact-item-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--outlook-blue);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+.contact-item-avatar.vendor {
+    background: var(--accent-electric);
+}
+
+.contact-item-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.contact-item-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.contact-item-sub {
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Reading Pane */
+.outlook-reading-pane {
+    flex: 1;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.reading-pane-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* Warning Banner Styles */
+.outlook-warning-banner {
+    display: flex;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--outlook-border);
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 12px;
+}
+
+.outlook-warning-banner.red {
+    background: #fdf2f2;
+    border-left: 4px solid #ef4444;
+}
+
+.outlook-warning-banner.yellow {
+    background: #fffbeb;
+    border-left: 4px solid #f59e0b;
+}
+
+.outlook-warning-banner.safe {
+    background: #f0fdf4;
+    border-left: 4px solid #22c55e;
+}
+
+.banner-icon {
+    font-size: 16px;
+}
+
+.outlook-warning-banner.red .banner-icon { color: #ef4444; }
+.outlook-warning-banner.yellow .banner-icon { color: #f59e0b; }
+.outlook-warning-banner.safe .banner-icon { color: #22c55e; }
+
+.banner-content {
+    flex: 1;
+    line-height: 1.4;
+}
+
+.banner-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.banner-btn {
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.banner-btn:hover {
+    background: #f9fafb;
+}
+
+/* Reading Header */
+.reading-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--outlook-border);
+}
+
+.email-subject {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.sender-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.sender-avatar {
+    width: 40px;
+    height: 40px;
+    background: #a19f9d;
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.sender-meta {
+    flex: 1;
+}
+
+.sender-identity {
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.sender-name {
+    font-weight: 600;
+}
+
+.sender-email {
+    color: var(--text-secondary);
+}
+
+.recipient-line {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+}
+
+.email-date {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+}
+
+.attachment-badge-row {
+    margin-top: 15px;
+}
+
+.attachment-file-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border: 1px solid var(--outlook-border);
+    border-radius: 4px;
+    background: #fafbfc;
+    cursor: pointer;
+}
+
+.attachment-file-card:hover {
+    background: #edebe9;
+}
+
+.attachment-file-card i {
+    font-size: 18px;
+    color: #ff9f1c;
+}
+
+.attachment-title {
+    font-size: 12px;
+    font-weight: 600;
+    display: block;
+}
+
+.attachment-size {
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.reading-body {
+    padding: 24px;
+    flex: 1;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333333;
+    white-space: pre-wrap;
+}
+
+.reading-actions {
+    padding: 16px 24px;
+    border-top: 1px solid var(--outlook-border);
+    display: flex;
+    gap: 8px;
+    background: #fafbfc;
+}
+
+.reading-action-btn {
+    height: 32px;
+    padding: 0 16px;
+    border-radius: 4px;
+    border: 1px solid var(--outlook-border);
+    background: #ffffff;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-primary);
+}
+
+.reading-action-btn:hover {
+    background: var(--outlook-bg-hover);
+}
+
+.reading-action-btn.primary {
+    background: var(--outlook-blue);
+    color: #ffffff;
+    border: none;
+}
+
+.reading-action-btn.primary:hover {
+    background: var(--outlook-blue-hover);
+}
+
+/* Contacts Detail Card */
+.contact-card-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px;
+    border-bottom: 1px solid var(--outlook-border);
+}
+
+.contact-card-avatar {
+    width: 60px;
+    height: 60px;
+    background: var(--outlook-blue);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.contact-card-meta h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.contact-card-role {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.contact-card-body {
+    padding: 24px;
+    flex: 1;
+}
+
+.info-section h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    font-weight: bold;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13.5px;
+    margin-bottom: 10px;
+}
+
+.info-row i {
+    color: var(--text-secondary);
+    width: 16px;
+    text-align: center;
+}
+
+/* Collapsible Far-Right Backfeed Sales Copilot Add-in Pane */
+.backfeed-copilot-pane {
+    width: 320px;
+    background: #ffffff;
+    border-left: 1px solid var(--outlook-border);
+    display: flex;
+    position: relative;
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+
+.backfeed-copilot-pane.collapsed {
+    width: 24px;
+}
+
+.copilot-toggle-handle {
+    width: 24px;
+    height: 100%;
+    background: #fafbfc;
+    border-right: 1px solid var(--outlook-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.copilot-toggle-handle:hover {
+    background: #edebe9;
+}
+
+.copilot-toggle-handle i {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.backfeed-copilot-pane.collapsed .copilot-toggle-handle i {
+    transform: rotate(180deg);
+}
+
+.copilot-toggle-handle span {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+}
+
+.copilot-content-wrapper {
+    flex: 1;
+    margin-left: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.backfeed-copilot-pane.collapsed .copilot-content-wrapper {
+    display: none;
+}
+
+.copilot-header {
+    padding: 16px;
+    background: #fafbfc;
+    border-bottom: 1px solid var(--outlook-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.copilot-header h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.copilot-header h3 i {
+    color: var(--accent-electric);
+}
+
+.copilot-status {
+    font-size: 10px;
+    color: var(--color-safe);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.copilot-status i {
+    font-size: 6px;
+}
+
+.copilot-tabs-header {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1px solid var(--outlook-border);
+    font-size: 11.5px;
+    background: #fafbfc;
+}
+
+.copilot-tab {
+    text-align: center;
+    padding: 8px 0;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.copilot-tab:hover {
+    color: var(--text-primary);
+}
+
+.copilot-tab.active {
+    color: var(--outlook-blue);
+    border-bottom: 2px solid var(--outlook-blue);
+    background: #ffffff;
+}
+
+.copilot-tab-bodies {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.copilot-tab-body {
+    display: none;
+    padding: 15px;
+}
+
+.copilot-tab-body.active {
+    display: block;
+}
+
+.copilot-section-desc {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.copilot-action-btn {
+    background: var(--outlook-blue);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    height: 30px;
+    padding: 0 12px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.copilot-action-btn:hover {
+    background: var(--outlook-blue-hover);
+}
+
+.copilot-action-btn.secondary {
+    background: #ffffff;
+    border: 1px solid var(--outlook-border);
+    color: var(--text-primary);
+}
+
+.copilot-action-btn.secondary:hover {
+    background: var(--outlook-bg-hover);
+}
+
+/* Laser Scanning bar simulation */
+.laser-scan-container {
+    background: rgba(255,159,28,0.08);
+    border: 1px dashed rgba(255,159,28,0.3);
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.laser-beam {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(255,159,28,0.8);
+    box-shadow: 0 0 8px rgba(255,159,28,0.8);
+    top: 0;
+}
+
+@keyframes laserScan {
+    0% { top: 0%; }
+    50% { top: 100%; }
+    100% { top: 0%; }
+}
+
+/* Parsed items rows */
+.parsed-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 15px;
+    text-align: center;
+    color: var(--text-light);
+}
+
+.parsed-placeholder i {
+    font-size: 28px;
+    margin-bottom: 8px;
+    color: var(--text-light);
+}
+
+.parsed-placeholder p {
+    font-size: 11.5px;
+    line-height: 1.4;
+}
+
+.parsed-item-row {
+    background: #fafbfc;
+    border: 1px solid var(--outlook-border);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 8px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.parsed-item-qty {
+    background: #edebe9;
+    color: var(--text-primary);
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 24px;
+    height: 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+}
+
+.parsed-item-details {
+    flex: 1;
+}
+
+.parsed-item-name {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.parsed-item-spec {
+    font-size: 9.5px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.parsed-item-status {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 3px;
+    align-self: flex-start;
+}
+
+/* Freight Calc Panel cards */
+.freight-calculator-card {
+    border: 1px solid var(--outlook-border);
+    border-radius: 6px;
+    padding: 12px;
+    background: #fafbfc;
+}
+
+.freight-stat {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11.5px;
+    margin-bottom: 6px;
+}
+
+.freight-stat .label {
+    color: var(--text-secondary);
+}
+
+.freight-stat .value {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.freight-brand-breakdown {
+    border-top: 1px solid var(--outlook-border);
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+.freight-brand-item {
+    font-size: 11px;
+    margin-bottom: 8px;
+}
+
+.freight-brand-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.freight-prepaid-status {
+    font-size: 9px;
+    font-weight: bold;
+    padding: 1px 4px;
+    border-radius: 3px;
+    float: right;
+}
+
+.freight-prepaid-status.yes {
+    background: rgba(34,197,94,0.15);
+    color: #22c55e;
+}
+
+.freight-prepaid-status.no {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.consolidation-alert {
+    background: rgba(255,159,28,0.1);
+    border: 1px solid rgba(255,159,28,0.3);
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 12px;
+}
+
+.consolidation-alert .alert-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: #d97706;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.consolidation-alert p {
+    font-size: 10px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* Smart-Cut config details */
+.config-row label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    display: block;
+}
+
+/* Outlook Compose Window Overlay */
+.outlook-compose-modal {
+    position: fixed;
+    bottom: 0;
+    right: 50px;
+    width: 600px;
+    height: 480px;
+    background: #ffffff;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    border: 1px solid #c8c8c8;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.compose-window-frame {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.compose-header {
+    height: 36px;
+    background: var(--outlook-blue);
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+.compose-close-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.compose-fields {
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--outlook-border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.compose-field-row {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+}
+
+.compose-field-row label {
+    width: 60px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.compose-field-row .input-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.compose-field-row input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 12.5px;
+    height: 24px;
+    border-bottom: 1px solid transparent;
+}
+
+.compose-field-row input:focus {
+    border-bottom: 1px solid var(--outlook-border);
+}
+
+.compose-contacts-dropdown {
+    position: absolute;
+    top: 26px;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid var(--outlook-border);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 1100;
+    max-height: 150px;
+    overflow-y: auto;
+    border-radius: 4px;
+}
+
+.compose-contact-option {
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 11.5px;
+}
+
+.compose-contact-option:hover {
+    background: var(--outlook-bg-hover);
+}
+
+.compose-attachment-bar {
+    padding: 4px 0;
+}
+
+.attachment-pill {
+    background: #f3f2f1;
+    border: 1px solid var(--outlook-border);
+    border-radius: 12px;
+    font-size: 11px;
+    padding: 2px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.compose-body-container {
+    flex: 1;
+    padding: 16px;
+}
+
+.compose-body-container textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+.compose-footer-toolbar {
+    height: 48px;
+    background: #fafbfc;
+    border-top: 1px solid var(--outlook-border);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 12px;
+}
+
+.compose-send-btn {
+    background: var(--outlook-blue);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    height: 32px;
+    padding: 0 18px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.compose-send-btn:hover {
+    background: var(--outlook-blue-hover);
+}
+
+.compose-discard-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.compose-discard-btn:hover {
+    color: var(--color-danger);
+}
+
+.compose-tool-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.compose-tool-btn:hover {
+    background: var(--outlook-bg-hover);
+}
+
+/* Floating Demo Director Panel */
+.demo-director-panel {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 280px;
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    color: #ffffff;
+    overflow: hidden;
+}
+
+.director-header {
+    background: rgba(15, 23, 42, 0.8);
+    padding: 10px 14px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #38bdf8;
+}
+
+.director-body {
+    padding: 12px 14px;
+}
+
+.director-body p {
+    font-size: 10px;
+    opacity: 0.8;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.director-btn-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dir-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-radius: 6px;
+    height: 28px;
+    font-size: 10.5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dir-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.dir-btn.warn {
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.dir-btn.warn:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+/* Toast System Styling */
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+}
+
+.toast {
+    background: #ffffff;
+    border-left: 4px solid var(--outlook-blue);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 12px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    animation: toastIn 0.3s ease-out;
+}
+
+.toast.success { border-left-color: var(--color-safe); }
+.toast.warning { border-left-color: var(--color-warning); }
+.toast.error { border-left-color: var(--color-danger); }
+
+.toast-icon { font-size: 16px; }
+.toast.success .toast-icon { color: var(--color-safe); }
+.toast.warning .toast-icon { color: var(--color-warning); }
+.toast.error .toast-icon { color: var(--color-danger); }
+
+.toast-content h4 {
+    font-size: 12.5px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    color: var(--text-primary);
+}
+
+.toast-content p {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+@keyframes toastIn {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Table styles inside views */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--outlook-border);
+}
+
+/* Filter Chips */
+.filter-chip {
+    padding: 4px 12px;
+    background: #f3f2f1;
+    border-radius: 12px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.filter-chip:hover {
+    background: #edebe9;
+    color: var(--text-primary);
+}
+
+.filter-chip.active {
+    background: var(--outlook-blue);
+    color: #ffffff;
+}
+
+/* Brand Grid Explorer */
+.brand-card {
+    border: 1px solid var(--outlook-border);
+    border-radius: 8px;
+    padding: 16px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.brand-card h3 {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.brand-card p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* Styled SVG Map Animations */
+.map-pulse-circle {
+    transform-origin: 280px 180px;
+    animation: mapPulse 2s infinite ease-out;
+}
+
+@keyframes mapPulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(2.2);
+        opacity: 0;
+    }
+}
+
+.truck-marker-g-philly {
+    offset-path: path("M 280 180 Q 330 135 380 90");
+    offset-rotate: auto;
+    animation: moveTruckPhilly 10s infinite linear;
+}
+
+.truck-marker-g-wilmington {
+    offset-path: path("M 280 180 Q 200 210 120 240");
+    offset-rotate: auto;
+    animation: moveTruckWilmington 14s infinite linear;
+}
+
+@keyframes moveTruckPhilly {
+    0% { offset-distance: 0%; }
+    100% { offset-distance: 100%; }
+}
+
+@keyframes moveTruckWilmington {
+    0% { offset-distance: 0%; }
+    100% { offset-distance: 100%; }
+}
+
+/* Activity Items */
+.activity-item {
+    display: flex;
+    gap: 10px;
+    font-size: 11.5px;
+    padding: 8px;
+    border-radius: 6px;
+    background: #f8fafc;
+    border: 1px solid #edebe9;
+}
+
+.activity-icon {
+    color: var(--accent-electric);
+}
+
+.activity-desc {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.activity-time {
+    font-size: 9.5px;
+    color: var(--text-light);
+    margin-top: 2px;
+}
+
+/* ==========================================
+   WORD BRIEFING ADD-IN TAB STYLES
+   ========================================== */
+
+#copilot-body-doc {
+    display: none;
+    flex-direction: column;
+    height: calc(100% - 40px);
+    overflow: hidden;
+}
+
+#copilot-body-doc.active {
+    display: flex !important;
+}
+
+.word-mini-ribbon {
+    background: #f3f2f1;
+    border: 1px solid #edebe9;
+    border-radius: 4px;
+    padding: 6px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.word-ribbon-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.word-font-select,
+.word-size-select {
+    background: #ffffff;
+    border: 1px solid #edebe9;
+    border-radius: 2px;
+    padding: 2px 6px;
+    font-size: 10.5px;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.word-font-select {
+    width: 75px;
+}
+
+.word-size-select {
+    width: 38px;
+}
+
+.word-ribbon-divider {
+    width: 1px;
+    height: 14px;
+    background: #edebe9;
+    margin: 0 4px;
+}
+
+.word-ribbon-btn {
+    background: transparent;
+    border: none;
+    border-radius: 2px;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease;
+}
+
+.word-ribbon-btn:hover {
+    background: #edebe9;
+}
+
+.word-ribbon-btn.active {
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-weight: bold;
+}
+
+.word-ai-badge {
+    margin-left: auto;
+    font-size: 9px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    padding: 1px 5px;
+    border-radius: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.word-canvas-wrapper {
+    flex: 1;
+    background: #f3f2f1;
+    border: 1px solid #edebe9;
+    border-radius: 4px;
+    padding: 10px;
+    overflow-y: auto;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.word-paper-sheet {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    padding: 14px;
+    min-height: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.word-editable-body {
+    outline: none;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #333333;
+    flex: 1;
+    min-height: 180px;
+}
+
+.word-editable-body h1,
+.word-editable-body h2,
+.word-editable-body h3 {
+    margin-top: 10px;
+    margin-bottom: 4px;
+    font-weight: bold;
+    color: #185abd;
+}
+
+.word-editable-body ul,
+.word-editable-body ol {
+    margin-left: 15px;
+    margin-bottom: 8px;
+}
+
+.word-editable-body li {
+    margin-bottom: 2px;
+}
+
+.word-editable-body p {
+    margin-bottom: 8px;
+}
+
+/* Blinking typewriter cursor style */
+.word-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 13px;
+    background-color: #333333;
+    margin-left: 2px;
+    animation: word-blink-anim 1s step-end infinite;
+    vertical-align: middle;
+}
+
+@keyframes word-blink-anim {
+    from, to { background-color: transparent }
+    50% { background-color: #333333 }
+}
+
+.word-mini-status {
+    border-top: 1px solid #edebe9;
+    padding-top: 6px;
+    margin-top: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 9.5px;
+    color: var(--text-secondary);
+}
+
+/* Slide Builder tab and form elements */
+#copilot-body-slides {
+    display: none;
+    flex-direction: column;
+    height: calc(100% - 40px);
+    overflow-y: auto;
+    padding-bottom: 20px;
+}
+
+#copilot-body-slides.active {
+    display: flex !important;
+}
+
+.slides-builder-form label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.slides-builder-form input[type="text"],
+.slides-builder-form select,
+.slides-builder-form textarea {
+    background: #ffffff;
+    border: 1px solid var(--outlook-border);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.slides-builder-form input[type="text"]:focus,
+.slides-builder-form select:focus,
+.slides-builder-form textarea:focus {
+    border-color: var(--outlook-blue);
+}
+
+.slides-builder-form .checkbox-grid {
+    background: #fafbfc;
+    border: 1px solid var(--outlook-border);
+    border-radius: 4px;
+    padding: 8px;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.slides-builder-form .checkbox-grid label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    font-weight: normal;
+    color: var(--text-primary);
+    cursor: pointer;
+    margin-bottom: 4px;
+}
+
+/* ==========================================
+   BACKFEED MEMORY LEDGER STYLES
+   ========================================== */
+
+.memory-ledger-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.memory-totals-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, rgba(0, 120, 212, 0.08), rgba(56, 189, 248, 0.06));
+    border-bottom: 1px solid var(--outlook-border);
+    flex-shrink: 0;
+}
+
+.memory-totals-bar .totals-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+}
+
+.memory-totals-bar .totals-label {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.memory-totals-bar .totals-value {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--outlook-blue);
+    font-family: var(--font-mono);
+}
+
+.memory-ledger-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 8px;
+}
+
+.memory-entry {
+    background: #ffffff;
+    border: 1px solid var(--outlook-border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    transition: all 0.3s ease;
+    animation: memorySlideIn 0.5s ease-out;
+}
+
+.memory-entry:hover {
+    border-color: var(--outlook-blue);
+    box-shadow: 0 2px 8px rgba(0, 120, 212, 0.1);
+}
+
+.memory-entry-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.memory-entry-order {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+}
+
+.memory-entry-scenario {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--text-muted);
+    background: #f3f2f1;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.memory-entry-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.memory-entry-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+}
+
+.memory-entry-row .mem-label {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.memory-entry-row .mem-value {
+    color: var(--text-primary);
+    font-weight: 700;
+    font-family: var(--font-mono);
+}
+
+.memory-entry-skus {
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px dashed #e5e5e5;
+}
+
+.memory-sku-line {
+    font-size: 9px;
+    color: var(--text-secondary);
+    padding: 1px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.memory-sku-line .sku-code {
+    font-family: var(--font-mono);
+    color: var(--outlook-blue);
+    font-weight: 600;
+}
+
+.memory-status-badge {
+    display: inline-block;
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.memory-status-badge.status-approved {
+    background: #e6f4ea;
+    color: #137333;
+}
+
+.memory-status-badge.status-hold {
+    background: #fffbeb;
+    color: #b45309;
+}
+
+.memory-status-badge.status-blocked {
+    background: #fdf2f2;
+    color: #b91c1c;
+}
+
+.memory-status-badge.status-emergency {
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.memory-status-badge.status-intercepted {
+    background: #faf5ff;
+    color: #7c3aed;
+}
+
+.memory-status-badge.status-repriced {
+    background: #f0fdf4;
+    color: #15803d;
+}
+
+.memory-status-badge.status-confirmed {
+    background: #f0f9ff;
+    color: #0369a1;
+}
+
+.memory-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    gap: 8px;
+    color: var(--text-muted);
+}
+
+.memory-empty-state i {
+    font-size: 28px;
+    opacity: 0.3;
+}
+
+.memory-empty-state p {
+    font-size: 10px;
+    text-align: center;
+    max-width: 180px;
+}
+
+@keyframes memorySlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes memoryPulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 120, 212, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(0, 120, 212, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 120, 212, 0); }
+}
+
+.memory-entry.just-added {
+    animation: memorySlideIn 0.5s ease-out, memoryPulse 1s ease-out;
+    border-color: var(--outlook-blue);
+}
+
+.memory-clear-btn {
+    background: none;
+    border: 1px solid var(--outlook-border);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.memory-clear-btn:hover {
+    background: #fdf2f2;
+    color: #b91c1c;
+    border-color: #fca5a5;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BACKFEED CONTEXT ROUTER INTERFACE STYLES (GLASSMORPHIC MODAL)
+   ═══════════════════════════════════════════════════════════════ */
+.backfeed-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.backfeed-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.routing-dialog-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    width: 500px;
+    max-width: 90vw;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+    overflow: hidden;
+    transform: scale(0.92) translateY(15px);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-family: var(--font-sans);
+}
+
+.backfeed-modal-overlay.active .routing-dialog-card {
+    transform: scale(1) translateY(0);
+}
+
+.routing-header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.routing-close-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.routing-close-btn:hover {
+    color: #ffffff;
+}
+
+.routing-content {
+    padding: 20px;
+}
+
+.routing-context-box {
+    background: rgba(15, 23, 42, 0.03);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #334155;
+}
+
+.routing-context-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+    margin-top: 6px;
+    border-top: 1px dashed rgba(15, 23, 42, 0.1);
+    padding-top: 6px;
+}
+
+.routing-options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0 10px;
+}
+
+.routing-option-card {
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+}
+
+.routing-option-card:hover {
+    border-color: #f59e0b;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(245, 158, 11, 0.08);
+}
+
+.routing-option-card.active {
+    border-color: #d97706;
+    background: rgba(245, 158, 11, 0.03);
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.1);
+}
+
+.routing-option-card i {
+    font-size: 24px;
+    color: #64748b;
+    transition: color 0.2s;
+}
+
+.routing-option-card.active i, .routing-option-card:hover i {
+    color: #d97706;
+}
+
+.routing-option-card h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.routing-option-card p {
+    font-size: 10.5px;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.vendor-select-container {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+    opacity: 0;
+}
+
+.vendor-select-container.active {
+    max-height: 120px;
+    opacity: 1;
+    margin-top: 10px;
+    border-top: 1px dashed rgba(15, 23, 42, 0.08);
+    padding-top: 12px;
+}
+
+.vendor-select-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 6px;
+    display: block;
+    text-transform: uppercase;
+}
+
+.vendor-select-dropdown {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 12px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 6px;
+    outline: none;
+    font-weight: 600;
+    color: #334155;
+    background-color: #ffffff;
+    transition: border-color 0.2s;
+}
+
+.vendor-select-dropdown:focus {
+    border-color: #d97706;
+}
+
+.routing-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid #cbd5e1;
+    padding: 12px 20px;
+    background: #f8fafc;
+}
+
+.routing-btn {
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.routing-btn.cancel {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #475569;
+}
+
+.routing-btn.cancel:hover {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.routing-btn.execute {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(217, 119, 6, 0.2);
+}
+
+.routing-btn.execute:hover {
+    box-shadow: 0 4px 8px rgba(217, 119, 6, 0.35);
+    transform: translateY(-0.5px);
+}
+
+/* ============================================================
+   UNIVERSAL ERP CONNECTOR STYLES
+   ============================================================ */
+
+/* ── Connector Toolbar ──────────────────────────────────────── */
+.erp-connector-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border-bottom: 1px solid #334155;
+    min-height: 40px;
+    flex-shrink: 0;
+}
+
+.erp-connector-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.erp-connector-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #e2e8f0;
+    font-family: var(--font-sans);
+}
+
+.erp-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #64748b;
+    flex-shrink: 0;
+}
+
+.erp-status-dot.connected {
+    background: #22c55e;
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+    animation: erp-pulse 2s ease-in-out infinite;
+}
+
+.erp-status-dot.disconnected {
+    background: #ef4444;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
+}
+
+.erp-status-dot.pending {
+    background: #f59e0b;
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.4);
+    animation: erp-pulse 1s ease-in-out infinite;
+}
+
+@keyframes erp-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.erp-conn-badge {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+.erp-connector-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.erp-connector-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #94a3b8;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.erp-connector-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Empty State ────────────────────────────────────────────── */
+.erp-empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    color: #94a3b8;
+    text-align: center;
+    padding: 40px;
+}
+
+.erp-empty-icon {
+    font-size: 48px;
+    color: #334155;
+    margin-bottom: 8px;
+}
+
+.erp-empty-state h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e2e8f0;
+    font-family: var(--font-sans);
+}
+
+.erp-empty-state p {
+    font-size: 13px;
+    max-width: 380px;
+    line-height: 1.5;
+    color: #64748b;
+}
+
+.erp-empty-btn {
+    margin-top: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #0078d4 0%, #106ebe 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 120, 212, 0.3);
+}
+
+.erp-empty-btn:hover {
+    box-shadow: 0 4px 16px rgba(0, 120, 212, 0.4);
+    transform: translateY(-1px);
+}
+
+/* ── Routing Modal ERP Target Indicator ─────────────────────── */
+.routing-erp-target {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: rgba(56, 189, 248, 0.06);
+    border-bottom: 1px solid rgba(56, 189, 248, 0.12);
+    font-size: 11px;
+    color: #64748b;
+    font-family: var(--font-sans);
+}
+
+.routing-erp-target strong {
+    color: #38bdf8;
+    font-weight: 600;
+}

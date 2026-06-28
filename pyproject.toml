@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "backfeed"
+version = "1.0.0"
+description = "Backfeed Sales & Operations Assistant CLI"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "python-docx",
+    "reportlab",
+    "pywin32; sys_platform == 'win32'"
+]
+
+[project.scripts]
+get-backfeed = "backfeed.cli:main"
+
+[tool.setuptools]
+packages = ["backfeed", "backfeed.core"]
+include-package-data = true

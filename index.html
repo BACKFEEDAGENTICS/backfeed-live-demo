@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backfeed Portal - ERP Distribution | Operations Command Center</title>
+    <meta name="description" content="Custom operations portal powered by Backfeed for ERP Distribution, showcasing represented line cards, and bi-directionally linked sales directory.">
+    <!-- Font Awesome for modern UI icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom styling -->
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="eclipse_erp.css">
+</head>
+<body class="theme-east">
+
+    <div class="outlook-app-container">
+        
+        <!-- M365 Header Bar -->
+        <header class="m365-header">
+            <div class="header-left">
+                <button class="app-launcher-btn" title="App Launcher">
+                    <i class="fa-solid fa-table-cells"></i>
+                </button>
+                <div class="brand-info">
+                    <span class="m365-title">Outlook</span>
+                    <span class="backfeed-connected-badge"><i class="fa-solid fa-cloud-bolt"></i> Backfeed Connected</span>
+                    <span class="static-preview-badge" title="This is a client-side static demonstration. All integrations and events are simulated in-browser."><i class="fa-solid fa-circle-info"></i> Static Demo</span>
+                </div>
+            </div>
+            
+            <div class="header-middle">
+                <div class="search-box-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="global-search" placeholder="Search mail, contacts, or brands...">
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="header-icon-btn" title="Backfeed Homepage" id="btn-open-homepage" style="border: 1px solid rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.1); border-radius: 4px; padding: 4px 8px; font-size: 10px; font-weight: bold; color: #f59e0b; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s; margin-right: 8px;">
+                    <a href="/" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+                        <i class="fa-solid fa-house" style="font-size: 8px;"></i> Product Home
+                    </a>
+                </button>
+                <button class="header-icon-btn" title="Sentinel Threat Gateway" id="btn-open-sentinel">
+                    <a href="fraud_shield.html" style="color: inherit; text-decoration: none;"><i class="fa-solid fa-shield-halved" style="color: #ef4444;"></i></a>
+                </button>
+                <button class="header-icon-btn" title="Settings" id="btn-open-settings"><i class="fa-solid fa-gear"></i></button>
+                <button class="header-icon-btn" title="Help"><i class="fa-solid fa-circle-question"></i></button>
+                <div class="user-avatar-badge" title="Kevin Pollock (Administrator)">KP</div>
+            </div>
+        </header>
+
+        <!-- Commodities & News Ticker Banner -->
+        <div class="commodities-news-banner">
+            <div class="commodities-ticker-container" id="commodities-container">
+                <div class="ticker-item"><span class="ticker-label">Copper</span><span class="ticker-val">--</span><span class="ticker-chg">--</span></div>
+                <div class="ticker-item"><span class="ticker-label">Aluminum</span><span class="ticker-val">--</span><span class="ticker-chg">--</span></div>
+                <div class="ticker-item"><span class="ticker-label">Crude Oil</span><span class="ticker-val">--</span><span class="ticker-chg">--</span></div>
+                <div class="ticker-item"><span class="ticker-label">Steel HRC</span><span class="ticker-val">--</span><span class="ticker-chg">--</span></div>
+                <div class="ticker-item"><span class="ticker-label">PVC Resin</span><span class="ticker-val">--</span><span class="ticker-chg">--</span></div>
+            </div>
+            <div class="news-ticker-container">
+                <span class="news-tag"><i class="fa-solid fa-newspaper"></i> Live Market News:</span>
+                <div class="marquee-wrapper">
+                    <div class="marquee-content" id="news-marquee">Loading financial headlines...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Layout Area -->
+        <div class="outlook-main-workspace">
+            
+            <!-- Slim Navigation Rail (Far Left) -->
+            <aside class="outlook-nav-rail">
+                <button class="rail-btn active" data-view="erp" title="ERP System">
+                    <i class="fa-solid fa-terminal"></i>
+                    <span class="rail-tooltip">ERP System</span>
+                </button>
+                <button class="rail-btn" data-view="mail" title="Mail">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span class="rail-tooltip">Mail</span>
+                </button>
+                <button class="rail-btn" data-view="contacts" title="People (Contacts)">
+                    <i class="fa-solid fa-address-book"></i>
+                    <span class="rail-tooltip">People</span>
+                </button>
+                <button class="rail-btn" data-view="capacity" title="Operations & Capacity">
+                    <i class="fa-solid fa-warehouse"></i>
+                    <span class="rail-tooltip">Operations</span>
+                </button>
+                <button class="rail-btn" data-view="inventory" title="Inventory Items">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span class="rail-tooltip">Inventory</span>
+                </button>
+                <button class="rail-btn" data-view="linecard" title="Line Card Explorer">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span class="rail-tooltip">Line Cards</span>
+                </button>
+                <button class="rail-btn" data-view="scratch" title="Scratch Study">
+                    <i class="fa-solid fa-file-code"></i>
+                    <span class="rail-tooltip">Scratch Explorer</span>
+                </button>
+            </aside>
+
+            <!-- Folders / Navigation Tree Pane (Left Middle) -->
+            <aside class="outlook-folders-pane" id="folders-pane">
+                <div class="pane-title" id="pane-title-text">Mail</div>
+                
+                <!-- MAIL FOLDERS (Visible when active view is Mail) -->
+                <div class="folders-section" id="mail-folders-section">
+                    <div class="folder-group">
+                        <span class="folder-group-title">Favorites</span>
+                        <div class="folder-item active" data-folder="inbox">
+                            <i class="fa-solid fa-inbox"></i>
+                            <span class="folder-name">Inbox</span>
+                            <span class="folder-badge" id="inbox-count-badge">3</span>
+                        </div>
+                        <div class="folder-item" data-folder="sent">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span class="folder-name">Sent Items</span>
+                        </div>
+                        <div class="folder-item" data-folder="quarantine">
+                            <i class="fa-solid fa-shield-halved" style="color: #ef4444;"></i>
+                            <span class="folder-name">Quarantine</span>
+                            <span class="folder-badge warning">1</span>
+                        </div>
+                    </div>
+                    <div class="folder-group" style="margin-top: 15px;">
+                        <span class="folder-group-title">Folders</span>
+                        <div class="folder-item" data-folder="inbox-all">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span class="folder-name">Inbox</span>
+                        </div>
+                        <div class="folder-item" data-folder="drafts">
+                            <i class="fa-solid fa-file-pen"></i>
+                            <span class="folder-name">Drafts</span>
+                        </div>
+                        <div class="folder-item" data-folder="junk">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span class="folder-name">Junk Email</span>
+                        </div>
+                        <div class="folder-item" data-folder="archive">
+                            <i class="fa-solid fa-box-archive"></i>
+                            <span class="folder-name">Archive</span>
+                        </div>
+                        <div class="folder-item" data-folder="deleted">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span class="folder-name">Deleted Items</span>
+                        </div>
+                    </div>
+
+                    <!-- Add-in shortcuts -->
+                    <div class="folder-group" style="margin-top: 25px; border-top: 1px solid #edebe9; padding-top: 15px;">
+                        <span class="folder-group-title">Backfeed Add-ins</span>
+                        <div class="add-in-link" id="btn-shortcut-freight">
+                            <i class="fa-solid fa-truck-ramp-box" style="color: #ff9f1c;"></i>
+                            <span>Freight Calculator</span>
+                        </div>
+                        <div class="add-in-link" id="btn-shortcut-smartcut">
+                            <i class="fa-solid fa-cubes" style="color: #2ec4b6;"></i>
+                            <span>Logistics Optimizer</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTACTS FOLDERS (Visible when active view is Contacts) -->
+                <div class="folders-section" id="contacts-folders-section" style="display: none;">
+                    <div class="folder-group">
+                        <span class="folder-group-title">Directories</span>
+                        <div class="folder-item active" data-contact-type="all">
+                            <i class="fa-solid fa-users"></i>
+                            <span class="folder-name">All Contacts</span>
+                        </div>
+                        <div class="folder-item" data-contact-type="customers">
+                            <i class="fa-solid fa-user-tie"></i>
+                            <span class="folder-name">Distributors (Customers)</span>
+                        </div>
+                        <div class="folder-item" data-contact-type="vendors">
+                            <i class="fa-solid fa-industry"></i>
+                            <span class="folder-name">Manufacturers (Vendors)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OPERATIONS FOLDERS (Visible when active view is Operations) -->
+                <div class="folders-section" id="ops-folders-section" style="display: none;">
+                    <div class="folder-group">
+                        <span class="folder-group-title">Operations Control</span>
+                        <div class="folder-item active" data-ops-panel="dashboard">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span class="folder-name">Control Dashboard</span>
+                        </div>
+                        <div class="folder-item" data-ops-panel="logistics">
+                            <i class="fa-solid fa-truck-fast"></i>
+                            <span class="folder-name">Logistics Queue</span>
+                        </div>
+                        <div class="folder-item" data-ops-panel="smartcut">
+                            <i class="fa-solid fa-cubes"></i>
+                            <span class="folder-name">Logistics Staging Logs</span>
+                        </div>
+                        <div class="folder-item" data-ops-panel="willcall">
+                            <i class="fa-solid fa-people-carry-box"></i>
+                            <span class="folder-name">Will Call Staging</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Middle Items List Pane -->
+            <section class="outlook-list-pane">
+                <div class="list-pane-header">
+                    <div class="list-actions-row">
+                        <button class="new-mail-btn" id="btn-new-mail"><i class="fa-solid fa-envelope-open-text"></i> New mail</button>
+                        <button class="list-secondary-btn" id="btn-refresh-mail" title="Check for incoming mail"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                    </div>
+                    
+                    <!-- Filters (Mail only) -->
+                    <div class="list-filters-bar" id="mail-filters-bar">
+                        <div class="tab-selectors">
+                            <span class="filter-tab active" id="tab-focused">Focused</span>
+                            <span class="filter-tab" id="tab-other">Other</span>
+                        </div>
+                        <span class="filter-dropdown">Filter <i class="fa-solid fa-chevron-down"></i></span>
+                    </div>
+
+                    <!-- Search (Contacts only) -->
+                    <div class="list-search-bar" id="contacts-search-bar" style="display: none;">
+                        <input type="text" id="contact-search-input" placeholder="Search contacts list...">
+                    </div>
+                </div>
+
+                <!-- Items list container -->
+                <div class="list-items-container" id="list-items-scroll">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </section>
+
+            <!-- Right Reading Pane -->
+            <section class="outlook-reading-pane" id="reading-pane">
+                <!-- VIEW 1: MAIL READING PANE -->
+                <div class="reading-pane-content" id="mail-reading-view">
+                    <!-- Warning banner (Sentinel Alerts) -->
+                    <div class="outlook-warning-banner" id="outlook-security-banner" style="display: none;">
+                        <!-- Injected dynamically -->
+                    </div>
+
+                    <div class="reading-header">
+                        <h2 class="email-subject" id="email-subject">RFQ: Bulk Inventory Catalog & Price Sheets Verification Request</h2>
+                        <div class="sender-row">
+                            <div class="sender-avatar" id="email-sender-avatar">P</div>
+                            <div class="sender-meta">
+                                <div class="sender-identity">
+                                    <span class="sender-name" id="email-sender-name">Purchasing Manager</span>
+                                    <span class="sender-email">&lt;<span id="email-sender-address">purchasing-manager@unverified-bids-portal.xyz</span>&gt;</span>
+                                </div>
+                                <div class="recipient-line">To: <span class="recipient-name" id="email-recipient">sales@erpdistribution.com</span></div>
+                            </div>
+                            <span class="email-date" id="email-date">June 4, 2026 9:30 PM</span>
+                        </div>
+                        
+                        <!-- Attachment badge if present -->
+                        <div class="attachment-badge-row" id="email-attachments-row" style="display: none;">
+                            <div class="attachment-file-card" id="btn-open-attachment" title="Click to view file">
+                                <i class="fa-solid fa-file-zipper"></i>
+                                <div>
+                                    <span class="attachment-title" id="email-attachment-name">statement_WD.zip</span>
+                                    <div class="attachment-size">1.4 MB</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reading-body" id="email-body-text">
+                        We are auditing logistics and supply chain vendors for regional contract bids. Please provide a complete pricing matrix and volume discounts for all represented electrical strut channels, copper building wire, and fittings. We require immediate exports of all current pricing sheets to register your company as a vendor.
+                    </div>
+                    
+                    <div class="reading-actions" style="display: flex; gap: 8px;">
+                        <button class="reading-action-btn primary" id="btn-reply-email"><i class="fa-solid fa-reply"></i> Reply</button>
+                        <button class="reading-action-btn" id="btn-forward-email"><i class="fa-solid fa-share"></i> Forward</button>
+                        <button class="reading-action-btn" id="btn-enter-erp" style="display: none; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.1);"><i class="fa-solid fa-cart-flatbed-suitcases"></i> Enter in ERP</button>
+                    </div>
+                </div>
+
+                <!-- VIEW 2: CONTACT DETAIL VIEW -->
+                <div class="reading-pane-content" id="contact-detail-view" style="display: none;">
+                    <div class="contact-card-header">
+                        <div class="contact-card-avatar" id="card-avatar">JS</div>
+                        <div class="contact-card-meta">
+                            <h2 id="card-name">Client A Estimator</h2>
+                            <p class="contact-card-role" id="card-role">Estimator • Vanguard Contractors LLC</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-card-body">
+                        <div class="info-section">
+                            <h3>Contact Details</h3>
+                            <div class="info-row"><i class="fa-solid fa-envelope"></i> <span id="card-email">estimating@vanguard-contractors-llc.net</span></div>
+                            <div class="info-row"><i class="fa-solid fa-phone"></i> <span id="card-phone">(856) 555-0202</span></div>
+                            <div class="info-row"><i class="fa-solid fa-location-dot"></i> <span id="card-address">West Deptford Industrial Park, NJ</span></div>
+                        </div>
+
+                        <div class="info-section" style="margin-top: 20px;">
+                            <h3>Associated Brands & Lines</h3>
+                            <p style="font-size: 13px; color: var(--text-secondary);" id="card-brands">Titan Wiring Devices, Liberty Copper Cable, Matrix Fittings</p>
+                        </div>
+                        
+                        <div class="info-section" style="margin-top: 25px;">
+                            <button class="reading-action-btn primary" id="btn-contact-email"><i class="fa-solid fa-paper-plane"></i> Send Email</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 3: INTEGRATED OPERATIONS CAPACITY TAB -->
+                <div class="reading-pane-content" id="ops-capacity-view" style="display: none; padding: 24px; overflow-y: auto;">
+                    <div class="section-header" style="margin-bottom: 20px;">
+                        <h2 style="font-size: 20px; font-weight: 700; color: var(--text-primary);">ERP Command Center</h2>
+                        <p style="font-size: 13px; color: var(--text-secondary);">Real-time dispatch, pallet staging, and territory logistics mapping</p>
+                    </div>
+                    
+                    <div class="ops-grid-dashboard" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px;">
+                        
+                        <!-- Left Panel: stats and visual map -->
+                        <div class="ops-left-col">
+                            <div class="stats-row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+                                <div class="stat-card glass-panel" style="padding: 15px; border-radius: 8px; border: 1px solid rgba(15,23,42,0.04);">
+                                    <i class="fa-solid fa-folder-open" style="color: var(--accent-electric); margin-bottom: 8px;"></i>
+                                    <span class="stat-num" id="stat-quotes" style="font-size: 20px; font-weight: 700; display: block;">18</span>
+                                    <span class="stat-label" style="font-size: 11px; color: var(--text-secondary);">Active RFQs</span>
+                                </div>
+                                <div class="stat-card glass-panel" style="padding: 15px; border-radius: 8px; border: 1px solid rgba(15,23,42,0.04);">
+                                    <i class="fa-solid fa-cubes" style="color: var(--accent-cyan); margin-bottom: 8px;"></i>
+                                    <span class="stat-num" id="stat-cuts" style="font-size: 20px; font-weight: 700; display: block;">6</span>
+                                    <span class="stat-label" style="font-size: 11px; color: var(--text-secondary);">Pallet Shipments Staged</span>
+                                </div>
+                                <div class="stat-card glass-panel" style="padding: 15px; border-radius: 8px; border: 1px solid rgba(15,23,42,0.04);">
+                                    <i class="fa-solid fa-truck-ramp-box" style="color: var(--accent-electric); margin-bottom: 8px;"></i>
+                                    <span class="stat-num" id="stat-deliveries" style="font-size: 20px; font-weight: 700; display: block;">4</span>
+                                    <span class="stat-label" style="font-size: 11px; color: var(--text-secondary);">Fleet Flatbeds Active</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Maps Visualizer -->
+                            <div class="map-card glass-panel" style="border: 1px solid rgba(15,23,42,0.05); border-radius: 8px;">
+                                <div class="viewer-header" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #edebe9;">
+                                    <span class="viewer-title" style="font-weight: 600; font-size: 13px; color: var(--text-primary);"><i class="fa-solid fa-map-location-dot" style="margin-right: 6px;"></i> Live Territory Dispatches</span>
+                                    <div class="live-badge" style="font-size: 10px; background: rgba(34,197,94,0.1); color: #22c55e; padding: 2px 6px; border-radius: 4px; font-weight: bold; display: flex; align-items: center; gap: 4px;">
+                                        <span style="width: 6px; height: 6px; border-radius: 50%; background: #22c55e; display: inline-block;"></span> Active Route Tracking
+                                    </div>
+                                </div>
+                                
+                                <div class="map-visualizer" style="height: 250px; background: #fafbfc; position: relative; overflow: hidden; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                                    <svg viewBox="0 0 600 320" style="width: 100%; height: 100%; display: block;">
+                                        <defs>
+                                            <pattern id="map-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(15, 23, 42, 0.02)" stroke-width="1"/>
+                                            </pattern>
+                                        </defs>
+                                        <rect width="100%" height="100%" fill="url(#map-grid)" />
+                                        <path d="M -20 340 Q 60 270 120 240 T 220 200 T 280 180 T 360 110 T 400 80 T 480 60 T 620 40" fill="none" stroke="#e2e8f0" stroke-width="16" stroke-linecap="round" opacity="0.6"/>
+                                        <path d="M -20 340 Q 60 270 120 240 T 220 200 T 280 180 T 360 110 T 400 80 T 480 60 T 620 40" fill="none" stroke="#f1f5f9" stroke-width="12" stroke-linecap="round"/>
+                                        <path id="river-label-path" d="M 10 310 Q 80 260 120 240 T 220 200" fill="none" stroke="none" />
+                                        <text font-size="7" font-family="monospace" fill="#94a3b8" letter-spacing="2" dy="-3">
+                                            <textPath href="#river-label-path" startOffset="30%">DELAWARE RIVER</textPath>
+                                        </text>
+                                        <path d="M 280 180 L 600 340" stroke="rgba(15, 23, 42, 0.04)" stroke-width="1.5" stroke-dasharray="3,3"/>
+                                        <path d="M 380 90 L 0 10" stroke="rgba(15, 23, 42, 0.04)" stroke-width="1.5" stroke-dasharray="3,3"/>
+                                        <path d="M -20 200 Q 100 150 200 140 T 340 70 T 620 10" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                                        <path d="M 40 340 Q 150 240 250 200 T 400 120 T 620 90" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                                        <path id="route-path" d="M 280 180 Q 330 135 380 90" fill="none" stroke="var(--accent-electric)" stroke-width="2" stroke-dasharray="5,3" stroke-linecap="round"/>
+                                        <path id="route-wilmington" d="M 280 180 Q 200 210 120 240" fill="none" stroke="var(--accent-cyan)" stroke-width="2" stroke-dasharray="5,3" stroke-linecap="round"/>
+                                        <circle cx="120" cy="240" r="6" fill="#ffffff" stroke="var(--accent-cyan)" stroke-width="2.5"/>
+                                        <circle cx="120" cy="240" r="2.5" fill="var(--accent-cyan)"/>
+                                        <circle cx="380" cy="90" r="6" fill="#ffffff" stroke="var(--accent-electric)" stroke-width="2.5"/>
+                                        <circle cx="380" cy="90" r="2.5" fill="var(--accent-electric)"/>
+                                        <circle cx="280" cy="180" r="10" fill="none" stroke="var(--accent-electric)" stroke-width="1.5" opacity="0.4" class="map-pulse-circle"/>
+                                        <circle cx="280" cy="180" r="7" fill="#ffffff" stroke="var(--accent-electric)" stroke-width="3"/>
+                                        <circle cx="280" cy="180" r="3" fill="var(--accent-electric)"/>
+                                        <g transform="translate(235, 196)">
+                                            <rect x="0" y="0" width="90" height="18" rx="4" fill="#ffffff" stroke="rgba(15,23,42,0.08)" stroke-width="1"/>
+                                            <text id="map-hub-label" x="45" y="12" font-size="9" font-family="sans-serif" font-weight="bold" fill="#0f172a" text-anchor="middle">West Deptford HQ</text>
+                                        </g>
+                                        <g transform="translate(335, 102)">
+                                            <rect x="0" y="0" width="90" height="18" rx="4" fill="#ffffff" stroke="rgba(15,23,42,0.08)" stroke-width="1"/>
+                                            <text id="map-dest1-label" x="45" y="12" font-size="9" font-family="sans-serif" font-weight="600" fill="#0f172a" text-anchor="middle">Philadelphia, PA</text>
+                                        </g>
+                                        <g transform="translate(75, 252)">
+                                            <rect x="0" y="0" width="90" height="18" rx="4" fill="#ffffff" stroke="rgba(15,23,42,0.08)" stroke-width="1"/>
+                                            <text id="map-dest2-label" x="45" y="12" font-size="9" font-family="sans-serif" font-weight="600" fill="#0f172a" text-anchor="middle">Wilmington, DE</text>
+                                        </g>
+                                        <g id="truck-marker" class="truck-marker-g-philly">
+                                            <circle r="9" fill="#ffffff" stroke="var(--accent-electric)" stroke-width="1.5"/>
+                                            <text y="2.5" font-size="8" font-family="sans-serif" text-anchor="middle" fill="var(--accent-electric)" font-weight="bold">🚚</text>
+                                        </g>
+                                        <g class="truck-marker-g-wilmington">
+                                            <circle r="9" fill="#ffffff" stroke="var(--accent-cyan)" stroke-width="1.5"/>
+                                            <text y="2.5" font-size="8" font-family="sans-serif" text-anchor="middle" fill="var(--accent-cyan)" font-weight="bold">🚚</text>
+                                        </g>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right panel: Activities list -->
+                        <div class="ops-right-col">
+                            <div class="activity-card glass-panel" style="border: 1px solid rgba(15,23,42,0.05); border-radius: 8px; padding: 15px; height: 350px; display: flex; flex-direction: column;">
+                                <div class="viewer-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #edebe9; padding-bottom: 8px;">
+                                    <span class="viewer-title" style="font-weight: 600; font-size: 13px;"><i class="fa-solid fa-list-check" style="margin-right: 6px;"></i> Logistics Activity Log</span>
+                                    <button id="clear-activity-btn" style="background: none; border: none; font-size: 11px; color: var(--accent-electric); cursor: pointer; font-weight: 600;">Clear</button>
+                                </div>
+                                <div class="activity-list" id="activity-log-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+                                    <!-- Dynamic elements -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <!-- VIEW 5: WILL CALL STAGING QUEUE -->
+                <div class="reading-pane-content" id="ops-willcall-view" style="display: none; padding: 24px; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #edebe9; padding-bottom: 12px;">
+                        <div>
+                            <h2 style="font-size: 20px; font-weight: 700; color: var(--text-primary);">Will Call Staging Queue</h2>
+                            <p style="font-size: 13px; color: var(--text-secondary);">Counter customer pickup staging, active pick tickets, and runner checkout</p>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="text" id="wc-search" placeholder="Search pick tickets..." style="padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(15,23,42,0.08); font-size: 13px; width: 200px; background: #ffffff;">
+                            <button class="new-mail-btn" id="btn-create-wc-ticket" style="padding: 8px 12px; font-size: 12px;"><i class="fa-solid fa-plus" style="margin-right: 4px;"></i> New Ticket</button>
+                        </div>
+                    </div>
+                    
+                    <div class="wc-grid-layout" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; height: calc(100% - 75px); min-height: 480px;">
+                        <!-- Left Column: Tickets List -->
+                        <div class="wc-list-column" style="display: flex; flex-direction: column; gap: 12px; overflow-y: auto; background: #fafbfc; border: 1px solid #edebe9; border-radius: 8px; padding: 15px;">
+                            <!-- Filters -->
+                            <div style="display: flex; gap: 8px; margin-bottom: 5px; border-bottom: 1px solid #edebe9; padding-bottom: 10px;">
+                                <button class="filter-tab active" id="wc-filter-all" style="padding: 4px 10px; font-size: 11px; cursor: pointer;">All</button>
+                                <button class="filter-tab" id="wc-filter-picking" style="padding: 4px 10px; font-size: 11px; cursor: pointer;">Picking</button>
+                                <button class="filter-tab" id="wc-filter-staged" style="padding: 4px 10px; font-size: 11px; cursor: pointer;">Staged</button>
+                                <button class="filter-tab" id="wc-filter-ready" style="padding: 4px 10px; font-size: 11px; cursor: pointer;">Ready</button>
+                            </div>
+                            
+                            <!-- Tickets Container -->
+                            <div id="wc-tickets-container" style="display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1;">
+                                <!-- Dynamic tickets go here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column: Detail Pane -->
+                        <div class="wc-detail-column" style="background: #ffffff; border: 1px solid #edebe9; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                            <div id="wc-detail-content" style="flex: 1; overflow-y: auto;">
+                                <div style="text-align: center; color: var(--text-secondary); padding: 60px 0;">
+                                    <i class="fa-solid fa-people-carry-box" style="font-size: 48px; color: #cbd5e1; margin-bottom: 15px;"></i>
+                                    <p style="font-size: 14px; font-weight: 500;">Select a Will Call ticket to view details</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Actions row (hidden by default) -->
+                            <div id="wc-detail-actions" style="display: none; border-top: 1px solid #edebe9; padding-top: 15px; margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+                                <button class="list-secondary-btn" id="btn-wc-stage" style="padding: 8px 12px; font-size: 12px; cursor: pointer;"><i class="fa-solid fa-box" style="margin-right: 4px;"></i> Staged in Bin</button>
+                                <button class="new-mail-btn" id="btn-wc-ready" style="padding: 8px 12px; font-size: 12px; cursor: pointer;"><i class="fa-solid fa-circle-check" style="margin-right: 4px;"></i> Mark Ready</button>
+                                <button class="new-mail-btn" id="btn-wc-dispatch" style="padding: 8px 12px; font-size: 12px; cursor: pointer; background: var(--accent-cyan); border-color: var(--accent-cyan);"><i class="fa-solid fa-truck-ramp-box" style="margin-right: 4px;"></i> Hand Off / Dispatch</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 4: MOCK INVENTORY TABLE -->
+                <div class="reading-pane-content" id="inventory-view" style="display: none; padding: 24px; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <div>
+                            <h2 style="font-size: 20px; font-weight: 700; color: var(--text-primary);">West Deptford HQ Warehouse Inventory</h2>
+                            <p style="font-size: 13px; color: var(--text-secondary);">Simulated stock levels, SKU bin mapping, and lead times</p>
+                        </div>
+                        <input type="text" id="inv-search" placeholder="Search SKU or description..." style="padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(15,23,42,0.08); font-size: 13px; width: 250px; background: #ffffff;">
+                    </div>
+                    <div style="overflow-x: auto; background: #ffffff; border: 1px solid #edebe9; border-radius: 8px;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                            <thead>
+                                <tr style="background: #f8fafc; border-bottom: 1px solid #edebe9; color: var(--text-secondary); font-weight: 600;">
+                                    <th style="padding: 12px 16px;">SKU / Part Number</th>
+                                    <th style="padding: 12px 16px;">Description</th>
+                                    <th style="padding: 12px 16px;">Manufacturer</th>
+                                    <th style="padding: 12px 16px; text-align: right;">Quantity Available</th>
+                                    <th style="padding: 12px 16px;">Bin Location</th>
+                                    <th style="padding: 12px 16px; text-align: right;">Lead Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-table-body">
+                                <!-- Dynamic stock list from script -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- VIEW 5: LINE CARD EXPLORER VIEW -->
+                <div class="reading-pane-content" id="linecard-view" style="display: none; padding: 24px; overflow-y: auto;">
+                    <div style="margin-bottom: 20px;">
+                        <h2 style="font-size: 20px; font-weight: 700;">ERP Represented Line Cards</h2>
+                        <p style="font-size: 13px; color: var(--text-secondary);">Browse manufacturing partners, prepaid freight limits, and inside specialists</p>
+                    </div>
+                    <div class="search-filter-bar" style="margin-bottom: 20px; display: flex; gap: 10px;">
+                        <input type="text" id="line-search" placeholder="Search represented manufacturers..." style="padding: 8px 14px; border-radius: 8px; border: 1px solid #edebe9; font-size: 13px; flex: 1;">
+                        <div class="filter-chips" style="display: flex; gap: 6px;">
+                            <span class="filter-chip active" data-filter="all">All Lines</span>
+                            <span class="filter-chip" data-filter="titan">Titan Division</span>
+                            <span class="filter-chip" data-filter="wire">Wire & Cable</span>
+                            <span class="filter-chip" data-filter="fittings">Fittings & Devices</span>
+                        </div>
+                    </div>
+                    <div class="brand-grid" id="brand-grid-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+                        <!-- Dynamic brand cards -->
+                    </div>
+                </div>
+
+                <!-- VIEW 6: UNIVERSAL ERP CONNECTOR VIEW -->
+                <div class="reading-pane-content" id="erp-view" style="display: none; padding: 0; width: 100%; height: 100%; overflow: hidden; display: none; flex-direction: column;">
+                    <!-- ERP Connector Toolbar -->
+                    <div class="erp-connector-toolbar" id="erp-connector-toolbar">
+                        <div class="erp-connector-left">
+                            <span class="erp-connector-status" id="erp-conn-status">
+                                <span class="erp-status-dot connected"></span>
+                                <span id="erp-conn-name">ERP System</span>
+                                <span class="erp-conn-badge" id="erp-conn-badge">Demo</span>
+                            </span>
+                        </div>
+                        <div class="erp-connector-right">
+                            <button class="erp-connector-btn" id="btn-erp-configure" title="Configure ERP Connection">
+                                <i class="fa-solid fa-gear"></i> Configure
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Inlined ERP Demo -->
+                    <div id="eclipse-erp-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                        <header id="eclipse-titlebar">
+                            <div class="titlebar-left">
+                                <div class="eclipse-logo"><i class="fa-solid fa-bolt"></i><span class="logo-text">ERP</span></div>
+                                <span class="titlebar-title">Backfeed ERP — Order Entry System — [T4 : G.Miller]</span>
+                            </div>
+                            <div class="titlebar-controls">
+                                <button class="titlebar-btn minimize" title="Minimize"><i class="fa-solid fa-minus"></i></button>
+                                <button class="titlebar-btn maximize" title="Maximize"><i class="fa-regular fa-square"></i></button>
+                                <button class="titlebar-btn close" title="Close"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </header>
+                        <nav id="eclipse-menubar">
+                            <ul class="menu-items">
+                                <li class="menu-item" data-menu="file"><span class="menu-label"><u>F</u>ile</span>
+                                    <ul class="menu-dropdown">
+                                        <li data-action="new-order"><i class="fa-solid fa-file-circle-plus"></i> New Order <span class="shortcut">Ctrl+N</span></li>
+                                        <li data-action="new-quote"><i class="fa-solid fa-file-lines"></i> New Quote <span class="shortcut">Ctrl+Q</span></li>
+                                        <li class="menu-divider"></li>
+                                        <li data-action="save"><i class="fa-solid fa-floppy-disk"></i> Save <span class="shortcut">Ctrl+S</span></li>
+                                        <li data-action="print"><i class="fa-solid fa-print"></i> Print <span class="shortcut">Ctrl+P</span></li>
+                                        <li class="menu-divider"></li>
+                                        <li data-action="exit"><i class="fa-solid fa-right-from-bracket"></i> Exit <span class="shortcut">Alt+F4</span></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item" data-menu="edit"><span class="menu-label"><u>E</u>dit</span>
+                                    <ul class="menu-dropdown">
+                                        <li data-action="undo"><i class="fa-solid fa-rotate-left"></i> Undo <span class="shortcut">Ctrl+Z</span></li>
+                                        <li data-action="redo"><i class="fa-solid fa-rotate-right"></i> Redo <span class="shortcut">Ctrl+Y</span></li>
+                                        <li class="menu-divider"></li>
+                                        <li data-action="cut"><i class="fa-solid fa-scissors"></i> Cut <span class="shortcut">Ctrl+X</span></li>
+                                        <li data-action="copy"><i class="fa-solid fa-copy"></i> Copy <span class="shortcut">Ctrl+C</span></li>
+                                        <li data-action="paste"><i class="fa-solid fa-paste"></i> Paste <span class="shortcut">Ctrl+V</span></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item" data-menu="view"><span class="menu-label"><u>V</u>iew</span>
+                                    <ul class="menu-dropdown">
+                                        <li data-action="open-dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</li>
+                                        <li data-action="refresh"><i class="fa-solid fa-arrows-rotate"></i> Refresh <span class="shortcut">F5</span></li>
+                                        <li class="menu-divider"></li>
+                                        <li data-action="toggle-statusbar"><i class="fa-solid fa-check"></i> Status Bar</li>
+                                        <li data-action="toggle-fkeys"><i class="fa-solid fa-check"></i> Function Key Bar</li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item" data-menu="orders"><span class="menu-label"><u>O</u>rders</span>
+                                    <ul class="menu-dropdown">
+                                        <li data-action="new-order"><i class="fa-solid fa-file-circle-plus"></i> New Order <span class="shortcut">F2</span></li>
+                                        <li data-action="order-search"><i class="fa-solid fa-magnifying-glass"></i> Search Orders <span class="shortcut">F3</span></li>
+                                        <li class="menu-divider"></li>
+                                        <li data-action="new-quote"><i class="fa-solid fa-file-lines"></i> New Quote</li>
+                                        <li data-action="quote-search"><i class="fa-solid fa-magnifying-glass"></i> Search Quotes</li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item" data-menu="inventory"><span class="menu-label"><u>I</u>nventory</span>
+                                    <ul class="menu-dropdown">
+                                        <li data-action="open-inventory"><i class="fa-solid fa-warehouse"></i> Inventory Inquiry</li>
+                                        <li data-action="open-price-lookup"><i class="fa-solid fa-dollar-sign"></i> Price Lookup</li>
+                                        <li class="menu-divider"></li>
+                                        <li data-action="warehouse-status"><i class="fa-solid fa-boxes-stacked"></i> Warehouse Status</li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item" data-menu="customers"><span class="menu-label"><u>C</u>ustomers</span>
+                                    <ul class="menu-dropdown">
+                                        <li data-action="open-customer-search"><i class="fa-solid fa-magnifying-glass"></i> Customer Lookup <span class="shortcut">F3</span></li>
+                                        <li data-action="new-customer"><i class="fa-solid fa-user-plus"></i> New Customer</li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item" data-menu="reports"><span class="menu-label"><u>R</u>eports</span>
+                                    <ul class="menu-dropdown">
+                                        <li data-action="report-sales"><i class="fa-solid fa-chart-line"></i> Sales Report</li>
+                                        <li data-action="report-aging"><i class="fa-solid fa-clock-rotate-left"></i> Aging Report</li>
+                                        <li data-action="report-inventory"><i class="fa-solid fa-clipboard-list"></i> Inventory Report</li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item" data-menu="help"><span class="menu-label"><u>H</u>elp</span>
+                                    <ul class="menu-dropdown">
+                                        <li data-action="help-contents"><i class="fa-solid fa-circle-question"></i> Help Contents <span class="shortcut">F1</span></li>
+                                        <li class="menu-divider"></li>
+                                        <li data-action="about"><i class="fa-solid fa-circle-info"></i> About ERP System</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
+                        <div id="eclipse-toolbar">
+                            <button class="toolbar-btn" data-action="new-order" title="New Order (F2)"><i class="fa-solid fa-file-circle-plus"></i><span>New Order</span></button>
+                            <button class="toolbar-btn" data-action="open-customer-search" title="Customer Search (F3)"><i class="fa-solid fa-users"></i><span>Customers</span></button>
+                            <button class="toolbar-btn" data-action="open-inventory" title="Inventory Inquiry"><i class="fa-solid fa-warehouse"></i><span>Inventory</span></button>
+                            <button class="toolbar-btn" data-action="open-price-lookup" title="Price Lookup"><i class="fa-solid fa-dollar-sign"></i><span>Prices</span></button>
+                            <div class="toolbar-separator"></div>
+                            <button class="toolbar-btn" data-action="save" title="Save (F7)"><i class="fa-solid fa-floppy-disk"></i><span>Save</span></button>
+                            <button class="toolbar-btn" data-action="print" title="Print (F6)"><i class="fa-solid fa-print"></i><span>Print</span></button>
+                            <button class="toolbar-btn" data-action="refresh" title="Refresh (F5)"><i class="fa-solid fa-arrows-rotate"></i><span>Refresh</span></button>
+                            <div class="toolbar-separator"></div>
+                            <button class="toolbar-btn" data-action="help-contents" title="Help (F1)"><i class="fa-solid fa-circle-question"></i><span>Help</span></button>
+                        </div>
+                        <main id="eclipse-main">
+                            <div id="tab-bar"></div>
+                            <div id="tab-content"></div>
+                        </main>
+                        <div id="eclipse-fkeybar">
+                            <button class="fkey-btn" data-fkey="F1"><span class="fkey-key">F1</span><span class="fkey-label">Help</span></button>
+                            <button class="fkey-btn" data-fkey="F2"><span class="fkey-key">F2</span><span class="fkey-label">New</span></button>
+                            <button class="fkey-btn" data-fkey="F3"><span class="fkey-key">F3</span><span class="fkey-label">Search</span></button>
+                            <button class="fkey-btn" data-fkey="F4"><span class="fkey-key">F4</span><span class="fkey-label">Edit</span></button>
+                            <button class="fkey-btn" data-fkey="F5"><span class="fkey-key">F5</span><span class="fkey-label">Refresh</span></button>
+                            <button class="fkey-btn" data-fkey="F6"><span class="fkey-key">F6</span><span class="fkey-label">Print</span></button>
+                            <button class="fkey-btn" data-fkey="F7"><span class="fkey-key">F7</span><span class="fkey-label">Save</span></button>
+                            <button class="fkey-btn" data-fkey="F8"><span class="fkey-key">F8</span><span class="fkey-label">Delete</span></button>
+                            <button class="fkey-btn" data-fkey="F9"><span class="fkey-key">F9</span><span class="fkey-label">Post</span></button>
+                            <button class="fkey-btn" data-fkey="F10"><span class="fkey-key">F10</span><span class="fkey-label">Exit</span></button>
+                        </div>
+                        <footer id="eclipse-statusbar">
+                            <div class="status-section status-user"><i class="fa-solid fa-user"></i><span>G.Miller</span></div>
+                            <div class="status-section status-terminal"><i class="fa-solid fa-desktop"></i><span>Terminal T4</span></div>
+                            <div class="status-section status-message" id="status-message"><span>Ready</span></div>
+                            <div class="status-section status-scenario" id="status-scenario" style="display:none;"><i class="fa-solid fa-stopwatch"></i><span id="scenario-timer">00:00</span></div>
+                            <div class="status-section status-clock"><i class="fa-regular fa-clock"></i><span id="status-clock">--:--:-- --</span></div>
+                            <div class="status-section status-connection" id="status-connection"><span class="conn-dot connecting"></span><span>Connecting...</span></div>
+                        </footer>
+                        <div id="scenario-toggle" title="Demo Scenarios"><i class="fa-solid fa-gear"></i></div>
+                        <div id="scenario-panel" class="hidden">
+                            <div class="scenario-panel-header"><h3><i class="fa-solid fa-list-check"></i> Demo Scenarios</h3><button id="scenario-panel-close" title="Close"><i class="fa-solid fa-xmark"></i></button></div>
+                            <div class="scenario-panel-body"><div id="scenario-list"></div></div>
+                            <div class="scenario-panel-footer"><button id="scenario-clear" class="scenario-btn-clear"><i class="fa-solid fa-rotate-left"></i> Reset</button></div>
+                        </div>
+                        <div id="modal-overlay" class="hidden">
+                            <div id="modal-dialog">
+                                <div id="modal-titlebar"><span id="modal-icon"><i class="fa-solid fa-circle-exclamation"></i></span><span id="modal-title">Alert</span><button id="modal-close-btn" title="Close"><i class="fa-solid fa-xmark"></i></button></div>
+                                <div id="modal-body"><p id="modal-message"></p></div>
+                                <div id="modal-footer"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- No ERP Configured Empty State (for external ERPs without URL) -->
+                    <div class="erp-empty-state" id="erp-empty-state" style="display: none;">
+                        <div class="erp-empty-icon"><i class="fa-solid fa-plug-circle-xmark"></i></div>
+                        <h3>No ERP System Connected</h3>
+                        <p>Configure your ERP portal URL in Settings to connect Backfeed to your order entry system.</p>
+                        <button class="erp-empty-btn" id="btn-erp-empty-configure"><i class="fa-solid fa-link"></i> Connect ERP System</button>
+                    </div>
+                </div>
+
+                <!-- VIEW 7: SCRATCH EXPLORER VIEW -->
+                <div class="reading-pane-content" id="scratch-view" style="display: none; padding: 24px; overflow-y: auto; height: 100%;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--outlook-border); padding-bottom: 12px;">
+                        <div>
+                            <h2 style="font-size: 20px; font-weight: 700; color: var(--text-primary);">Scratch Files Explorer</h2>
+                            <p style="font-size: 13px; color: var(--text-secondary);">Browse, inspect, and analyze system scratch files and prototyping utilities</p>
+                        </div>
+                        <button class="list-secondary-btn" id="btn-refresh-scratch" style="padding: 8px 12px; font-size: 12px; cursor: pointer; border-radius: 4px; border: 1px solid var(--outlook-border); background: var(--outlook-bg-main); font-weight: 600; color: var(--text-primary); transition: all 0.2s; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-rotate-right"></i> Refresh Files
+                        </button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px; height: calc(100% - 75px); min-height: 500px;">
+                        <!-- Left pane: Workspace selector and file list -->
+                        <div style="display: flex; flex-direction: column; gap: 15px; border-right: 1px solid var(--outlook-border); padding-right: 20px; overflow: hidden; height: 100%;">
+                            <div>
+                                <label style="font-size: 11px; font-weight: bold; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; display: block;">Select Workspace:</label>
+                                <select id="scratch-workspace-select" style="width: 100%; padding: 8px; border: 1px solid var(--outlook-border); border-radius: 6px; font-size: 13px; background: #ffffff; outline: none; cursor: pointer; font-family: var(--font-sans); color: var(--text-primary);">
+                                    <option value="project">Project Default Workspace</option>
+                                    <option value="oddball">Oddball Sourcing Workspace</option>
+                                </select>
+                            </div>
+                            
+                            <div style="flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden;">
+                                <label style="font-size: 11px; font-weight: bold; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; display: block;">Files:</label>
+                                <div id="scratch-file-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 4px;">
+                                    <!-- Dynamic list of scratch files -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right pane: Code Viewer -->
+                        <div style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid var(--outlook-border); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); overflow: hidden; height: 100%;">
+                            <div style="padding: 12px 20px; border-bottom: 1px solid var(--outlook-border); background: var(--outlook-bg-light); display: flex; justify-content: space-between; align-items: center;">
+                                <span id="scratch-viewer-filename" style="font-weight: 600; font-size: 13px; color: var(--text-primary);"><i class="fa-solid fa-file-lines" style="color: var(--outlook-blue); margin-right: 6px;"></i> Select a file to inspect</span>
+                                <span id="scratch-viewer-size" style="font-size: 11px; color: var(--text-secondary);"></span>
+                            </div>
+                            <div style="flex: 1; padding: 20px; overflow: auto; background: #0f172a; position: relative;">
+                                <pre id="scratch-code-display" style="margin: 0; font-family: var(--font-mono); font-size: 12px; color: #cbd5e1; line-height: 1.5; white-space: pre-wrap; word-break: break-all;">Select a scratch file from the list to display its source contents.</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Collapsible Far-Right Backfeed Sales Copilot Add-in Pane -->
+            <section class="backfeed-copilot-pane" id="copilot-sidebar">
+                <div class="copilot-toggle-handle" id="btn-toggle-copilot" title="Toggle Backfeed Copilot">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    <span>COPILOT</span>
+                </div>
+                
+                <div class="copilot-content-wrapper">
+                    <div class="copilot-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Backfeed Copilot</h3>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="copilot-status" id="copilot-status-badge"><i class="fa-solid fa-circle"></i> Active</span>
+                            <button id="btn-toggle-autopilot" style="padding: 2px 6px; font-size: 10px; border-radius: 4px; border: 1px solid var(--outlook-border); background: #f3f2f1; display: flex; align-items: center; gap: 4px; cursor: pointer; color: var(--text-secondary); font-weight: 600;" title="Toggle Vacation Autopilot Mode"><i class="fa-solid fa-plane"></i> Autopilot</button>
+                        </div>
+                    </div>
+
+                    <!-- Tabs inside Copilot -->
+                    <div class="copilot-tabs-header">
+                        <span class="copilot-tab active" data-copilot-tab="rfq">RFQ Parser</span>
+                        <span class="copilot-tab" data-copilot-tab="freight">Freight Calc</span>
+                        <span class="copilot-tab" data-copilot-tab="erp">ERP & Security</span>
+                        <span class="copilot-tab" data-copilot-tab="smartcut">Logistics</span>
+                        <span class="copilot-tab" data-copilot-tab="doc"><i class="fa-solid fa-file-word" style="color: #185abd; margin-right: 4px;"></i> Doc Briefing</span>
+                        <span class="copilot-tab" data-copilot-tab="slides"><i class="fa-solid fa-file-powerpoint" style="color: #d24726; margin-right: 4px;"></i> Slide Builder</span>
+                    <button class="copilot-tab" data-tab="memory"><i class="fa-solid fa-brain"></i> Memory</button>
+                    </div>
+
+                    <div class="copilot-tab-bodies">
+                        <!-- TAB A: RFQ PARSER -->
+                        <div class="copilot-tab-body active" id="copilot-body-rfq">
+                            <div class="copilot-section-desc">
+                                AI parsing parses items from the selected email body. Mapped brands are allocated to inside reps.
+                            </div>
+                            
+                            <div class="rfq-actions-row" style="margin-bottom: 12px; display: flex; gap: 8px;">
+                                <button class="copilot-action-btn" id="btn-parse-selected"><i class="fa-solid fa-wand-magic"></i> Auto-Parse Email</button>
+                                <button class="copilot-action-btn secondary" id="btn-open-text-parser" title="Open Custom Text Input"><i class="fa-solid fa-code"></i> Text</button>
+                            </div>
+                            
+                            <!-- Custom text parse area (initially hidden) -->
+                            <div class="custom-parse-area" id="custom-parse-box" style="display: none; margin-bottom: 12px;">
+                                <textarea id="rfq-text-input" placeholder="Paste custom RFQ text here..." style="width: 100%; height: 80px; font-size: 11px; padding: 6px; border: 1px solid #edebe9; border-radius: 4px; resize: none; font-family: monospace;"></textarea>
+                                <button class="copilot-action-btn" id="btn-execute-custom-parse" style="margin-top: 4px; width: 100%;">Process Raw Text</button>
+                            </div>
+
+                            <!-- Parser scan indicator -->
+                            <div class="laser-scan-container" id="laser-scan-box" style="display: none;">
+                                <div class="laser-beam"></div>
+                                <span style="font-size: 11px; color: var(--accent-electric); font-weight: 600;"><i class="fa-solid fa-spinner fa-spin"></i> Parsing BOM entities...</span>
+                            </div>
+
+                            <div class="parsed-results-box">
+                                <div class="parsed-items-list" id="parsed-items-container">
+                                    <div class="parsed-placeholder">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                        <p>Select an RFQ email and click "Auto-Parse Email" to extract line items.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="copilot-action-btn" id="btn-agent-enter-erp" style="width: 100%; margin-top: 10px; display: none; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.1);"><i class="fa-solid fa-play"></i> Run Agent ERP Entry</button>
+                        </div>
+
+                        <!-- TAB B: FREIGHT CALCULATOR -->
+                        <div class="copilot-tab-body" id="copilot-body-freight">
+                            <div class="copilot-section-desc">
+                                Calculates shipping parameters and checks prepaid margins for represented line cards.
+                            </div>
+                            
+                            <div class="freight-calculator-card">
+                                <div class="freight-stat">
+                                    <span class="label">Total Order Weight:</span>
+                                    <span class="value" id="calc-total-weight">0 lbs</span>
+                                </div>
+                                <div class="freight-stat">
+                                    <span class="label">Total Price:</span>
+                                    <span class="value" id="calc-total-price">$0.00</span>
+                                </div>
+                                <div class="freight-stat">
+                                    <span class="label">Shipping Capacity Load:</span>
+                                    <span class="value" id="calc-shipping-capacity">0%</span>
+                                </div>
+                                
+                                <div class="freight-status-bar-container" style="height: 6px; background: #f3f2f1; border-radius: 3px; margin: 8px 0; overflow: hidden;">
+                                    <div id="calc-capacity-bar" style="height: 100%; width: 0%; background: var(--accent-electric); transition: width 0.3s;"></div>
+                                </div>
+                                
+                                <div class="freight-brand-breakdown" id="freight-brands-breakdown-list">
+                                    <!-- Dynamic brand details -->
+                                </div>
+
+                                <!-- Consolidation alert -->
+                                <div class="consolidation-alert" id="consolidation-recommendation-box" style="display: none;">
+                                    <div class="alert-header"><i class="fa-solid fa-triangle-exclamation"></i> Freight Consolidation Option</div>
+                                    <p id="consolidation-alert-text">Titan B-Line lacks $5,000 for free freight. Group with Liberty Copper to bypass shipping costs.</p>
+                                    <button class="copilot-action-btn" id="btn-execute-consolidation" style="width: 100%; margin-top: 8px;"><i class="fa-solid fa-code-merge"></i> 1-Click Consolidate Shipping</button>
+                                </div>
+                                
+                                <button class="copilot-action-btn primary" id="btn-dispatch-quote" style="width: 100%; margin-top: 15px;"><i class="fa-solid fa-paper-plane"></i> Generate Quote & Reply</button>
+                            </div>
+                        </div>
+
+                        <!-- TAB C: LOGISTICS -->
+                        <div class="copilot-tab-body" id="copilot-body-smartcut">
+                            <div class="copilot-section-desc">
+                                Computes volumetric packaging and coordinates pallet staging layouts for the loading dock.
+                            </div>
+                            
+                            <div class="smart-cut-configurator-box" style="display: flex; flex-direction: column; gap: 10px;">
+                                <div class="config-row">
+                                    <label>Packaging Option:</label>
+                                    <select id="cut-material-type" style="width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #edebe9; font-size: 11px;">
+                                        <option value="parallel">Palletized (Double-Stack)</option>
+                                        <option value="single">Loose Cargo (Crate)</option>
+                                    </select>
+                                </div>
+                                <div class="config-row">
+                                    <label>Wire Manufacturer:</label>
+                                    <select id="cut-manufacturer" style="width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #edebe9; font-size: 11px;">
+                                        <option value="Liberty Copper Cable">Liberty Copper Cable</option>
+                                        <option value="Prime Aluminum Cable">Prime Aluminum Cable</option>
+                                    </select>
+                                </div>
+                                <div class="config-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                    <div>
+                                        <label>Wire Gauge:</label>
+                                        <select id="cut-wire-gauge" style="width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #edebe9; font-size: 11px;">
+                                            <option value="4/0">4/0 AWG</option>
+                                            <option value="350">350 Kcmil</option>
+                                            <option value="500">500 Kcmil</option>
+                                            <option value="1/0">1/0 AWG</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label>Pallet Max Ht:</label>
+                                        <select id="cut-wire-legs" style="width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #edebe9; font-size: 11px;">
+                                            <option value="1">48 inches</option>
+                                            <option value="2">60 inches</option>
+                                            <option value="3">72 inches</option>
+                                            <option value="4" selected>84 inches</option>
+                                            <option value="5">96 inches</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="config-row">
+                                    <label id="length-input-label">Staging Target Volume (cu ft):</label>
+                                    <input type="number" id="cut-length" value="85" style="width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #edebe9; font-size: 11px;">
+                                </div>
+                                
+                                <div class="config-row">
+                                    <label>Pallet Base Material:</label>
+                                    <div class="reel-type-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px;">
+                                        <label style="display: flex; align-items: center; gap: 4px; font-weight: normal;"><input type="radio" name="reel-type" value="wooden" checked> Wood Pallet</label>
+                                        <label style="display: flex; align-items: center; gap: 4px; font-weight: normal;"><input type="radio" name="reel-type" value="metal"> Plastic Pallet</label>
+                                    </div>
+                                </div>
+
+                                <div class="reel-visualizer-mini-card" id="wire-visualizer-card" style="border: 1px solid #edebe9; border-radius: 6px; padding: 10px; display: flex; align-items: center; justify-content: center; background: #fafbfc; height: 80px; position: relative;">
+                                    <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 0 10px 15px 10px;">
+                                        <i class="fa-solid fa-cubes" style="font-size: 28px; color: #8a8a8a;"></i>
+                                        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                                            <div style="font-size: 9px; font-weight: 600; color: var(--text-secondary); display: flex; justify-content: space-between;">
+                                                <span>Staging Capacity</span>
+                                                <span id="out-weight-pct">0%</span>
+                                            </div>
+                                            <svg viewBox="0 0 100 8" style="width: 100%; height: 8px;">
+                                                <line x1="4" y1="4" x2="96" y2="4" stroke="#edebe9" stroke-width="8" stroke-linecap="round"/>
+                                                <line x1="4" y1="4" x2="96" y2="4" stroke="var(--accent-electric)" stroke-width="8" stroke-linecap="round" id="visual-wire-fill" stroke-dasharray="88" stroke-dashoffset="88"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 10px; color: var(--text-secondary); position: absolute; bottom: 4px; text-align: center; width: 100%;" id="out-weight">Calculated Staging Weight: -- lbs</div>
+                                </div>
+                                
+                                <button class="copilot-action-btn" id="start-cut-btn" style="width: 100%;"><i class="fa-solid fa-play"></i> Dispatch Task to Warehouse Floor</button>
+                            </div>
+                        </div>
+
+                        <!-- TAB D: ERP & SECURITY -->
+                        <div class="copilot-tab-body" id="copilot-body-erp">
+                            <div class="copilot-section-desc">
+                                Cross-references current email metadata and transaction values with the corporate ERP & Customer Account database.
+                            </div>
+                            
+                            <!-- Section 1: Customer Account Profile -->
+                            <div class="erp-account-card" id="erp-customer-card" style="border: 1px solid #edebe9; border-radius: 6px; padding: 10px; background: #ffffff; margin-bottom: 12px; font-size: 11px;">
+                                <div style="font-weight: 600; color: var(--color-brand); border-bottom: 1px solid #edebe9; padding-bottom: 4px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                    <span><i class="fa-solid fa-address-card"></i> Customer ERP Profile</span>
+                                    <span id="erp-customer-id" style="font-size: 10px; font-weight: normal; color: var(--text-secondary);">CUST-VG-992</span>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                                    <div><strong>Company:</strong> <span id="erp-company-name">Vanguard Contractors LLC</span></div>
+                                    <div><strong>Standing:</strong> <span id="erp-account-status" class="status-badge good" style="background: #e6f4ea; color: #137333; padding: 1px 4px; border-radius: 3px; font-weight: 600;">ACTIVE</span></div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-top: 1px dashed #edebe9; padding-top: 6px; margin-bottom: 6px;">
+                                    <div><strong>Credit Limit:</strong> <span id="erp-credit-limit">$50,000.00</span></div>
+                                    <div><strong>Balance Due:</strong> <span id="erp-balance-due">$12,450.00</span></div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-top: 1px solid #edebe9; padding-top: 6px; font-weight: 600;">
+                                    <div>Available Credit:</div>
+                                    <div style="text-align: right; color: var(--accent-electric);" id="erp-available-credit">$37,550.00</div>
+                                </div>
+                            </div>
+
+                            <!-- Section 2: Credit Authorization Check -->
+                            <div class="erp-account-card" id="erp-auth-check-card" style="border: 1px solid #edebe9; border-radius: 6px; padding: 10px; background: #ffffff; margin-bottom: 12px; font-size: 11px;">
+                                <div style="font-weight: 600; color: var(--color-brand); border-bottom: 1px solid #edebe9; padding-bottom: 4px; margin-bottom: 8px;">
+                                    <i class="fa-solid fa-cash-register"></i> Quote Credit Check
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 6px;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span>Current Quote Value:</span>
+                                        <strong id="erp-quote-value">$0.00</strong>
+                                    </div>
+                                    <div id="erp-credit-result-box" style="padding: 6px; border-radius: 4px; text-align: center; font-weight: 600; font-size: 10px; background: #f3f2f1; color: var(--text-secondary);">
+                                        No active quote to evaluate. Map RFQ first.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 3: Identity & Fraud Validation Check -->
+                            <div class="erp-account-card" style="border: 1px solid #edebe9; border-radius: 6px; padding: 10px; background: #ffffff; font-size: 11px;">
+                                <div style="font-weight: 600; color: var(--color-brand); border-bottom: 1px solid #edebe9; padding-bottom: 4px; margin-bottom: 8px;">
+                                    <i class="fa-solid fa-shield-halved"></i> Sender Fraud Verification
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span>SMTP Domain Align:</span>
+                                        <span id="erp-domain-check" style="font-weight: 600; color: var(--color-safe);"><i class="fa-solid fa-circle-check"></i> MATCH</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span>DKIM Signature:</span>
+                                        <span id="erp-dkim-check" style="font-weight: 600; color: var(--color-safe);"><i class="fa-solid fa-circle-check"></i> VALID</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span>SPF IP Verification:</span>
+                                        <span id="erp-spf-check" style="font-weight: 600; color: var(--color-safe);"><i class="fa-solid fa-circle-check"></i> PASS</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span>Domain Age (WHOIS):</span>
+                                        <span id="erp-age-check" style="font-weight: 600; color: var(--color-safe);">2.4 Years</span>
+                                    </div>
+                                    
+                                    <div id="erp-fraud-verdict" style="margin-top: 4px; padding: 8px; border-radius: 4px; display: flex; align-items: center; gap: 8px; font-weight: 600; border-left: 4px solid var(--color-safe); background: #f0fdf4; color: #15803d;">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <div style="display: flex; flex-direction: column;">
+                                            <span style="font-size: 10px; font-weight: bold;">VERDICT: SAFE SENDER</span>
+                                            <span style="font-size: 9px; font-weight: normal; color: var(--text-secondary);">No threat markers detected.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 4: ERP System Terminal -->
+                            <div class="erp-account-card" style="border: 1px solid #edebe9; border-radius: 6px; padding: 10px; background: #0f172a; font-size: 11px; margin-top: 12px;">
+                                <div style="font-weight: 600; color: #38bdf8; border-bottom: 1px solid #1e293b; padding-bottom: 4px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                    <span><i class="fa-solid fa-terminal"></i> <span id="erp-terminal-title">ERP System</span> Live Terminal</span>
+                                </div>
+                                <div id="app-erp-cli-terminal" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; line-height: 1.5; color: #e2e8f0; height: 120px; overflow-y: auto; display: flex; flex-direction: column;">
+                                    <div class="cli-line" style="color: #64748b;">[ERP Link Active]</div>
+                                    <div class="cli-line" id="app-cli-prompt-line">&gt; <span id="app-cli-input-text" style="color: #fff; border-right: 2px solid #10b981; padding-right: 2px;">Awaiting command...</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Section 5: Customer Order History Log -->
+                            <div class="erp-account-card" style="border: 1px solid #edebe9; border-radius: 6px; padding: 10px; background: #ffffff; font-size: 11px; margin-top: 12px;">
+                                <div style="font-weight: 600; color: var(--color-brand); border-bottom: 1px solid #edebe9; padding-bottom: 4px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                    <span><i class="fa-solid fa-clock-rotate-left"></i> Customer Order Log</span>
+                                    <span style="font-size: 9px; background: #edebe9; color: var(--text-primary); padding: 1px 4px; border-radius: 3px; font-weight: bold;" id="erp-order-count">0 Orders</span>
+                                </div>
+                                <div id="erp-orders-log-list" style="display: flex; flex-direction: column; gap: 6px; max-height: 150px; overflow-y: auto;">
+                                    <!-- Dynamic order history lines -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB E: DOC BRIEFING (MS WORD) -->
+                        <div class="copilot-tab-body" id="copilot-body-doc">
+                            <div class="copilot-section-desc">
+                                Interactive MS Word Document Builder. Click into the page to document or edit your notes manually.
+                            </div>
+                            
+                            <!-- Mini Word Ribbon -->
+                            <div class="word-mini-ribbon">
+                                <div class="word-ribbon-row select-row">
+                                    <div class="word-font-select">Segoe UI <i class="fa-solid fa-chevron-down"></i></div>
+                                    <div class="word-size-select">11 <i class="fa-solid fa-chevron-down"></i></div>
+                                    <div class="word-ribbon-divider"></div>
+                                    <button class="word-ribbon-btn active" title="Bold">B</button>
+                                    <button class="word-ribbon-btn" title="Italic" style="font-style: italic;">I</button>
+                                    <button class="word-ribbon-btn" title="Underline" style="text-decoration: underline;">U</button>
+                                </div>
+                                <div class="word-ribbon-row format-row">
+                                    <button class="word-ribbon-btn" title="Undo"><i class="fa-solid fa-rotate-left"></i></button>
+                                    <button class="word-ribbon-btn" title="Redo"><i class="fa-solid fa-rotate-right"></i></button>
+                                    <div class="word-ribbon-divider"></div>
+                                    <button class="word-ribbon-btn" title="Bullets"><i class="fa-solid fa-list-ul"></i></button>
+                                    <button class="word-ribbon-btn" title="Numbers"><i class="fa-solid fa-list-ol"></i></button>
+                                    <button class="word-ribbon-btn" title="Align Left"><i class="fa-solid fa-align-left"></i></button>
+                                    <div class="word-ribbon-divider"></div>
+                                    <span class="word-ai-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Active</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Word Document Page Canvas -->
+                            <div class="word-canvas-wrapper">
+                                <div class="word-paper-sheet">
+                                    <div id="word-doc-content" contenteditable="true" class="word-editable-body">
+                                        <p style="color: #888888; font-style: italic; font-size: 11px;" class="word-doc-placeholder">Select an email and click "Auto-Parse Email" (or run a scenario) to watch the AI write the briefing. Click here to add your own notes...</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Word Status Footer -->
+                            <div class="word-mini-status">
+                                <span>Page 1 of 1</span>
+                                <span><span id="word-word-count">0</span> words</span>
+                                <span style="color: #106ebe; font-weight: 600;"><i class="fa-solid fa-cloud-arrow-up"></i> Saved</span>
+                            </div>
+                        </div>
+
+                        <!-- TAB F: POWERPOINT SLIDE BUILDER -->
+                        <div class="copilot-tab-body" id="copilot-body-slides">
+                            <div class="copilot-section-desc">
+                                Dynamic Data Center PowerPoint Deck Compiler. Create and automatically launch custom presentations.
+                            </div>
+                            
+                            <div class="slides-builder-form" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                                <!-- Deck Title -->
+                                <div class="form-row">
+                                    <label style="font-size: 10px; font-weight: 700; color: var(--text-primary);">Presentation Deck Title:</label>
+                                    <input type="text" id="slide-deck-title" value="AI-Enabled Data Center Supply Chain Command" style="width: 100%; padding: 6px; border: 1px solid #edebe9; border-radius: 4px; font-size: 11px; margin-top: 2px;">
+                                </div>
+                                
+                                <!-- Theme Selection -->
+                                <div class="form-row">
+                                    <label style="font-size: 10px; font-weight: 700; color: var(--text-primary);">Accent Color Theme:</label>
+                                    <select id="slide-theme-select" style="width: 100%; padding: 6px; border: 1px solid #edebe9; border-radius: 4px; font-size: 11px; margin-top: 2px;">
+                                        <option value="blue-amber">Sky Blue & Amber Gold (Corporate default)</option>
+                                        <option value="forest-green">Forest Green & Yellow (Eco-Industrial)</option>
+                                        <option value="midnight-slate">Midnight Slate & Slate Gray (Minimalist)</option>
+                                        <option value="deep-indigo">Deep Indigo & Vibrant Pink (Premium Tech Agency)</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Slides Switches -->
+                                <div class="form-row">
+                                    <label style="font-size: 10px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; display: block;">Select Slides to Include:</label>
+                                    <div class="checkbox-grid" style="display: grid; grid-template-columns: 1fr; gap: 6px; font-size: 11px;">
+                                        <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;"><input type="checkbox" id="slide-chk-title" checked> Title Slide (Cover Page)</label>
+                                        <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;"><input type="checkbox" id="slide-chk-backfeed" checked> What is Backfeed? (Core Overview)</label>
+                                        <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;"><input type="checkbox" id="slide-chk-commodities" checked> Commodity Volatility & Spot Price Sync</label>
+                                        <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;"><input type="checkbox" id="slide-chk-titan" checked> Titan Division (Bolted Strut & Trays)</label>
+                                        <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;"><input type="checkbox" id="slide-chk-core" checked> Core Wire & Cable (Heavy Feeders)</label>
+                                        <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;"><input type="checkbox" id="slide-chk-smartcut" checked> Logistics & Palletization Optimizer</label>
+                                        <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;"><input type="checkbox" id="slide-chk-parser" checked> Speed-Quote BOM Extraction & Routing</label>
+                                        <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;"><input type="checkbox" id="slide-chk-strategic" checked> Strategic Value & Hyperscaler Delivery</label>
+                                    </div>
+                                </div>
+                                
+                                <!-- Custom Remarks -->
+                                <div class="form-row">
+                                    <label style="font-size: 10px; font-weight: 700; color: var(--text-primary);">Custom Client Remarks (Slide 8):</label>
+                                    <textarea id="slide-custom-notes" placeholder="Enter custom notes to print on the final slide..." style="width: 100%; height: 50px; padding: 6px; border: 1px solid #edebe9; border-radius: 4px; font-size: 11px; resize: none; margin-top: 2px;"></textarea>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="slide-actions" style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;">
+                                    <button class="copilot-action-btn" id="btn-generate-pptx" style="width: 100%; justify-content: center; font-weight: 600;"><i class="fa-solid fa-file-powerpoint"></i> Compile PowerPoint Deck</button>
+                                    <button class="copilot-action-btn primary" id="btn-generate-open-pptx" style="width: 100%; justify-content: center; font-weight: 600;"><i class="fa-solid fa-circle-play"></i> Compile & Launch PPTX</button>
+                                </div>
+                                
+                                <!-- Loading scan state -->
+                                <div class="laser-scan-container" id="pptx-scan-box" style="display: none; margin-top: 10px;">
+                                    <div class="laser-beam"></div>
+                                    <span style="font-size: 11px; color: var(--accent-electric); font-weight: 600;"><i class="fa-solid fa-cog fa-spin"></i> Compiling PowerPoint schemas...</span>
+                                </div>
+                            </div>
+                        </div>
+                <div class="copilot-tab-body" data-tab="memory" style="display: none; height: 100%;">
+                    <div class="memory-ledger-container">
+                        <div class="memory-totals-bar">
+                            <div class="totals-item">
+                                <span class="totals-label">Entries</span>
+                                <span class="totals-value" id="memory-total-count">0</span>
+                            </div>
+                            <div class="totals-item">
+                                <span class="totals-label">Orders</span>
+                                <span class="totals-value" id="memory-total-orders">0</span>
+                            </div>
+                            <div class="totals-item">
+                                <span class="totals-label">Revenue</span>
+                                <span class="totals-value" id="memory-total-revenue">$0</span>
+                            </div>
+                            <div class="totals-item">
+                                <button class="memory-clear-btn" id="btn-clear-memory" title="Clear Memory"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                        <div class="memory-ledger-scroll" id="memory-ledger-scroll">
+                            <div class="memory-empty-state" id="memory-empty-state">
+                                <i class="fa-solid fa-brain"></i>
+                                <p>No memories stored yet. Run a scenario to begin building Backfeed's institutional memory.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- OUTLOOK COMPOSE EMAIL WINDOW OVERLAY (MODAL) -->
+        <div class="outlook-compose-modal" id="compose-modal" style="display: none;">
+            <div class="compose-window-frame">
+                <div class="compose-header">
+                    <span>New message</span>
+                    <button class="compose-close-btn" id="btn-close-compose" title="Discard"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <div class="compose-fields">
+                    <div class="compose-field-row">
+                        <label>To</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="compose-to" placeholder="Enter recipient email address...">
+                            <div class="compose-contacts-dropdown" id="compose-contacts-list" style="display: none;">
+                                <!-- autocompleted contacts -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="compose-field-row">
+                        <label>Cc</label>
+                        <input type="text" id="compose-cc" placeholder="Carbon copy email addresses...">
+                    </div>
+                    <div class="compose-field-row">
+                        <label>Subject</label>
+                        <input type="text" id="compose-subject" placeholder="Enter email subject...">
+                    </div>
+                    <div class="compose-attachment-bar" id="compose-attachments-bar" style="display: none;">
+                        <span class="attachment-pill"><i class="fa-solid fa-file-excel"></i> <span id="compose-attachment-label">ERP_Quote_Proposal.xlsx</span> <i class="fa-solid fa-xmark remove-att" id="btn-remove-attachment" style="cursor: pointer; margin-left: 4px;"></i></span>
+                    </div>
+                </div>
+
+                <div class="compose-body-container">
+                    <textarea id="compose-body" placeholder="Write message body here..."></textarea>
+                </div>
+
+                <div class="compose-footer-toolbar">
+                    <button class="compose-send-btn" id="btn-send-mail"><i class="fa-solid fa-paper-plane"></i> Send</button>
+                    <button class="compose-discard-btn" id="btn-discard-compose"><i class="fa-solid fa-trash-can"></i> Discard</button>
+                    <button class="compose-tool-btn" id="btn-attach-file" title="Attach file"><i class="fa-solid fa-paperclip"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- POWERPOINT LIVE COMPILER SIMULATOR OVERLAY (MODAL) -->
+        <div class="outlook-compose-modal" id="pptx-sim-modal" style="display: none; align-items: center; justify-content: center; z-index: 1500;">
+            <div class="compose-window-frame" style="max-width: 850px; width: 90vw; height: 85vh; display: flex; flex-direction: column; box-shadow: 0 16px 64px rgba(0,0,0,0.25); border-radius: 8px; border: 1px solid #a23e25;">
+                <div class="compose-header" style="background: #b7472a; border-bottom: 1px solid #a23e25; color: white; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;">
+                    <span style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><i class="fa-solid fa-file-powerpoint"></i> Backfeed PowerPoint Slide Compiler</span>
+                    <button class="compose-close-btn" id="btn-close-pptx-sim" title="Close" style="background: none; border: none; color: white; cursor: pointer; font-size: 16px;"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <div style="display: flex; flex: 1; overflow: hidden; background: #f3f2f1; height: calc(100% - 40px);">
+                    <!-- Left: Progress logs -->
+                    <div style="width: 300px; border-right: 1px solid #edebe9; background: #ffffff; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; overflow-y: auto;">
+                        <div>
+                            <h3 style="font-size: 14px; font-weight: bold; color: #323130; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-circle-notch fa-spin" id="pptx-sim-status-icon" style="color: #b7472a;"></i> <span id="pptx-sim-status-text">Compiler Active</span>
+                            </h3>
+                            <ul id="pptx-sim-steps" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 12px; color: #323130;">
+                                <!-- Steps injected dynamically -->
+                            </ul>
+                        </div>
+                        
+                        <div id="pptx-sim-actions" style="display: none; flex-direction: column; gap: 8px; border-top: 1px solid #edebe9; padding-top: 15px; margin-top: 15px;">
+                            <a id="pptx-sim-download-btn" href="concepts/ERP_Workflow_Concept.pptx" download="ERP_Workflow_Concept.pptx" class="compose-send-btn" style="background: #b7472a; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px; color: white; padding: 10px; border-radius: 4px; font-weight: 600; text-align: center; cursor: pointer; border: none;">
+                                <i class="fa-solid fa-download"></i> Download PPTX
+                            </a>
+                            <button id="pptx-sim-close-bottom-btn" class="compose-discard-btn" style="width: 100%; justify-content: center; padding: 10px; border-radius: 4px; border: 1px solid #8a8886; background: white; font-weight: 600; cursor: pointer;">Close Simulator</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Right: Visual Slide Preview -->
+                    <div style="flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: auto; background: #eaeaea;">
+                        <!-- Widescreen 16:9 Aspect Frame -->
+                        <div id="pptx-sim-slide-frame" style="width: 480px; height: 270px; background: #ffffff; box-shadow: 0 8px 32px rgba(0,0,0,0.15); border-radius: 4px; border: 1px solid #d2d0ce; position: relative; overflow: hidden; display: flex; flex-direction: column; transform: scale(1);">
+                            <!-- Accent top bar -->
+                            <div id="pptx-sim-slide-accent" style="height: 4px; width: 100%; background: #0284c7;"></div>
+                            <!-- Slide content goes here -->
+                            <div id="pptx-sim-slide-content" style="padding: 15px 25px; flex: 1; display: flex; flex-direction: column; position: relative; font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; overflow: hidden; justify-content: flex-start; text-align: left;">
+                                <!-- Injected dynamically -->
+                            </div>
+                        </div>
+                        <span style="font-size: 11px; color: #605e5c; margin-top: 15px; font-weight: 600;" id="pptx-sim-slide-num">Slide 1 of 5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DEMO INJECTOR FLOATING DIRECT PANEL -->
+        <div class="demo-director-panel" id="demo-director">
+            <div class="director-header">
+                <i class="fa-solid fa-video"></i> Demo Director Controls
+            </div>
+            <div class="director-body">
+                <p>Use these buttons to trigger live events during your video screen recording:</p>
+                <div class="director-btn-grid">
+                    <button class="dir-btn" id="btn-inject-rfq"><i class="fa-solid fa-inbox"></i> Inject New RFQ</button>
+                    <button class="dir-btn warn" id="btn-inject-phish"><i class="fa-solid fa-shield-halved"></i> Inject Impersonation Phish</button>
+                    <button class="dir-btn" id="btn-inject-price-update"><i class="fa-solid fa-tags"></i> Inject Price Sheet</button>
+                    <button class="dir-btn" id="btn-inject-stochastic" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #f87171;"><i class="fa-solid fa-bolt"></i> Inject Merton Price Shock</button>
+                    
+                    <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
+                        <label for="sel-demo-scenario" style="font-size: 9px; font-weight: 700; color: #38bdf8; text-transform: uppercase;">Select Scenario:</label>
+                        <select id="sel-demo-scenario" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.15); color: #ffffff; border-radius: 4px; padding: 4px; font-size: 10px; font-weight: 600; cursor: pointer; font-family: var(--font-sans); outline: none;">
+                            <option value="happy-path">Scenario 1: RFQ to Sales Order (Happy Path)</option>
+                            <option value="security-path">Scenario 2: Security Gate Audit (Spoof Phish Block)</option>
+                            <option value="credit-path">Scenario 3: Credit Risk Audit (Credit Hold)</option>
+                            <option value="pricing-path">Scenario 4: Surcharge Bulletin Audit (Price Update)</option>
+                            <option value="intercept-path">Scenario 5: Line-Card Competitor Intercept (Steer to Commission Line)</option>
+                            <option value="arbitrage-path">Scenario 6: Retail Arbitrage Scan (Emergency Out-of-Stock)</option>
+                            <option value="sizing-path">Scenario 7: NEC Conductor Sizing Sandbox (Copper to Aluminum)</option>
+                            <option value="weg-path">Scenario 8: Industrial Motor RFQ Intercept (VEG/Crown Food)</option>
+                            <option value="mersen-path">Scenario 9: Min-Order Threshold Resolution (Meridian/National Rail)</option>
+                            <option value="duraline-path">Scenario 10: High-Stakes Conduit Status Check (Duraflow/National Rail)</option>
+                            <option value="storm-path">Scenario 11: Emergency Storm Grid Restoration (Substation Outage Priority Conflict)</option>
+                            <option value="bid-path">Scenario 12: Bid Deadline & Credit Escalation (Contradictory Instructions & Price Lock)</option>
+                        </select>
+                        <button class="dir-btn" id="btn-run-auto-demo" style="background: var(--outlook-blue); border-color: var(--outlook-blue-hover); color: white; justify-content: center; font-weight: bold; margin-top: 2px; box-shadow: 0 0 10px rgba(0, 120, 212, 0.4);"><i class="fa-solid fa-play"></i> Run Selected Scenario</button>
+                        <div style="display: flex; gap: 4px; margin-top: 4px;">
+                            <button class="dir-btn" id="btn-run-demo-suite" style="flex: 1; justify-content: center; font-weight: bold; background: rgba(124, 58, 237, 0.15); border-color: rgba(124, 58, 237, 0.3); color: #a78bfa; font-size: 9px;"><i class="fa-solid fa-forward"></i> Demo Suite (6)</button>
+                            <button class="dir-btn" id="btn-run-all-scenarios" style="flex: 1; justify-content: center; font-weight: bold; background: rgba(234, 179, 8, 0.15); border-color: rgba(234, 179, 8, 0.3); color: #fbbf24; font-size: 9px;"><i class="fa-solid fa-forward-fast"></i> Run All (12)</button>
+                        </div>
+                    </div>
+                    <div style="margin-top: 4px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 6px;">
+                        <button class="dir-btn" id="btn-director-autopilot" style="width: 100%; justify-content: center; font-weight: bold; background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.3); color: #4ade80; box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);"><i class="fa-solid fa-plane"></i> Toggle Vacation Autopilot</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+        <!-- SETTINGS MODAL -->
+        <div class="outlook-compose-modal" id="settings-modal" style="display: none; align-items: center; justify-content: center; z-index: 1600;">
+            <div class="compose-window-frame" style="max-width: 450px; width: 90vw; border-radius: 8px; overflow: hidden; box-shadow: 0 16px 64px rgba(0,0,0,0.25);">
+                <div class="compose-header" style="background: var(--outlook-blue); border-bottom: 1px solid var(--outlook-border); color: white; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;">
+                    <span style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><i class="fa-solid fa-gear"></i> Portal Personalization Settings</span>
+                    <button class="compose-close-btn" id="btn-close-settings" title="Close" style="background: none; border: none; color: white; cursor: pointer; font-size: 16px;"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <div style="padding: 20px; background: #ffffff; display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 12px; font-weight: 700; color: var(--text-primary); font-family: var(--font-sans);">Header Theme Color:</label>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px;" id="theme-palette">
+                            <span class="theme-color-dot" data-color="#0078d4" style="background: #0078d4; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: inline-block; border: 2px solid transparent;" title="Default Blue"></span>
+                            <span class="theme-color-dot" data-color="#107c41" style="background: #107c41; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: inline-block; border: 2px solid transparent;" title="Excel Green"></span>
+                            <span class="theme-color-dot" data-color="#b7472a" style="background: #b7472a; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: inline-block; border: 2px solid transparent;" title="PowerPoint Rust"></span>
+                            <span class="theme-color-dot" data-color="#5c2d91" style="background: #5c2d91; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: inline-block; border: 2px solid transparent;" title="Teams Purple"></span>
+                            <span class="theme-color-dot" data-color="#008272" style="background: #008272; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: inline-block; border: 2px solid transparent;" title="Teal"></span>
+                            <span class="theme-color-dot" data-color="#2d3748" style="background: #2d3748; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: inline-block; border: 2px solid transparent;" title="Dark Charcoal"></span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 5px;">
+                        <label style="font-size: 11px; font-weight: 700; color: var(--text-secondary); font-family: var(--font-sans);">Or Choose Custom Header Color (HEX):</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="color" id="theme-color-picker" value="#0078d4" style="width: 32px; height: 32px; border: 1px solid var(--outlook-border); border-radius: 4px; cursor: pointer; padding: 0; background: none;">
+                            <input type="text" id="theme-color-text" value="#0078d4" placeholder="#0078d4" style="flex: 1; padding: 6px 10px; border: 1px solid var(--outlook-border); border-radius: 4px; font-size: 13px; font-family: var(--font-mono); outline: none;">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 5px; border-top: 1px solid var(--outlook-border); padding-top: 15px;">
+                        <label style="font-size: 12px; font-weight: 700; color: var(--text-primary); font-family: var(--font-sans);">Workspace Background (Desktop Color):</label>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px;" id="desktop-palette">
+                            <span class="desktop-color-dot" data-color="#f3f2f1" style="background: #f3f2f1; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: inline-block; border: 1px solid #edebe9; transition: all 0.2s;" title="Default Light Gray"></span>
+                            <span class="desktop-color-dot" data-color="#ffffff" style="background: #ffffff; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: inline-block; border: 1px solid #edebe9; transition: all 0.2s;" title="Clean White"></span>
+                            <span class="desktop-color-dot" data-color="#e1dfdd" style="background: #e1dfdd; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: inline-block; border: 1px solid #edebe9; transition: all 0.2s;" title="Warm Clay"></span>
+                            <span class="desktop-color-dot" data-color="#deecf9" style="background: #deecf9; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: inline-block; border: 1px solid #edebe9; transition: all 0.2s;" title="Soft Blue-Gray"></span>
+                            <span class="desktop-color-dot" data-color="#111827" style="background: #111827; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: inline-block; border: 1px solid #374151; transition: all 0.2s;" title="Dark Mode Background"></span>
+                            <span class="desktop-color-dot" data-color="#0f172a" style="background: #0f172a; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: inline-block; border: 1px solid #1e293b; transition: all 0.2s;" title="Midnight Blue"></span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 5px;">
+                        <label style="font-size: 11px; font-weight: 700; color: var(--text-secondary); font-family: var(--font-sans);">Or Choose Custom Desktop Color (HEX):</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="color" id="desktop-color-picker" value="#f3f2f1" style="width: 32px; height: 32px; border: 1px solid var(--outlook-border); border-radius: 4px; cursor: pointer; padding: 0; background: none;">
+                            <input type="text" id="desktop-color-text" value="#f3f2f1" placeholder="#f3f2f1" style="flex: 1; padding: 6px 10px; border: 1px solid var(--outlook-border); border-radius: 4px; font-size: 13px; font-family: var(--font-mono); outline: none;">
+                        </div>
+                    </div>
+
+                    <!-- ERP Connection Settings -->
+                    <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 5px; border-top: 1px solid var(--outlook-border); padding-top: 15px;">
+                        <label style="font-size: 12px; font-weight: 700; color: var(--text-primary); font-family: var(--font-sans);"><i class="fa-solid fa-terminal" style="margin-right: 4px;"></i>ERP System Connection:</label>
+                        <select id="settings-erp-profile" style="padding: 8px; border: 1px solid var(--outlook-border); border-radius: 4px; font-size: 13px; font-family: var(--font-sans); outline: none; cursor: pointer;">
+                            <option value="eclipse-demo">Backfeed ERP — Built-In Demo</option>
+                            <option value="sap-b1">SAP Business One — Web Client</option>
+                            <option value="netsuite">Oracle NetSuite — SuiteCloud</option>
+                            <option value="prophet21">Prophet 21 (Epicor) — Web Portal</option>
+                            <option value="infor-csd">Infor CloudSuite Distribution</option>
+                            <option value="custom">Custom / Other — User Defined</option>
+                        </select>
+                        <div id="settings-erp-url-group" style="display: none; margin-top: 6px;">
+                            <label style="font-size: 11px; font-weight: 700; color: var(--text-secondary); font-family: var(--font-sans);">Portal URL:</label>
+                            <input type="url" id="settings-erp-url" placeholder="https://erp.yourcompany.com" style="width: 100%; padding: 6px 10px; border: 1px solid var(--outlook-border); border-radius: 4px; font-size: 13px; font-family: var(--font-mono); outline: none; margin-top: 4px; box-sizing: border-box;">
+                        </div>
+                        <div id="settings-erp-status" style="margin-top: 4px; font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px;">
+                            <span class="erp-status-dot connected" style="width: 6px; height: 6px;"></span>
+                            <span id="settings-erp-status-text">ERP Demo — Ready</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: #f3f2f1; padding: 12px 20px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--outlook-border);">
+                    <button id="btn-save-settings" class="compose-send-btn" style="background: var(--outlook-blue); border: none; padding: 8px 16px; color: white; border-radius: 4px; font-weight: 600; cursor: pointer; font-family: var(--font-sans);">Save & Apply</button>
+                </div>
+            </div>
+        </div>
+
+    <!-- BACKFEED CONTEXT ROUTER MODAL -->
+    <div class="backfeed-modal-overlay" id="erp-routing-modal">
+        <div class="routing-dialog-card">
+            <div class="routing-header">
+                <span><i class="fa-solid fa-cloud-bolt"></i> Backfeed Context Router</span>
+                <button class="routing-close-btn" id="btn-close-routing" title="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="routing-erp-target" id="routing-erp-target">
+                <i class="fa-solid fa-arrow-right-to-bracket" style="color: #38bdf8;"></i>
+                <span>Dispatching to: <strong id="routing-erp-target-name">ERP System (Demo)</strong></span>
+            </div>
+            <div class="routing-content">
+                <div class="routing-context-box">
+                    <strong>Source Context:</strong>
+                    <div class="routing-context-grid">
+                        <div><strong>Customer:</strong> <span id="router-customer-name">Vanguard Contractors LLC</span></div>
+                        <div><strong>ERP ID:</strong> <span id="router-customer-id">CUST-VG-992</span></div>
+                        <div><strong>Total Value:</strong> <span id="router-quote-total">$0.00</span></div>
+                        <div><strong>BOM Lines:</strong> <span id="router-line-count">0 items</span></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <label style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; display: block; margin-bottom: 8px;">Select Order Routing:</label>
+                    <div class="routing-options-grid">
+                        <div class="routing-option-card active" id="btn-route-stock">
+                            <i class="fa-solid fa-warehouse"></i>
+                            <h4>Stock DC Order</h4>
+                            <p>Ship from local West Deptford DC inventory</p>
+                        </div>
+                        <div class="routing-option-card" id="btn-route-direct">
+                            <i class="fa-solid fa-truck"></i>
+                            <h4>Direct Drop-Ship</h4>
+                            <p>Ship directly from manufacturer/vendor</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vendor Selection Group (Visible only for Direct routing) -->
+                <div class="vendor-select-container" id="router-vendor-group">
+                    <label class="vendor-select-label" for="router-vendor">Vendor Partner:</label>
+                    <select class="vendor-select-dropdown" id="router-vendor">
+                        <option value="VNDR-824">VNDR-824 Liberty Wire</option>
+                        <option value="VNDR-711">VNDR-711 Titan Devices</option>
+                        <option value="VNDR-310">VNDR-310 Dura-Line PVC</option>
+                    </select>
+                </div>
+            </div>
+            <div class="routing-footer">
+                <button class="routing-btn cancel" id="btn-cancel-routing">Cancel</button>
+                <button class="routing-btn execute" id="btn-execute-routing">Execute Autopilot Entry</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container"></div>
+
+    <!-- ERP Profiles Configuration -->
+    <script src="erp_profiles.js"></script>
+    <!-- ERP Data & Logic (inlined, no iframe) -->
+    <script src="shared/data.js"></script>
+    <script src="shared/scenarios.js"></script>
+    <script src="eclipse_erp.js"></script>
+    <!-- Load main script -->
+    <script src="app.js?v=4"></script>
+</body>
+</html>

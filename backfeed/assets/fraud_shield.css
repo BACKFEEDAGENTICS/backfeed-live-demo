@@ -1,0 +1,1103 @@
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&family=Consolas&display=swap');
+
+:root {
+    --outlook-blue: #0078d4;
+    --outlook-dark-blue: #005a9e;
+    --outlook-light-blue: #c7e0f4;
+    --outlook-bg: #f3f2f1;
+    --outlook-border: #edebe9;
+    --outlook-hover: #f3f2f1;
+    --outlook-text-dark: #323130;
+    --outlook-text-light: #605e5c;
+    --powershell-bg: #012456;
+    
+    --color-safe: #107c41;
+    --color-warning: #ea580c;
+    --color-danger: #a80000;
+    
+    --font-sans: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    --font-mono: 'Consolas', 'Courier New', monospace;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* WINDOWS 11 DESKTOP ENVIRONMENT */
+body.desktop-env {
+    font-family: var(--font-sans);
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: radial-gradient(circle at center, #1b3d6c 0%, #0a111e 100%);
+    background-image: linear-gradient(135deg, #1f4277 0%, #11233e 50%, #091222 100%);
+    color: #ffffff;
+    user-select: none;
+}
+
+.desktop-area {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 48px); /* leaves room for taskbar */
+    overflow: hidden;
+    padding: 20px;
+}
+
+/* Desktop Shortcuts grid */
+.desktop-shortcuts {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    z-index: 1;
+}
+
+.shortcut {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    padding: 8px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+}
+
+.shortcut:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.shortcut-icon {
+    width: 38px;
+    height: 38px;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.shortcut-icon-fa {
+    font-size: 32px;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.shortcut-label {
+    font-size: 11px;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+/* DRAGGABLE APPLICATION WINDOWS */
+.win-frame {
+    position: absolute;
+    background: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: var(--outlook-text-dark);
+    backdrop-filter: blur(20px);
+    border: 1px solid #c8c8c8;
+    transition: opacity 0.15s, transform 0.15s;
+}
+
+.win-frame.minimized {
+    display: none !important;
+}
+
+/* Win11 Titlebar */
+.win-titlebar {
+    height: 32px;
+    background: #f3f3f3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 12px;
+    border-bottom: 1px solid #e5e5e5;
+    cursor: move;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.win-title-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #333333;
+    font-size: 11.5px;
+}
+
+.window-controls {
+    display: flex;
+    align-items: center;
+    margin-right: -10px;
+}
+
+.win-btn {
+    width: 46px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 10px;
+    color: #333333;
+    transition: background 0.1s;
+}
+
+.win-btn:hover {
+    background: #e5e5e5;
+}
+
+.win-btn.win-close:hover {
+    background: #e81123;
+    color: #ffffff;
+}
+
+/* Browser address bar replica */
+.browser-address-bar {
+    background: #f3f3f3;
+    height: 38px;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.browser-nav-icons {
+    display: flex;
+    gap: 12px;
+    color: #555555;
+    font-size: 12px;
+}
+
+.browser-nav-icons i {
+    cursor: pointer;
+}
+
+.address-input-box {
+    flex: 1;
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    border-radius: 20px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 8px;
+    font-size: 11.5px;
+    color: #555555;
+}
+
+.address-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* OUTLOOK REPLICA OVERRIDES */
+header.app-header {
+    background-color: var(--outlook-blue);
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.brand-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-icon {
+    font-size: 14px;
+}
+
+.header-search-container {
+    flex: 1;
+    max-width: 400px;
+    margin: 0 12px;
+}
+
+.header-search-box {
+    display: flex;
+    align-items: center;
+    background: #c7e0f4;
+    border-radius: 4px;
+    padding: 0 10px;
+    height: 28px;
+}
+
+.header-search-box i {
+    color: #005a9e;
+    font-size: 12px;
+    margin-right: 6px;
+}
+
+.header-search-box input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    color: #323130;
+    font-size: 12px;
+    outline: none;
+}
+
+.header-search-box input::placeholder {
+    color: #005a9e;
+    opacity: 0.8;
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-user-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #e3008c;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.outlook-mail-workspace {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+.outlook-command-bar {
+    height: 38px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--outlook-border);
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.cmd-btn {
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--outlook-text-dark);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.cmd-btn:hover {
+    background: #f3f2f1;
+}
+
+.cmd-btn.primary {
+    background: var(--outlook-blue);
+    color: #ffffff;
+}
+
+.outlook-split-view {
+    display: grid;
+    grid-template-columns: 140px 240px 1fr;
+    flex: 1;
+    overflow: hidden;
+}
+
+.outlook-folders-pane {
+    background: #f3f2f1;
+    border-right: 1px solid var(--outlook-border);
+    padding: 10px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.folders-group .group-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--outlook-text-light);
+    padding: 2px 8px;
+    display: block;
+    text-transform: uppercase;
+}
+
+.folder-item {
+    font-size: 11px;
+    color: var(--outlook-text-dark);
+    padding: 6px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.folder-item:hover, .folder-item.active {
+    background: #edebe9;
+}
+
+.folder-badge {
+    background: #0078d4;
+    color: #ffffff;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 8px;
+    margin-left: auto;
+}
+
+.folder-badge.warning {
+    background: var(--color-warning);
+}
+
+/* Mail threads list */
+.outlook-mail-list-pane {
+    background: #ffffff;
+    border-right: 1px solid var(--outlook-border);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.pane-search-bar {
+    padding: 8px 10px;
+}
+
+.search-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: #f3f2f1;
+    border: 1px solid var(--outlook-border);
+    border-radius: 4px;
+    padding: 0 6px;
+    height: 26px;
+}
+
+.search-input-wrapper input {
+    border: none;
+    background: transparent;
+    font-size: 11px;
+    outline: none;
+    width: 100%;
+}
+
+.outlook-tab-selectors {
+    display: flex;
+    gap: 12px;
+    padding: 0 10px 6px 10px;
+    border-bottom: 1px solid var(--outlook-border);
+}
+
+.outlook-tab {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--outlook-text-light);
+    cursor: pointer;
+    padding-bottom: 2px;
+    position: relative;
+}
+
+.outlook-tab.active {
+    color: var(--outlook-text-dark);
+}
+
+.outlook-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--outlook-blue);
+}
+
+.mail-items-container {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.mail-item {
+    padding: 10px 12px;
+    border-bottom: 1px solid #edebe9;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.mail-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: transparent;
+}
+
+.mail-item.unread::before, .mail-item.active::before {
+    background: var(--outlook-blue);
+}
+
+.mail-item.active {
+    background: #eff6fc;
+}
+
+.mail-sender {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--outlook-text-dark);
+}
+
+.mail-date {
+    font-size: 9px;
+    color: var(--outlook-text-light);
+}
+
+.mail-subject {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--outlook-blue);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mail-item.unread .mail-subject {
+    color: var(--outlook-text-dark);
+}
+
+.mail-snippet {
+    font-size: 10px;
+    color: var(--outlook-text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mail-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Outlook Reading Pane */
+.outlook-reading-pane {
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.outlook-warning-banner {
+    display: none;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--outlook-border);
+    font-size: 11.5px;
+    line-height: 1.4;
+}
+
+.outlook-warning-banner.red {
+    display: flex;
+    gap: 10px;
+    background: #fde8e8;
+    color: #9b1c1c;
+    border-bottom: 2px solid #f8b4b4;
+}
+
+.outlook-warning-banner.yellow {
+    display: flex;
+    gap: 10px;
+    background: #fef08a;
+    color: #713f12;
+    border-bottom: 2px solid #fde047;
+}
+
+.outlook-warning-banner.safe {
+    display: flex;
+    gap: 10px;
+    background: #def7ec;
+    color: #03543f;
+    border-bottom: 2px solid #bcf0da;
+}
+
+.banner-icon {
+    font-size: 15px;
+}
+
+.banner-content {
+    flex: 1;
+}
+
+.banner-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.banner-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: inherit;
+    padding: 1px 8px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.reading-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--outlook-border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.reading-subject-row h2 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--outlook-text-dark);
+}
+
+.reading-sender-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sender-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #0078d4;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sender-info-text {
+    flex: 1;
+    font-size: 11px;
+}
+
+.sender-name-line {
+    font-weight: 600;
+}
+
+.sender-email {
+    color: var(--outlook-text-light);
+    font-size: 10.5px;
+}
+
+.reading-date {
+    font-size: 10.5px;
+    color: var(--outlook-text-light);
+}
+
+.attachment-badge-row {
+    display: flex;
+    gap: 8px;
+}
+
+.attachment-file-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #f3f2f1;
+    border: 1px solid var(--outlook-border);
+    border-radius: 4px;
+    font-size: 10.5px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.attachment-file-card i {
+    font-size: 14px;
+    color: #dc3545;
+}
+
+.reading-body {
+    padding: 16px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--outlook-text-dark);
+    white-space: pre-wrap;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* WINDOWS POWERSHELL CONSOLE APP */
+.console-area {
+    padding: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.4;
+    color: #cccccc;
+    overflow-y: auto;
+    background: #012456;
+}
+
+.console-text {
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+
+.console-text.warn { color: #ffeb3b; }
+.console-text.err { color: #ff5252; background: #3c0000; padding: 2px 4px; border-radius: 2px; }
+.console-text.info { color: #40c4ff; }
+.console-text.ok { color: #69f0ae; }
+.console-text.prompt { color: #ffffff; font-weight: bold; }
+
+/* SENTINEL SCORECARD APP */
+.sentinel-column {
+    background: #f3f2f1;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    overflow-y: auto;
+    gap: 12px;
+}
+
+.sentinel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--outlook-border);
+    padding-bottom: 6px;
+}
+
+.sentinel-header h2 {
+    font-size: 13px;
+    color: var(--outlook-text-dark);
+}
+
+.sentinel-active-badge {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-safe);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.risk-gauge-card {
+    background: #ffffff;
+    border: 1px solid var(--outlook-border);
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.risk-gauge-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gauge-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.gauge-bg {
+    fill: none;
+    stroke: #e6e6e6;
+    stroke-width: 8;
+}
+
+.gauge-fill {
+    fill: none;
+    stroke: var(--color-safe);
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.8s ease-in-out, stroke 0.5s ease;
+}
+
+.gauge-text {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gauge-percent {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.gauge-label {
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--outlook-text-light);
+}
+
+.decision-badge-card {
+    background: #ffffff;
+    border: 1px solid var(--outlook-border);
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.decision-card-title {
+    font-size: 9px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--outlook-text-light);
+}
+
+.decision-outcome-badge {
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-align: center;
+    background: #edebe9;
+    color: var(--outlook-text-dark);
+}
+
+.secops-actions-card {
+    background: #ffffff;
+    border: 1px solid var(--outlook-border);
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.override-button-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.override-btn {
+    border: 1px solid var(--outlook-border);
+    border-radius: 4px;
+    padding: 6px 4px;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: #ffffff;
+}
+
+.override-btn:hover {
+    background: #f3f2f1;
+}
+
+.secops-btn-safe:hover { background: #def7ec; color: #03543f; border-color: #8ce9c4; }
+.secops-btn-danger:hover { background: #fde8e8; color: #9b1c1c; border-color: #f8b4b4; }
+.secops-btn-warn:hover { background: #fff9db; color: #856404; border-color: #ffeeba; }
+.secops-btn-decoy:hover { background: #eff6fc; color: #0078d4; border-color: #a9d1f5; }
+.secops-btn-block:hover { background: #f5f5f5; color: #201f1e; border-color: #605e5c; }
+
+.override-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f3f2f1 !important;
+    color: #a19f9d !important;
+}
+
+.variables-audit-card {
+    background: #ffffff;
+    border: 1px solid var(--outlook-border);
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.variable-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    border-bottom: 1px solid #f3f2f1;
+    padding-bottom: 4px;
+}
+
+.variable-row:last-child {
+    border-bottom: none;
+}
+
+.var-label {
+    font-weight: 600;
+    color: var(--outlook-text-light);
+}
+
+.var-status-badge {
+    font-weight: 700;
+    font-size: 9px;
+}
+
+.var-status-badge.safe { color: var(--color-safe); }
+.var-status-badge.warning { color: var(--color-warning); }
+.var-status-badge.danger { color: var(--color-danger); }
+
+.reasoning-list-card {
+    background: #ffffff;
+    border: 1px solid var(--outlook-border);
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.reasoning-item {
+    font-size: 11px;
+    line-height: 1.4;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #f3f2f1;
+}
+
+.reasoning-item:last-child {
+    border-bottom: none;
+}
+
+.reasoning-item strong {
+    display: block;
+    color: var(--outlook-text-dark);
+}
+
+/* DEMO DIRECTOR CONTROLLER styles */
+.demo-controller-win {
+    border: 2px solid #22c55e !important;
+    box-shadow: 0 0 16px rgba(34, 197, 94, 0.4) !important;
+}
+
+.ctrl-btn {
+    flex: 1;
+    background: #22c55e;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s;
+}
+
+.ctrl-btn:hover {
+    background: #16a34a;
+}
+
+.ctrl-btn:disabled {
+    background: #78350f !important;
+    opacity: 0.8;
+}
+
+/* WINDOWS 11 TASKBAR */
+.win11-taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: rgba(32, 32, 32, 0.75);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 99999;
+}
+
+.taskbar-icons-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tb-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.15s;
+}
+
+.tb-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.tb-icon.active::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 16px;
+    right: 16px;
+    height: 3px;
+    background: #00a2ff;
+    border-radius: 2px;
+}
+
+.system-tray {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.tray-icons {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    color: #e5e5e5;
+}
+
+.tray-time {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    color: #e5e5e5;
+    font-size: 10.5px;
+    line-height: 1.2;
+}
+
+/* WINDOWS 11 NOTIFICATION TOAST */
+.win11-notification {
+    position: fixed;
+    bottom: -150px;
+    right: 20px;
+    width: 340px;
+    background: rgba(32, 32, 32, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    z-index: 100000;
+    transition: bottom 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);
+    color: #ffffff;
+}
+
+.win11-notification.show {
+    bottom: 60px; /* slides in above the taskbar */
+}
+
+.notif-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #aaaaaa;
+    margin-bottom: 8px;
+}
+
+.notif-body h4 {
+    font-size: 12.5px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #69f0ae;
+}
+
+.notif-body p {
+    font-size: 11.5px;
+    color: #e0e0e0;
+    line-height: 1.4;
+}
+
+/* Toast Notifications fallback */
+.toast-notification {
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+    background: #ffffff;
+    border: 1px solid var(--outlook-border);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 999999;
+    font-size: 12px;
+    color: var(--outlook-text-dark);
+    animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
