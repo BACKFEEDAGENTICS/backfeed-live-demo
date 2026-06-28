@@ -403,104 +403,298 @@ class SecurityGatewayServer(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         error_html = ""
         if error_msg:
-            error_html = f"<div style='color: #ef4444; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 13px;'>{error_msg}</div>"
+            error_html = f"""
+            <div class="error-container">
+                <i class="fa-solid fa-circle-exclamation" style="font-size: 18px; color: #ef4444; flex-shrink: 0;"></i>
+                <div style="font-size: 13px; color: #fca5a5; font-weight: 500;">{error_msg}</div>
+            </div>
+            """
         html = f"""<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <title>Backfeed Operations Center - Unlock</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+        
         body {{
-            font-family: 'Inter', -apple-system, sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            background-color: #030712;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(160,84%,15%,0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(220,84%,10%,0.25) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, hsla(240,10%,3%,1) 0px, transparent 100%);
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
+            overflow: hidden;
+            position: relative;
         }}
-        .card {{
-            background-color: #1e293b;
-            border: 1px solid #334155;
-            padding: 40px;
-            border-radius: 12px;
+        
+        /* Background Grid */
+        body::before {{
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image: 
+                linear-gradient(rgba(16, 185, 129, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16, 185, 129, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: rotate(15deg);
+            z-index: 1;
+            pointer-events: none;
+        }}
+
+        .container {{
+            position: relative;
+            z-index: 10;
             width: 100%;
-            max-width: 400px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            max-width: 420px;
+            padding: 20px;
+            box-sizing: border-box;
+        }}
+
+        .glass-card {{
+            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            border-radius: 20px;
+            padding: 45px 35px;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 45px 0 rgba(16, 185, 129, 0.03);
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }}
-        .logo {{
+        
+        .glass-card::after {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #10b981, transparent);
+            animation: scanline 4s linear infinite;
+        }}
+
+        @keyframes scanline {{
+            0% {{ left: -100%; }}
+            50% {{ left: 100%; }}
+            100% {{ left: 100%; }}
+        }}
+
+        .logo-container {{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 35px;
+        }}
+
+        .logo-icon {{
+            width: 54px;
+            height: 54px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 24px;
-            font-weight: 700;
             color: #10b981;
-            letter-spacing: 0.05em;
-            margin-bottom: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+            animation: pulse 3s infinite;
         }}
+
+        @keyframes pulse {{
+            0% {{ box-shadow: 0 0 20px rgba(16, 185, 129, 0.15); }}
+            50% {{ box-shadow: 0 0 35px rgba(16, 185, 129, 0.3); }}
+            100% {{ box-shadow: 0 0 20px rgba(16, 185, 129, 0.15); }}
+        }}
+
+        .logo-text {{
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 0.12em;
+            margin: 0;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ffffff 60%, #a7f3d0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }}
+
         .subtitle {{
-            color: #94a3b8;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }}
-        .form-group {{
-            text-align: left;
-            margin-bottom: 20px;
-        }}
-        label {{
-            display: block;
-            font-size: 12px;
+            color: #9ca3af;
+            font-size: 11px;
             font-weight: 600;
-            color: #94a3b8;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-top: 6px;
+        }}
+
+        .input-wrapper {{
+            position: relative;
+            margin-bottom: 20px;
+            text-align: left;
+        }}
+
+        .input-wrapper i {{
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4b5563;
+            font-size: 16px;
+            transition: color 0.2s;
+        }}
+
+        .input-wrapper label {{
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #9ca3af;
             margin-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 0.025em;
+            letter-spacing: 0.05em;
         }}
+
         input[type="password"] {{
             width: 100%;
-            padding: 12px;
-            background-color: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            color: #f8fafc;
-            font-size: 16px;
+            padding: 14px 16px 14px 46px;
+            background: rgba(17, 24, 39, 0.6);
+            border: 1px solid #374151;
+            border-radius: 10px;
+            color: #f3f4f6;
+            font-size: 15px;
+            font-weight: 500;
             box-sizing: border-box;
-            transition: border-color 0.15s ease;
-        }}
-        input[type="password"]:focus {{
             outline: none;
-            border-color: #10b981;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
         }}
+
+        input[type="password"]:focus {{
+            border-color: #10b981;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+            background: rgba(17, 24, 39, 0.85);
+        }}
+
+        input[type="password"]:focus + i {{
+            color: #10b981;
+        }}
+
         button {{
             width: 100%;
-            padding: 12px;
-            background-color: #10b981;
+            padding: 14px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             border: none;
-            border-radius: 6px;
-            color: #0f172a;
-            font-size: 16px;
-            font-weight: 600;
+            border-radius: 10px;
+            color: #030712;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
-            transition: opacity 0.15s ease;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+            font-family: 'Outfit', sans-serif;
         }}
+
         button:hover {{
-            opacity: 0.9;
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }}
+
+        button:active {{
+            transform: translateY(1px);
+        }}
+
+        .error-container {{
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+        }}
+
+        /* Terminal status deco */
+        .system-status {{
+            margin-top: 25px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            color: #4b5563;
+            text-align: left;
+            border-top: 1px solid #1f2937;
+            padding-top: 18px;
+        }}
+
+        .status-line {{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }}
+
+        .status-dot {{
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: #10b981;
         }}
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="logo">BACKFEED</div>
-        <div class="subtitle">Cognitive Sales Operations Center</div>
-        {error_html}
-        <form action="/login" method="get">
-            <div class="form-group">
-                <label for="code">Enter Passcode</label>
-                <input type="password" id="code" name="code" placeholder="••••••••" required autofocus>
+    <div class="container">
+        <div class="glass-card">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-cloud-bolt"></i>
+                </div>
+                <div class="logo-text">BACKFEED</div>
+                <div class="subtitle">Cognitive Sales Operations Center</div>
             </div>
-            <button type="submit">Unlock Workspace</button>
-        </form>
+            
+            {error_html}
+            
+            <form action="/login" method="get">
+                <div class="input-wrapper">
+                    <label for="code">Enter Passcode</label>
+                    <input type="password" id="code" name="code" placeholder="••••••••" required autofocus>
+                    <i class="fa-solid fa-shield-halved" style="margin-top: 9px;"></i>
+                </div>
+                <button type="submit">Unlock Workspace</button>
+            </form>
+            
+            <div class="system-status">
+                <div class="status-line">
+                    <div class="status-dot"></div>
+                    <span>SENTINEL THREAT GATEWAY ONLINE</span>
+                </div>
+                <div class="status-line">
+                    <div class="status-dot"></div>
+                    <span>ECLIPSE ERP CONNECTOR ACTIVE</span>
+                </div>
+                <div class="status-line" style="color: #6b7280;">
+                    <div class="status-dot" style="background-color: #6b7280;"></div>
+                    <span>AWAITING CREDS...</span>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
