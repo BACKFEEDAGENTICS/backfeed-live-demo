@@ -517,7 +517,7 @@
           <i class="fa-solid fa-bolt"></i>
           <div>
             <h2>Welcome to Backfeed ERP</h2>
-            <p>Summit Electrical Sales — West Deptford, NJ | User: Kevin P | ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            <p>Backfeed Electrical Sourcing — West Deptford, NJ | User: Kevin P | ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
           </div>
         </div>
 

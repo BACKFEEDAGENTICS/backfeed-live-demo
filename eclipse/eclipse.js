@@ -325,10 +325,10 @@
         ], 'warning');
         break;
       case 'help-contents':
-        showModal('Eclipse ERP Help', '<i class="fa-solid fa-circle-question modal-icon-large info"></i><b>Eclipse ERP v9.2.4</b><br>Epicor Eclipse for Electrical Distribution<br><br>For support, contact IT Help Desk:<br>Internal ext. 100 | help@summitelectrical.com<br><br><small>Keyboard: F2=New Order, F3=Search, F5=Refresh, F7=Save, F10=Close Tab</small>', [{ label: 'OK', className: 'modal-btn primary', action: closeModal }], 'info');
+        showModal('Eclipse ERP Help', '<i class="fa-solid fa-circle-question modal-icon-large info"></i><b>Eclipse ERP v9.2.4</b><br>Epicor Eclipse for Electrical Distribution<br><br>For support, contact IT Help Desk:<br>Internal ext. 100 | help@backfeed.com<br><br><small>Keyboard: F2=New Order, F3=Search, F5=Refresh, F7=Save, F10=Close Tab</small>', [{ label: 'OK', className: 'modal-btn primary', action: closeModal }], 'info');
         break;
       case 'about':
-        showModal('About Eclipse ERP', '<div style="text-align:center"><i class="fa-solid fa-bolt" style="font-size:32px;color:#ffd700;margin-bottom:8px;display:block;"></i><b>Eclipse ERP</b><br>Version 9.2.4 Build 20260415<br><br>© 2026 Epicor Software Corporation<br>Licensed to: Summit Electrical Sales<br>West Deptford, NJ<br><br><small>Terminal T4 | Database: SUMMIT_PROD</small></div>', [{ label: 'OK', className: 'modal-btn primary', action: closeModal }], 'info');
+        showModal('About Eclipse ERP', '<div style="text-align:center"><i class="fa-solid fa-bolt" style="font-size:32px;color:#ffd700;margin-bottom:8px;display:block;"></i><b>Eclipse ERP</b><br>Version 9.2.4 Build 20260415<br><br>© 2026 Epicor Software Corporation<br>Licensed to: Backfeed Electrical Sourcing<br>West Deptford, NJ<br><br><small>Terminal T4 | Database: BACKFEED_PROD</small></div>', [{ label: 'OK', className: 'modal-btn primary', action: closeModal }], 'info');
         break;
       default:
         setStatusMessage('Action: ' + action);
@@ -529,7 +529,7 @@
           <i class="fa-solid fa-bolt"></i>
           <div>
             <h2>Welcome to Eclipse ERP</h2>
-            <p>Summit Electrical Sales — West Deptford, NJ | User: Kevin P | ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            <p>Backfeed Electrical Sourcing — West Deptford, NJ | User: Kevin P | ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
           </div>
         </div>
 
