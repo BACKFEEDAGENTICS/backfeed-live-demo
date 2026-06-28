@@ -379,14 +379,130 @@ def apply_shock_multipliers(results):
     return shocked
 
 
+def rotate_passcode():
+    import string
+    import base64
+    import urllib.request
+    
+    # 1. Generate new valid passcode: BF-XXXX-XXXX-XXXX
+    chars = string.ascii_uppercase + string.digits
+    while True:
+        p1 = "".join(random.choices(chars, k=4))
+        p2 = "".join(random.choices(chars, k=4))
+        p3 = "".join(random.choices(chars, k=4))
+        serial = f"BF-{p1}-{p2}-{p3}"
+        raw_chars = p1 + p2 + p3
+        if sum(ord(c) for c in raw_chars) % 100 == 42:
+            new_passcode = serial
+            break
+            
+    print(f"[AUTH] Rotated passcode. New passcode generated: {new_passcode}")
+    
+    # 2. Write new passcode to local passcodes.json
+    passcode_data = {"active_passcode": new_passcode}
+    passcodes_json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "passcodes.json")
+    try:
+        with open(passcodes_json_path, "w", encoding="utf-8") as f:
+            json.dump(passcode_data, f, indent=2)
+    except Exception as e:
+        print(f"[AUTH Warning] Failed to write local passcodes.json: {e}")
+        
+    # 3. Update the passcode on GitHub repositories
+    gh_token = os.environ.get("GH_TOKEN", "").strip()
+    if not gh_token:
+        print("[AUTH Warning] No GH_TOKEN environment variable found. GitHub sync skipped.")
+        return
+        
+    repos = ["BACKFEEDAGENTICS/backfeed-live-demo", "BACKFEEDAGENTICS/backfeed-copilot"]
+    for repo in repos:
+        try:
+            url = f"https://api.github.com/repos/{repo}/contents/passcodes.json"
+            
+            # Fetch current file SHA
+            req = urllib.request.Request(url)
+            req.add_header("Authorization", f"token {gh_token}")
+            req.add_header("Accept", "application/vnd.github.v3+json")
+            req.add_header("User-Agent", "Backfeed-Auth-Rotator")
+            
+            sha = ""
+            try:
+                with urllib.request.urlopen(req) as res:
+                    data = json.loads(res.read().decode('utf-8'))
+                    sha = data.get("sha", "")
+            except Exception as sha_err:
+                print(f"[AUTH] File passcodes.json may not exist yet in {repo}: {sha_err}")
+                
+            # Perform PUT request to update or create passcodes.json
+            payload = {
+                "message": "auth(rotator): rotate active passcode gate key",
+                "content": base64.b64encode(json.dumps(passcode_data, indent=2).encode('utf-8')).decode('utf-8'),
+                "branch": "main"
+            }
+            if sha:
+                payload["sha"] = sha
+                
+            put_req = urllib.request.Request(url, method="PUT", data=json.dumps(payload).encode('utf-8'))
+            put_req.add_header("Authorization", f"token {gh_token}")
+            put_req.add_header("Accept", "application/vnd.github.v3+json")
+            put_req.add_header("User-Agent", "Backfeed-Auth-Rotator")
+            put_req.add_header("Content-Type", "application/json")
+            
+            with urllib.request.urlopen(put_req) as res:
+                print(f"[AUTH Success] Pushed rotated passcode to GitHub repository: {repo}")
+        except Exception as repo_err:
+            print(f"[AUTH Error] Failed to update passcodes.json in {repo}: {repo_err}")
+            
+    # 4. Dispatch Email Alert
+    try:
+        from backfeed.core.mail import send_outlook_email
+        alert_body = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <h2 style="color: #10b981;">[Backfeed Passcode Rotation Alert]</h2>
+            <p>Hello Kevin,</p>
+            <p>An operator has successfully logged into the Sales Operations Center. The active passcode has been invalidated and rotated immediately to maintain workspace security.</p>
+            <table style="border-collapse: collapse; margin-top: 15px;">
+                <tr>
+                    <td style="padding: 8px; font-weight: bold; background: #f3f4f6; border: 1px solid #e5e7eb;">New Active Passcode:</td>
+                    <td style="padding: 8px; font-family: monospace; font-size: 14px; font-weight: bold; color: #059669; background: #ecfdf5; border: 1px solid #e5e7eb;">{new_passcode}</td>
+                </tr>
+            </table>
+            <p style="margin-top: 20px; font-size: 11px; color: #6b7280;">
+                The new passcode has been committed to the GitHub repositories. Render will automatically redeploy the service shortly.
+            </p>
+        </body>
+        </html>
+        """
+        send_outlook_email(
+            to_recipients="kdp10891@outlook.com",
+            subject="[Backfeed Security] Passcode Rotated Successfully",
+            html_body=alert_body
+        )
+    except Exception as email_err:
+        print(f"[AUTH Warning] Failed to send rotation alert email: {email_err}")
+
+
 class SecurityGatewayServer(http.server.SimpleHTTPRequestHandler):
-    def is_authenticated(self) -> bool:
+    def get_valid_passcodes(self) -> list:
+        passcodes_json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "passcodes.json")
+        if os.path.exists(passcodes_json_path):
+            try:
+                with open(passcodes_json_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    active = data.get("active_passcode", "").strip()
+                    if active:
+                        return [active]
+            except Exception as e:
+                print(f"[AUTH Error] Failed to read passcodes.json: {e}")
+                
         passcodes_str = os.environ.get("RENDER_PASSCODES", "BF-LIVE-DEMO").strip()
-        if not passcodes_str:
-            return True
-        valid_passcodes = [p.strip() for p in passcodes_str.split(",") if p.strip()]
-        if not valid_passcodes:
-            return True
+        if passcodes_str:
+            return [p.strip() for p in passcodes_str.split(",") if p.strip()]
+            
+        return ["BF-LIVE-DEMO"]
+
+    def is_authenticated(self) -> bool:
+        valid_passcodes = self.get_valid_passcodes()
         cookie_header = self.headers.get('Cookie', '')
         cookies = {}
         if cookie_header:
@@ -707,9 +823,11 @@ class SecurityGatewayServer(http.server.SimpleHTTPRequestHandler):
         if parsed_url.path == '/login':
             query_params = parse_qs(parsed_url.query)
             submitted_code = query_params.get("code", [""])[0].strip()
-            passcodes_str = os.environ.get("RENDER_PASSCODES", "BF-LIVE-DEMO").strip()
-            valid_passcodes = [p.strip() for p in passcodes_str.split(",") if p.strip()] if passcodes_str else []
-            if not valid_passcodes or submitted_code in valid_passcodes:
+            valid_passcodes = self.get_valid_passcodes()
+            if submitted_code in valid_passcodes:
+                import threading
+                threading.Thread(target=rotate_passcode, daemon=True).start()
+
                 self.send_response(302)
                 self.send_header('Set-Cookie', f'backfeed_passcode={submitted_code}; Path=/; HttpOnly; Max-Age=86400')
                 self.send_header('Location', '/index.html')
