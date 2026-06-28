@@ -39,6 +39,10 @@
       bindKeyboard();
       bindScenarioPanel();
       bindModalClose();
+      
+      const savedTheme = localStorage.getItem('eclipse-theme') || 'eclipse';
+      setTheme(savedTheme);
+
       openTab('dashboard', 'Dashboard', renderDashboard);
       simulateConnection();
       scheduleSessionTimeout();
@@ -272,6 +276,15 @@
   ---------------------------------------------------------- */
   function handleAction(action) {
     switch (action) {
+      case 'theme-eclipse':
+        setTheme('eclipse');
+        break;
+      case 'theme-backfeed-dark':
+        setTheme('backfeed-dark');
+        break;
+      case 'theme-backfeed-light':
+        setTheme('backfeed-light');
+        break;
       case 'new-order':
         openTab('order-entry', 'Order Entry — New', renderOrderEntry, { mode: 'order' });
         break;
@@ -320,6 +333,35 @@
       default:
         setStatusMessage('Action: ' + action);
     }
+  }
+
+  function setTheme(themeName) {
+    document.body.classList.remove('theme-backfeed-dark', 'theme-backfeed-light');
+    if (themeName === 'backfeed-dark') {
+      document.body.classList.add('theme-backfeed-dark');
+    } else if (themeName === 'backfeed-light') {
+      document.body.classList.add('theme-backfeed-light');
+    }
+    localStorage.setItem('eclipse-theme', themeName);
+    updateThemeMenuChecks(themeName);
+    setStatusMessage('Theme: ' + themeName);
+  }
+
+  function updateThemeMenuChecks(themeName) {
+    document.querySelectorAll('.menu-dropdown li[data-action^="theme-"]').forEach(li => {
+      const action = li.dataset.action;
+      const targetTheme = action.replace('theme-', '');
+      const icon = li.querySelector('i');
+      if (icon) {
+        if (targetTheme === themeName) {
+          icon.className = 'fa-solid fa-circle-check';
+          icon.style.color = '#10b981';
+        } else {
+          icon.className = 'fa-regular fa-circle';
+          icon.style.color = '';
+        }
+      }
+    });
   }
 
   function handleSave() {

@@ -73,6 +73,100 @@
   --footer-total: calc(var(--fkeybar-height) + var(--statusbar-height));
 }
 
+/* Backfeed Dark Theme Override */
+body.theme-backfeed-dark {
+  --bg-main: #0f172a;
+  --bg-form: #1e293b;
+  --bg-titlebar: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  --bg-menubar: #0f172a;
+  --bg-toolbar: #1e293b;
+  --bg-fkeybar: #0f172a;
+  --bg-statusbar: #0f172a;
+  --bg-input: #0f172a;
+  --bg-modal: #1e293b;
+  --bg-tab-active: #1e293b;
+  --bg-tab-inactive: #0f172a;
+  --bg-grid-odd: #1e293b;
+  --bg-grid-even: #0f172a;
+  --bg-selected: #10b981;
+  --bg-hover: rgba(16, 185, 129, 0.1);
+  --bg-error: rgba(239, 68, 68, 0.1);
+  --bg-success: rgba(16, 185, 129, 0.15);
+  --bg-warning: rgba(245, 158, 11, 0.1);
+  --bg-dashboard-card: #1e293b;
+  --bg-mdi: #0f172a;
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-light: #64748b;
+  --text-inverse: #0f172a;
+  --text-menu: #f8fafc;
+  --text-fkey: #94a3b8;
+  --text-titlebar: #10b981;
+  --text-selected: #0f172a;
+  --text-error: #ef4444;
+  --text-success: #10b981;
+  --text-warning: #f59e0b;
+  --text-link: #10b981;
+  
+  --border-input-top: #334155;
+  --border-input-bottom: #334155;
+  --border-grid: #334155;
+  --border-form: #334155;
+  --border-tab: #334155;
+  --border-raised-light: #334155;
+  --border-raised-dark: #0f172a;
+  --border-sunken-light: #0f172a;
+  --border-sunken-dark: #334155;
+}
+
+/* Backfeed Light Theme Override */
+body.theme-backfeed-light {
+  --bg-main: #f1f5f9;
+  --bg-form: #ffffff;
+  --bg-titlebar: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  --bg-menubar: #ffffff;
+  --bg-toolbar: #f8fafc;
+  --bg-fkeybar: #ffffff;
+  --bg-statusbar: #ffffff;
+  --bg-input: #f8fafc;
+  --bg-modal: #ffffff;
+  --bg-tab-active: #ffffff;
+  --bg-tab-inactive: #e2e8f0;
+  --bg-grid-odd: #ffffff;
+  --bg-grid-even: #f8fafc;
+  --bg-selected: #059669;
+  --bg-hover: rgba(5, 150, 105, 0.1);
+  --bg-error: #fff0f0;
+  --bg-success: #f0fff0;
+  --bg-warning: #fffde6;
+  --bg-dashboard-card: #ffffff;
+  --bg-mdi: #f1f5f9;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-light: #94a3b8;
+  --text-inverse: #ffffff;
+  --text-menu: #0f172a;
+  --text-fkey: #475569;
+  --text-titlebar: #059669;
+  --text-selected: #ffffff;
+  --text-error: #cc0000;
+  --text-success: #059669;
+  --text-warning: #996600;
+  --text-link: #059669;
+  
+  --border-input-top: #cbd5e1;
+  --border-input-bottom: #cbd5e1;
+  --border-grid: #e2e8f0;
+  --border-form: #cbd5e1;
+  --border-tab: #cbd5e1;
+  --border-raised-light: #cbd5e1;
+  --border-raised-dark: #e2e8f0;
+  --border-sunken-light: #cbd5e1;
+  --border-sunken-dark: #ffffff;
+}
+
 /* ----------------------------------------------------------
    RESET & BASE
 ---------------------------------------------------------- */
