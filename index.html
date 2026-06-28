@@ -645,11 +645,11 @@
                     </div>
 
                     <!-- Inlined ERP Demo -->
-                    <div id="eclipse-erp-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                    <div id="eclipse-erp-container" class="theme-backfeed-dark" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
                         <header id="eclipse-titlebar">
                             <div class="titlebar-left">
                                 <div class="eclipse-logo"><i class="fa-solid fa-bolt"></i><span class="logo-text">ERP</span></div>
-                                <span class="titlebar-title">Backfeed ERP — Order Entry System — [T4 : G.Miller]</span>
+                                <span class="titlebar-title">Backfeed ERP — Order Entry System — [T4 : Kevin P]</span>
                             </div>
                             <div class="titlebar-controls">
                                 <button class="titlebar-btn minimize" title="Minimize"><i class="fa-solid fa-minus"></i></button>
@@ -687,6 +687,10 @@
                                         <li class="menu-divider"></li>
                                         <li data-action="toggle-statusbar"><i class="fa-solid fa-check"></i> Status Bar</li>
                                         <li data-action="toggle-fkeys"><i class="fa-solid fa-check"></i> Function Key Bar</li>
+                                        <li class="menu-divider"></li>
+                                        <li data-action="theme-eclipse"><i class="fa-solid fa-check theme-check" id="check-theme-eclipse"></i> Theme: Classic Eclipse</li>
+                                        <li data-action="theme-backfeed-dark"><i class="fa-solid fa-check theme-check" id="check-theme-backfeed-dark"></i> Theme: Backfeed Dark</li>
+                                        <li data-action="theme-backfeed-light"><i class="fa-solid fa-check theme-check" id="check-theme-backfeed-light"></i> Theme: Backfeed Light</li>
                                     </ul>
                                 </li>
                                 <li class="menu-item" data-menu="orders"><span class="menu-label"><u>O</u>rders</span>
@@ -757,7 +761,7 @@
                             <button class="fkey-btn" data-fkey="F10"><span class="fkey-key">F10</span><span class="fkey-label">Exit</span></button>
                         </div>
                         <footer id="eclipse-statusbar">
-                            <div class="status-section status-user"><i class="fa-solid fa-user"></i><span>G.Miller</span></div>
+                            <div class="status-section status-user"><i class="fa-solid fa-user"></i><span>Kevin P</span></div>
                             <div class="status-section status-terminal"><i class="fa-solid fa-desktop"></i><span>Terminal T4</span></div>
                             <div class="status-section status-message" id="status-message"><span>Ready</span></div>
                             <div class="status-section status-scenario" id="status-scenario" style="display:none;"><i class="fa-solid fa-stopwatch"></i><span id="scenario-timer">00:00</span></div>

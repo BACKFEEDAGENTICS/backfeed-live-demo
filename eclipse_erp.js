@@ -39,6 +39,8 @@
       bindKeyboard();
       bindScenarioPanel();
       bindModalClose();
+      const savedTheme = localStorage.getItem('eclipse-theme') || 'backfeed-dark';
+      setTheme(savedTheme);
       openTab('dashboard', 'Dashboard', renderDashboard);
       simulateConnection();
       scheduleSessionTimeout();
@@ -183,6 +185,25 @@
     return APP.tabs.find(t => t.id === APP.activeTabId) || null;
   }
 
+  function setTheme(themeName) {
+    const container = document.getElementById('eclipse-erp-container');
+    if (!container) return;
+    container.classList.remove('theme-eclipse', 'theme-backfeed-dark', 'theme-backfeed-light');
+    container.classList.add(`theme-${themeName}`);
+    localStorage.setItem('eclipse-theme', themeName);
+    updateThemeMenuChecks(themeName);
+  }
+
+  function updateThemeMenuChecks(activeTheme) {
+    document.querySelectorAll('#eclipse-erp-container .theme-check').forEach(check => {
+      check.style.visibility = 'hidden';
+    });
+    const checkEl = document.getElementById(`check-theme-${activeTheme}`);
+    if (checkEl) {
+      checkEl.style.visibility = 'visible';
+    }
+  }
+
   /* ----------------------------------------------------------
      MENU BAR
   ---------------------------------------------------------- */
@@ -272,6 +293,15 @@
   ---------------------------------------------------------- */
   function handleAction(action) {
     switch (action) {
+      case 'theme-eclipse':
+        setTheme('eclipse');
+        break;
+      case 'theme-backfeed-dark':
+        setTheme('backfeed-dark');
+        break;
+      case 'theme-backfeed-light':
+        setTheme('backfeed-light');
+        break;
       case 'new-order':
         openTab('order-entry', 'Order Entry — New', renderOrderEntry, { mode: 'order' });
         break;
@@ -487,7 +517,7 @@
           <i class="fa-solid fa-bolt"></i>
           <div>
             <h2>Welcome to Backfeed ERP</h2>
-            <p>Summit Electrical Sales — West Deptford, NJ | User: G. Miller | ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            <p>Summit Electrical Sales — West Deptford, NJ | User: Kevin P | ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
           </div>
         </div>
 
@@ -875,7 +905,7 @@
           const textEl = panel.querySelector('#new-note-text');
           const text = textEl?.value.trim();
           if (!text) return;
-          customer.notes.unshift({ date: new Date().toISOString().slice(0, 10), user: 'G.Miller', text });
+          customer.notes.unshift({ date: new Date().toISOString().slice(0, 10), user: 'Kevin P', text });
           panel.querySelector('#cust-detail-body').innerHTML = renderCustTabContent(customer, 'notes');
           bindCustTabEvents(panel, customer, 'notes');
           setStatusMessage('Note added');

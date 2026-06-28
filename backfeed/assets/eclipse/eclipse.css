@@ -74,7 +74,7 @@
 }
 
 /* Backfeed Dark Theme Override */
-body.theme-backfeed-dark {
+body.theme-backfeed-dark, #eclipse-erp-container.theme-backfeed-dark {
   --bg-main: #0f172a;
   --bg-form: #1e293b;
   --bg-titlebar: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
@@ -121,7 +121,7 @@ body.theme-backfeed-dark {
 }
 
 /* Backfeed Light Theme Override */
-body.theme-backfeed-light {
+body.theme-backfeed-light, #eclipse-erp-container.theme-backfeed-light {
   --bg-main: #f1f5f9;
   --bg-form: #ffffff;
   --bg-titlebar: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);

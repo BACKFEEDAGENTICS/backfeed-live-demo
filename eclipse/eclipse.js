@@ -40,7 +40,7 @@
       bindScenarioPanel();
       bindModalClose();
       
-      const savedTheme = localStorage.getItem('eclipse-theme') || 'eclipse';
+      const savedTheme = localStorage.getItem('eclipse-theme') || 'backfeed-dark';
       setTheme(savedTheme);
 
       openTab('dashboard', 'Dashboard', renderDashboard);
@@ -529,7 +529,7 @@
           <i class="fa-solid fa-bolt"></i>
           <div>
             <h2>Welcome to Eclipse ERP</h2>
-            <p>Summit Electrical Sales — West Deptford, NJ | User: G. Miller | ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            <p>Summit Electrical Sales — West Deptford, NJ | User: Kevin P | ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
           </div>
         </div>
 
@@ -917,7 +917,7 @@
           const textEl = panel.querySelector('#new-note-text');
           const text = textEl?.value.trim();
           if (!text) return;
-          customer.notes.unshift({ date: new Date().toISOString().slice(0, 10), user: 'G.Miller', text });
+          customer.notes.unshift({ date: new Date().toISOString().slice(0, 10), user: 'Kevin P', text });
           panel.querySelector('#cust-detail-body').innerHTML = renderCustTabContent(customer, 'notes');
           bindCustTabEvents(panel, customer, 'notes');
           setStatusMessage('Note added');
