@@ -1,22 +1,29 @@
-# Use official slim Python image as base
+# Lightweight static demo server — no package install, no license gate
 FROM python:3.10-slim
 
-# Set working directory in container
 WORKDIR /app
 
-# Copy the application source files into the container
-COPY . .
+# Copy only what the root server.py needs to serve the demo
+COPY server.py .
+COPY index.html .
+COPY index.css .
+COPY app.js .
+COPY eclipse_erp.css .
+COPY eclipse_erp.html .
+COPY eclipse_erp.js .
+COPY erp_profiles.js .
+COPY mock_inventory_data.js .
+COPY inside_sales_desk_pov.png .
+COPY passcodes.json .
+COPY eclipse/ eclipse/
+COPY shared/ shared/
 
-# Install the backfeed package and dependencies
-RUN pip install --no-cache-dir .
+# Install only the stdlib dependencies needed (python-docx/reportlab for Office doc generation)
+RUN pip install --no-cache-dir python-docx reportlab
 
-# Expose the server port
-EXPOSE 8085
-
-# Environment variables for headless deployment
-ENV BACKFEED_LICENSE_KEY=BF-F58J-FQT2-GODV
 ENV PYTHONUNBUFFERED=1
 
-# Start the application via the get-backfeed command
-# We bind host to 0.0.0.0 for Docker networking and disable the browser auto-open
-CMD ["sh", "-c", "get-backfeed --host 0.0.0.0 --port ${PORT:-8085} --no-browser"]
+EXPOSE 8085
+
+# Render injects $PORT at runtime; server.py reads os.environ.get("PORT", 8085)
+CMD ["python", "server.py"]

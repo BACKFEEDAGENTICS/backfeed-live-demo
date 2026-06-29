@@ -27,7 +27,7 @@ except ImportError:
     win32 = None
     HAS_WIN32COM = False
 
-PORT = 8085
+PORT = int(os.environ.get("PORT", 8085))
 
 # ─────────────────────────────────────────────
 # IMAP Inbox Infrastructure
