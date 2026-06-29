@@ -149,7 +149,7 @@
       </div>
     </div>
 
-    <p class="caption">
+    <p class="caption" id="caption">
       Save your photo next to this file as <code>hope-youre-happy.jpg</code> and it drops straight into the frame.
     </p>
   </div>
@@ -181,6 +181,8 @@
       photo.style.setProperty('--cover-src', `url("${src}")`);
       photo.style.backgroundImage = `url("${src}")`;
       cover.classList.add('has-photo');
+      const cap = document.getElementById('caption');
+      if (cap) cap.style.display = 'none';
     };
     img.src = src;
   })();
