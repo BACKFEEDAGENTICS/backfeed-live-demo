@@ -860,6 +860,9 @@ class SecurityGatewayServer(http.server.SimpleHTTPRequestHandler):
                                              for i in inboxes]})
             else:
                 self.handle_inbox(account)
+        elif parsed_url.path in ('/cover', '/hope-youre-happy'):
+            self.path = '/hope-youre-happy.html'
+            super().do_GET()
         elif self.path == '/api/scratch/list':
             self.handle_scratch_list()
         elif self.path.startswith('/api/scratch/view'):
