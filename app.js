@@ -1699,6 +1699,16 @@ function showToast(title, desc, type = 'success') {
 function setView(view) {
     activeView = view;
     
+    // Toggle split-desk class on workspace
+    const workspace = document.querySelector('.outlook-main-workspace');
+    if (workspace) {
+        if (view === 'desk') {
+            workspace.classList.add('split-desk-mode');
+        } else {
+            workspace.classList.remove('split-desk-mode');
+        }
+    }
+    
     // Determine if this is an operations sub-view
     const isOpsView = (view === 'capacity' || view === 'logistics' || view === 'willcall' || view === 'smartcut');
     
@@ -1713,28 +1723,28 @@ function setView(view) {
     });
 
     // Toggle folders sections
-    mailFoldersSection.style.display = view === 'mail' ? 'block' : 'none';
+    mailFoldersSection.style.display = (view === 'mail' || view === 'desk') ? 'block' : 'none';
     contactsFoldersSection.style.display = view === 'contacts' ? 'block' : 'none';
     opsFoldersSection.style.display = isOpsView ? 'block' : 'none';
     
     // Toggle middle header items
-    mailFiltersBar.style.display = view === 'mail' ? 'flex' : 'none';
+    mailFiltersBar.style.display = (view === 'mail' || view === 'desk') ? 'flex' : 'none';
     contactsSearchBar.style.display = view === 'contacts' ? 'block' : 'none';
     
     // Toggle reading pane views
-    mailReadingView.style.display = view === 'mail' ? 'block' : 'none';
+    mailReadingView.style.display = (view === 'mail' || view === 'desk') ? 'block' : 'none';
     contactDetailView.style.display = view === 'contacts' ? 'block' : 'none';
     opsCapacityView.style.display = view === 'capacity' ? 'block' : 'none';
     opsWillCallView.style.display = view === 'willcall' ? 'block' : 'none';
     inventoryView.style.display = view === 'inventory' ? 'block' : 'none';
     linecardView.style.display = view === 'linecard' ? 'block' : 'none';
-    erpView.style.display = view === 'erp' ? 'flex' : 'none';
+    erpView.style.display = (view === 'erp' || view === 'desk') ? 'flex' : 'none';
     scratchView.style.display = view === 'scratch' ? 'block' : 'none';
 
-    // Hide middle list pane on operations/inventory/linecard/erp/scratch views — only show for mail and contacts
+    // Hide middle list pane on operations/inventory/linecard/erp/scratch views — only show for mail, contacts, and desk
     const listPane = document.querySelector('.outlook-list-pane');
     if (listPane) {
-        listPane.style.display = (view === 'mail' || view === 'contacts') ? 'flex' : 'none';
+        listPane.style.display = (view === 'mail' || view === 'contacts' || view === 'desk') ? 'flex' : 'none';
     }
 
     // Show/hide folders pane based on selection
@@ -1744,8 +1754,8 @@ function setView(view) {
         foldersPane.style.display = 'flex';
     }
 
-    if (view === 'mail') {
-        paneTitleText.textContent = 'Mail';
+    if (view === 'mail' || view === 'desk') {
+        paneTitleText.textContent = view === 'desk' ? 'Sales Desk Workspace' : 'Mail';
         renderMailList();
     } else if (view === 'contacts') {
         paneTitleText.textContent = 'People';

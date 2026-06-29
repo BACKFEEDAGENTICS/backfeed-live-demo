@@ -767,6 +767,26 @@ body {
     overflow: hidden;
 }
 
+/* Sales Desk Split Mode Layout */
+.outlook-main-workspace.split-desk-mode .outlook-reading-pane {
+    flex-direction: row;
+}
+
+.outlook-main-workspace.split-desk-mode #mail-reading-view {
+    width: 50% !important;
+    border-right: 3px double var(--outlook-border);
+    display: block !important;
+}
+
+.outlook-main-workspace.split-desk-mode #erp-view {
+    width: 50% !important;
+    display: flex !important;
+}
+
+.outlook-main-workspace.split-desk-mode #erp-connector-toolbar {
+    border-bottom: 1px solid var(--outlook-border);
+}
+
 .reading-pane-content {
     display: flex;
     flex-direction: column;
