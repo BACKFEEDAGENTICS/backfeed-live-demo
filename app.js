@@ -1754,6 +1754,14 @@ function setView(view) {
         foldersPane.style.display = 'flex';
     }
 
+    // Mobile: list-type views (mail/contacts/desk) show the list first; every
+    // other view is full-content, so slide the reading pane in.
+    const ws = document.querySelector('.outlook-main-workspace');
+    if (ws) {
+        const listType = (view === 'mail' || view === 'contacts' || view === 'desk');
+        ws.classList.toggle('mobile-reading', !listType);
+    }
+
     if (view === 'mail' || view === 'desk') {
         paneTitleText.textContent = view === 'desk' ? 'Sales Desk Workspace' : 'Mail';
         renderMailList();
@@ -1897,6 +1905,8 @@ function selectMail(id) {
     // Reading an email always lives in the Outlook window — keeps scenarios
     // visibly moving back to the inbox between ERP steps.
     setView('mail');
+    // Mobile: opening an email slides the reading pane in over the list.
+    document.querySelector('.outlook-main-workspace')?.classList.add('mobile-reading');
 
     // Mark as read
     if (mail.unread) {
@@ -5226,6 +5236,26 @@ function init() {
     const dirPanel = document.getElementById('demo-director');
     if (dirHeader && dirPanel) {
         dirHeader.addEventListener('click', () => dirPanel.classList.toggle('collapsed'));
+        // Start collapsed on phones so it doesn't cover the screen
+        if (window.matchMedia('(max-width: 820px)').matches) dirPanel.classList.add('collapsed');
+    }
+
+    // Mobile: "Back" button returns from the reading pane to the list
+    const mobileBack = document.getElementById('mobile-back-btn');
+    if (mobileBack) {
+        mobileBack.addEventListener('click', () => {
+            document.querySelector('.outlook-main-workspace')?.classList.remove('mobile-reading');
+        });
+    }
+
+    // Mobile: start with the Copilot collapsed so it doesn't cover the inbox
+    if (window.matchMedia('(max-width: 820px)').matches && copilotSidebar) {
+        copilotSidebar.classList.add('collapsed');
+        isCopilotOpen = false;
+        if (btnToggleCopilot) {
+            const ic = btnToggleCopilot.querySelector('i');
+            if (ic) ic.className = 'fa-solid fa-chevron-left';
+        }
     }
 
     // Set starting active email

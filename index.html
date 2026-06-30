@@ -359,6 +359,8 @@
 
             <!-- Right Reading Pane -->
             <section class="outlook-reading-pane" id="reading-pane">
+                <!-- Mobile-only back button to return to the list -->
+                <button class="mobile-back-btn" id="mobile-back-btn" title="Back to list"><i class="fa-solid fa-arrow-left"></i> Back</button>
                 <!-- VIEW 1: MAIL READING PANE -->
                 <div class="reading-pane-content" id="mail-reading-view">
                     <!-- Warning banner (Sentinel Alerts) -->
@@ -848,15 +850,19 @@
 
             <!-- Collapsible Far-Right Backfeed Sales Copilot Add-in Pane -->
             <section class="backfeed-copilot-pane" id="copilot-sidebar">
-                <div class="copilot-toggle-handle" id="btn-toggle-copilot" title="Toggle Backfeed Copilot">
+                <div class="copilot-toggle-handle" id="btn-toggle-copilot" title="Toggle Backfeed">
                     <i class="fa-solid fa-chevron-left"></i>
-                    <span>COPILOT</span>
+                    <span>BACKFEED</span>
                 </div>
                 
                 <div class="copilot-content-wrapper">
                     <div class="copilot-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                         <div style="display: flex; align-items: center; gap: 8px;">
-                            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Backfeed Copilot</h3>
+                            <h3 style="display:flex; align-items:center; gap:1px; margin:0;">
+                                <span style="color:#06b6d4; font-weight:800; font-family:monospace; text-shadow:0 0 10px rgba(6,182,212,0.5); margin-right:3px;">&lt;</span>
+                                <span style="color:#1a1a2e; font-weight:700; letter-spacing:-0.02em; font-family:'Outfit',sans-serif;">backfeed</span>
+                                <span style="width:8px; height:15px; background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%); border-radius:2px; margin-left:4px; box-shadow:0 0 8px rgba(245,158,11,0.4); display:inline-block; flex-shrink:0;"></span>
+                            </h3>
                         </div>
                         <div style="display: flex; align-items: center; gap: 6px;">
                             <span class="copilot-status" id="copilot-status-badge"><i class="fa-solid fa-circle"></i> Active</span>
