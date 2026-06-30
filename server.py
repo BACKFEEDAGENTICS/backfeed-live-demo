@@ -387,11 +387,126 @@ def apply_shock_multipliers(results):
     return shocked
 
 
+# ============================================================
+# PHASE 1 — Access codes (use-limit + expiry) and per-code sessions.
+# State is persisted under BACKFEED_DATA_DIR (point this at a Render Disk
+# mount so it survives restarts/redeploys). Same code -> same session.
+# ============================================================
+DATA_DIR = os.environ.get("BACKFEED_DATA_DIR", os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"))
+CODES_PATH = os.path.join(DATA_DIR, "codes.json")
+SESSIONS_DIR = os.path.join(DATA_DIR, "sessions")
+
+
+def _now_iso():
+    import datetime
+    return datetime.datetime.utcnow().isoformat() + "Z"
+
+
+def _ensure_data_dirs():
+    os.makedirs(SESSIONS_DIR, exist_ok=True)
+
+
+def load_codes():
+    try:
+        with open(CODES_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def save_codes(codes):
+    _ensure_data_dirs()
+    with open(CODES_PATH, "w", encoding="utf-8") as f:
+        json.dump(codes, f, indent=2)
+
+
+def generate_access_code():
+    import random
+    import string
+    blk = lambda: "".join(random.choices(string.ascii_uppercase + string.digits, k=4))
+    return f"BF-{blk()}-{blk()}-{blk()}"
+
+
+def mint_codes(count=5, max_uses=10, expiry_days=30):
+    import time
+    codes = load_codes()
+    created = []
+    expires_at = (time.time() + expiry_days * 86400) if expiry_days else None
+    for _ in range(int(count)):
+        code = generate_access_code()
+        while code in codes:
+            code = generate_access_code()
+        codes[code] = {
+            "code": code, "maxUses": int(max_uses), "usesLeft": int(max_uses),
+            "expiresAt": expires_at, "sessionId": code, "createdAt": _now_iso(),
+        }
+        created.append(codes[code])
+    save_codes(codes)
+    return created
+
+
+def default_session_state():
+    return {"createdAt": _now_iso(), "simDay": 0, "orders": [], "customers": {}, "notes": {}, "quotes": [], "version": 1}
+
+
+def _session_path(sid):
+    import re
+    safe = re.sub(r"[^A-Za-z0-9_-]", "_", str(sid))
+    return os.path.join(SESSIONS_DIR, f"{safe}.json")
+
+
+def load_session(sid):
+    try:
+        with open(_session_path(sid), "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return None
+
+
+def save_session(sid, state):
+    _ensure_data_dirs()
+    with open(_session_path(sid), "w", encoding="utf-8") as f:
+        json.dump(state, f, indent=2)
+
+
+def get_or_create_session(sid):
+    st = load_session(sid)
+    if st is None:
+        st = default_session_state()
+        save_session(sid, st)
+    return st
+
+
+def consume_access_code(code):
+    """Validate a code and consume one use. Returns (ok, reason, sessionId).
+    reason in {'ok','invalid','expired','exhausted'}."""
+    import time
+    code = (code or "").strip()
+    if not code:
+        return (False, "invalid", None)
+    if code == "BF-MASTER-ADMIN":
+        return (True, "ok", "admin")
+    codes = load_codes()
+    obj = codes.get(code)
+    if not obj:
+        return (False, "invalid", None)
+    exp = obj.get("expiresAt")
+    if exp and time.time() > exp:
+        return (False, "expired", None)
+    if obj.get("usesLeft", 0) <= 0:
+        return (False, "exhausted", None)
+    obj["usesLeft"] = obj.get("usesLeft", 1) - 1
+    obj["lastUsed"] = _now_iso()
+    codes[code] = obj
+    save_codes(codes)
+    return (True, "ok", obj.get("sessionId", code))
+
+
 def rotate_passcode():
     import string
     import base64
     import urllib.request
-    
+
     # 1. Generate new valid passcode: BF-XXXX-XXXX-XXXX
     chars = string.ascii_uppercase + string.digits
     while True:
@@ -513,17 +628,26 @@ class SecurityGatewayServer(http.server.SimpleHTTPRequestHandler):
         codes.append("BF-LIVE-DEMO")
         return codes
 
-    def is_authenticated(self) -> bool:
-        valid_passcodes = self.get_valid_passcodes()
+    def _cookies(self) -> dict:
         cookie_header = self.headers.get('Cookie', '')
         cookies = {}
         if cookie_header:
             for item in cookie_header.split(';'):
                 if '=' in item:
-                    parts = item.strip().split('=', 1)
-                    if len(parts) == 2:
-                        cookies[parts[0].strip()] = parts[1].strip()
-        return cookies.get('backfeed_passcode', '') in valid_passcodes
+                    k, v = item.strip().split('=', 1)
+                    cookies[k.strip()] = v.strip()
+        return cookies
+
+    def _session_id(self) -> str:
+        return self._cookies().get('backfeed_session', '').strip()
+
+    def is_authenticated(self) -> bool:
+        cookies = self._cookies()
+        sid = cookies.get('backfeed_session', '').strip()
+        if sid and (sid == 'admin' or sid.startswith('legacy-') or load_session(sid) is not None):
+            return True
+        # Back-compat: a still-valid passcode cookie also authenticates.
+        return cookies.get('backfeed_passcode', '') in self.get_valid_passcodes()
 
     def serve_login_page(self, error_msg=""):
         self.send_response(200)
@@ -834,20 +958,41 @@ class SecurityGatewayServer(http.server.SimpleHTTPRequestHandler):
         if parsed_url.path == '/login':
             query_params = parse_qs(parsed_url.query)
             submitted_code = query_params.get("code", [""])[0].strip()
-            valid_passcodes = self.get_valid_passcodes()
-            if submitted_code in valid_passcodes:
-                if submitted_code != "BF-MASTER-ADMIN":
-                    import threading
-                    threading.Thread(target=rotate_passcode, daemon=True).start()
 
+            # New system: use-limited / expiring access codes with persistent sessions.
+            ok, reason, sid = consume_access_code(submitted_code)
+            if ok:
+                get_or_create_session(sid)
                 self.send_response(302)
                 self.send_header('Set-Cookie', f'backfeed_passcode={submitted_code}; Path=/; HttpOnly; Max-Age=86400')
+                self.send_header('Set-Cookie', f'backfeed_session={sid}; Path=/; HttpOnly; Max-Age=86400')
                 self.send_header('Location', '/index.html')
                 self.end_headers()
                 return
-            else:
-                self.serve_login_page(error_msg="Invalid Passcode. Please try again.")
+            if reason in ('expired', 'exhausted'):
+                msg = ("This access code is used up — please request a new one."
+                       if reason == 'exhausted' else
+                       "This access code has expired — please request a new one.")
+                self.serve_login_page(error_msg=msg)
                 return
+
+            # Legacy fallback: rotating active_passcode / RENDER_PASSCODES / master.
+            valid_passcodes = self.get_valid_passcodes()
+            if submitted_code in valid_passcodes:
+                legacy_sid = "admin" if submitted_code == "BF-MASTER-ADMIN" else f"legacy-{submitted_code}"
+                get_or_create_session(legacy_sid)
+                if submitted_code != "BF-MASTER-ADMIN":
+                    import threading
+                    threading.Thread(target=rotate_passcode, daemon=True).start()
+                self.send_response(302)
+                self.send_header('Set-Cookie', f'backfeed_passcode={submitted_code}; Path=/; HttpOnly; Max-Age=86400')
+                self.send_header('Set-Cookie', f'backfeed_session={legacy_sid}; Path=/; HttpOnly; Max-Age=86400')
+                self.send_header('Location', '/index.html')
+                self.end_headers()
+                return
+
+            self.serve_login_page(error_msg="Invalid Passcode. Please try again.")
+            return
 
         # 2. Check if user is authenticated
         if not self.is_authenticated():
@@ -872,6 +1017,13 @@ class SecurityGatewayServer(http.server.SimpleHTTPRequestHandler):
             self.handle_scratch_list()
         elif self.path.startswith('/api/scratch/view'):
             self.handle_scratch_view()
+        elif self.path == '/api/session':
+            sid = self._session_id()
+            if not sid:
+                self._send_json({"success": False, "error": "no session"}, status=401)
+                return
+            st = get_or_create_session(sid)
+            self._send_json({"success": True, "sessionId": sid, "state": st})
         else:
             super().do_GET()
 
@@ -1145,6 +1297,44 @@ ERP Distribution Security Gateway"""
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             self.wfile.write(json.dumps({"success": True, "message": "Stochastic shock cleared"}).encode('utf-8'))
+        elif self.path == '/api/session/save':
+            # Persist this code's session state (full or partial merge).
+            sid = self._session_id()
+            if not sid:
+                self._send_json({"success": False, "error": "no session"}, status=401)
+                return
+            try:
+                length = int(self.headers.get('Content-Length', 0))
+                payload = json.loads(self.rfile.read(length).decode('utf-8')) if length else {}
+            except Exception as e:
+                self._send_json({"success": False, "error": f"bad body: {e}"}, status=400)
+                return
+            state = get_or_create_session(sid)
+            incoming = payload.get('state', payload)
+            if isinstance(incoming, dict):
+                state.update(incoming)
+            state['updatedAt'] = _now_iso()
+            save_session(sid, state)
+            self._send_json({"success": True, "sessionId": sid})
+        elif self.path == '/api/admin/codes':
+            # Generate a batch of access codes. Master only.
+            try:
+                length = int(self.headers.get('Content-Length', 0))
+                payload = json.loads(self.rfile.read(length).decode('utf-8')) if length else {}
+            except Exception:
+                payload = {}
+            is_master = (self._session_id() == 'admin'
+                         or self._cookies().get('backfeed_passcode', '') == 'BF-MASTER-ADMIN'
+                         or payload.get('masterKey', '') == 'BF-MASTER-ADMIN')
+            if not is_master:
+                self._send_json({"success": False, "error": "admin only"}, status=403)
+                return
+            created = mint_codes(
+                count=payload.get('count', 5),
+                max_uses=payload.get('maxUses', 10),
+                expiry_days=payload.get('expiryDays', 30),
+            )
+            self._send_json({"success": True, "codes": created})
         else:
             self.send_response(404)
             self.end_headers()
@@ -1664,6 +1854,24 @@ _cache_thread.start()
 
 if __name__ == '__main__':
     import socketserver
+
+    # CLI: mint access codes without running the server, e.g.
+    #   python server.py gen-codes 10 --uses 5 --days 30
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] in ('gen-codes', 'gencodes'):
+        n = int(sys.argv[2]) if len(sys.argv) > 2 and sys.argv[2].isdigit() else 5
+        uses = 10
+        days = 30
+        if '--uses' in sys.argv:
+            uses = int(sys.argv[sys.argv.index('--uses') + 1])
+        if '--days' in sys.argv:
+            days = int(sys.argv[sys.argv.index('--days') + 1])
+        made = mint_codes(count=n, max_uses=uses, expiry_days=days)
+        print(f"Minted {len(made)} code(s) (maxUses={uses}, expiryDays={days}) into {CODES_PATH}:")
+        for c in made:
+            print("  " + c["code"])
+        sys.exit(0)
+
     # Change working directory to this script's directory so it serves static files correctly
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     

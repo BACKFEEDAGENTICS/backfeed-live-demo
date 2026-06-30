@@ -5221,7 +5221,33 @@ if (btnClearMemory) {
 // 16. SYSTEM INITIALIZATION
 // ==========================================
 
+// Phase 1: per-code persistent session bootstrap.
+// Loads this access code's saved state from the server and exposes a saver
+// that later (Phase 2) ERP/order/customer changes call to persist.
+window.backfeedSession = null;
+window.backfeedSessionId = null;
+function loadBackfeedSession() {
+    return fetch('/api/session')
+        .then(r => r.ok ? r.json() : null)
+        .then(d => {
+            if (d && d.success) {
+                window.backfeedSession = d.state;
+                window.backfeedSessionId = d.sessionId;
+                document.dispatchEvent(new CustomEvent('backfeed-session-loaded', { detail: d.state }));
+            }
+            return window.backfeedSession;
+        })
+        .catch(() => null);
+}
+window.saveBackfeedSession = function (partial) {
+    return fetch('/api/session/save', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ state: partial })
+    }).then(r => r.json()).catch(() => ({ success: false }));
+};
+
 function init() {
+    loadBackfeedSession();
     initSettings();
     initNavigation();
     initMarketTickers();

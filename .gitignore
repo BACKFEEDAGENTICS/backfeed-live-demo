@@ -21,3 +21,6 @@ __pycache__/
 # Temporary logs
 *.log
 *.tmp
+
+# Phase 1: per-session state (lives on the Render disk, never in git)
+data/
