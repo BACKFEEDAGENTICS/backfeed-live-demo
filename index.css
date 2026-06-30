@@ -779,6 +779,7 @@ body {
 /* Reading Pane */
 .outlook-reading-pane {
     flex: 1;
+    min-width: 0; /* allow this column to shrink beside the fixed Copilot instead of clipping */
     background: #ffffff;
     display: flex;
     flex-direction: column;

@@ -2370,11 +2370,20 @@ btnNewMail.addEventListener('click', () => {
     openComposeMail();
 });
 
+// Set true after the first failed /api call so we stop hammering a backend
+// that isn't there (e.g. static GitHub Pages hosting) and use demo data instead.
+var backendOffline = false;
+
 function syncOutlookMailbox(silent = false) {
+    if (backendOffline) {
+        // No live backend — inbox already shows the in-browser demo data.
+        if (!silent) showToast('Sync Complete', 'Inbox is up to date (demo data).', 'info');
+        return Promise.resolve();
+    }
     if (!silent) {
         showToast('Syncing Inbox', 'Checking Outlook inbox for new messages...', 'info');
     }
-    
+
     const icon = btnRefreshMail ? btnRefreshMail.querySelector('i') : null;
     if (icon) icon.classList.add('fa-spin');
     if (btnRefreshMail) btnRefreshMail.disabled = true;
@@ -2436,9 +2445,10 @@ function syncOutlookMailbox(silent = false) {
             }
         })
         .catch(err => {
-            console.error('Error syncing inbox:', err);
+            backendOffline = true;
+            console.info('Backfeed: no live backend detected — running on in-browser demo data.');
             if (!silent) {
-                showToast('Sync Error', 'An error occurred while connecting to the email server.', 'error');
+                showToast('Demo Mode', 'No live backend — showing in-browser demo data.', 'info');
             }
         })
         .finally(() => {
@@ -3514,32 +3524,38 @@ document.querySelectorAll('.filter-chip').forEach(chip => {
 
 let currentCommodities = null;
 
+function useMockCommodities() {
+    if (!currentCommodities) {
+        currentCommodities = {
+            "Copper": { price: 6.48, pct: -0.01 },
+            "Aluminum": { price: 2540.0, pct: -0.45 },
+            "Crude Oil": { price: 78.45, pct: 1.6 },
+            "Natural Gas": { price: 2.84, pct: -1.7 },
+            "Steel HRC": { price: 810.0, pct: 1.6 },
+            "PVC Resin": { price: 0.92, pct: 1.6 }
+        };
+    } else {
+        Object.keys(currentCommodities).forEach(name => {
+            const item = currentCommodities[name];
+            const change = (Math.random() - 0.5) * 0.1;
+            item.price = item.price * (1 + change / 100);
+            item.pct = (item.pct || 0) + change;
+        });
+    }
+    renderCommodities(currentCommodities);
+}
+
 function pollCommoditiesData() {
+    // Once we know there's no backend, just animate the demo ticker — no network call.
+    if (backendOffline) { useMockCommodities(); return; }
     fetch('/api/commodities')
     .then(res => res.json())
     .then(data => {
         renderCommodities(data);
     })
     .catch(err => {
-        console.warn('Backend offline. Using mock commodities data.');
-        if (!currentCommodities) {
-            currentCommodities = {
-                "Copper": { price: 6.48, pct: -0.01 },
-                "Aluminum": { price: 2540.0, pct: -0.45 },
-                "Crude Oil": { price: 78.45, pct: 1.6 },
-                "Natural Gas": { price: 2.84, pct: -1.7 },
-                "Steel HRC": { price: 810.0, pct: 1.6 },
-                "PVC Resin": { price: 0.92, pct: 1.6 }
-            };
-        } else {
-            Object.keys(currentCommodities).forEach(name => {
-                const item = currentCommodities[name];
-                const change = (Math.random() - 0.5) * 0.1;
-                item.price = item.price * (1 + change / 100);
-                item.pct = (item.pct || 0) + change;
-            });
-        }
-        renderCommodities(currentCommodities);
+        backendOffline = true;
+        useMockCommodities();
     });
 }
 
@@ -3583,13 +3599,14 @@ const mockNews = [
 ];
 
 function pollNewsData() {
+    if (backendOffline) { renderNews(mockNews); return; }
     fetch('/api/news')
     .then(res => res.json())
     .then(data => {
         renderNews(data);
     })
     .catch(err => {
-        console.warn('Backend offline. Using mock news data.');
+        backendOffline = true;
         renderNews(mockNews);
     });
 }
