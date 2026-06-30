@@ -50,6 +50,14 @@ _HIGH_RISK_TLDS = {'.top', '.xyz', '.info', '.click', '.loan', '.work', '.bid',
                    '.win', '.gq', '.ml', '.cf', '.tk', '.pw'}
 
 def load_inbox_config() -> list:
+    # Priority 1: Environment variable (for Render / Docker deployments)
+    env_cfg = os.environ.get("INBOXES_CONFIG_JSON", "").strip()
+    if env_cfg:
+        try:
+            return json.loads(env_cfg).get("inboxes", [])
+        except Exception as e:
+            print(f"[IMAP] Failed to parse INBOXES_CONFIG_JSON env var: {e}")
+    # Priority 2: Local file on disk
     if not os.path.exists(INBOXES_CONFIG):
         return []
     try:
@@ -1526,7 +1534,24 @@ ERP Distribution Security Gateway"""
             self.wfile.write(json.dumps({"success": True, "emails": email_list, "simulated": False}).encode('utf-8'))
             return
         except Exception as e:
-            print(f"[Server] Outlook COM inbox read failed: {e}. Serving simulated inbox.")
+            print(f"[Server] Outlook COM inbox read failed: {e}. Attempting IMAP fallback...")
+            # --- IMAP Fallback: Try real inboxes via IMAP before returning simulated data ---
+            imap_emails = get_inbox_emails()
+            if imap_emails:
+                print(f"[Server] IMAP fallback successful: {len(imap_emails)} real emails fetched.")
+                # Merge IMAP emails with demo emails, dedup by subject
+                demo_subjects = {em.get("subject", "") for em in email_list}
+                for imap_email in imap_emails:
+                    if imap_email.get("subject", "") not in demo_subjects:
+                        email_list.append(imap_email)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True, "emails": email_list, "simulated": False}).encode('utf-8'))
+                return
+            # --- No IMAP config or no emails: serve simulated demo inbox ---
+            print(f"[Server] No IMAP config available. Serving simulated inbox.")
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
