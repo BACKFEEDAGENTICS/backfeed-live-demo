@@ -3872,6 +3872,7 @@ function startAutomatedDemo(scenario) {
     if (scenario === 'happy-path') {
         // SCENARIO 1: Happy Path (RFQ to Sales Order)
         updateBanner("Scenario 1: Selecting Vanguard RFQ email...");
+        setView('mail');           // start in the Outlook inbox, reading the RFQ
         selectMail('mail-1');
         openCopilotTab('rfq');
         
@@ -3890,10 +3891,12 @@ function startAutomatedDemo(scenario) {
                     
                     schedule(() => {
                         updateBanner("Scenario 1: Verifying ERP account profiles & credit limits...");
+                        setView('erp');            // switch over to the ERP window to verify the account
                         openCopilotTab('erp');
                         
                         schedule(() => {
                             updateBanner("Scenario 1: Compiling Excel quote proposals...");
+                            setView('mail');       // back to Outlook to draft & send the quote reply
                             const mail = mailItems.find(m => m.id === 'mail-1');
                             if (mail && parsedQuoteData) {
                                 let attachmentLabel = "ERP_Quote_Proposal.xlsx";
@@ -3920,6 +3923,7 @@ ERP Distribution`;
                                     updateBanner("Scenario 1: Dispatching proposal email (logs order in ERP)...");
                                     schedule(() => {
                                         if (btnSendMail) btnSendMail.click();
+                                        setView('erp');    // jump to the ERP window to show the order logged
                                         schedule(() => {
                                             updateBanner("Scenario 1: Staging complete. Waiting for customer response...");
                                             schedule(() => {
