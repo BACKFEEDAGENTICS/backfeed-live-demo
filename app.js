@@ -1894,6 +1894,10 @@ function selectMail(id) {
     if (!mail) mail = sentMailItems.find(m => m.id === id);
     if (!mail) return;
 
+    // Reading an email always lives in the Outlook window — keeps scenarios
+    // visibly moving back to the inbox between ERP steps.
+    setView('mail');
+
     // Mark as read
     if (mail.unread) {
         mail.unread = false;
@@ -2344,6 +2348,7 @@ function typeEmailBody(text, callback) {
 }
 
 function openComposeMail(to = '', subject = '', body = '', attachment = null, simulateTyping = false, typingCallback = null) {
+    setView('mail');   // drafting/replying happens in the Outlook window
     composeTo.value = to;
     composeSubject.value = subject;
     
@@ -2557,6 +2562,7 @@ btnSendMail.addEventListener('click', () => {
     const inputEl = document.getElementById('app-cli-input-text');
     
     if (account && term && inputEl) {
+        setView('erp');
         openCopilotTab('erp');
         
         function typeCommand(text, callback) {
@@ -3892,6 +3898,7 @@ function startAutomatedDemo(scenario) {
                     schedule(() => {
                         updateBanner("Scenario 1: Verifying ERP account profiles & credit limits...");
                         setView('erp');            // switch over to the ERP window to verify the account
+                        setView('erp');
                         openCopilotTab('erp');
                         
                         schedule(() => {
@@ -3948,6 +3955,7 @@ ERP Distribution`;
         
         schedule(() => {
             updateBanner("Scenario 2: Inspecting message headers in Security Audit tab...");
+            setView('erp');
             openCopilotTab('erp');
             
             schedule(() => {
@@ -3979,6 +3987,7 @@ ERP Distribution`;
             
             schedule(() => {
                 updateBanner("Scenario 3: Checking ERP account standings...");
+                setView('erp');
                 openCopilotTab('erp');
                 
                 schedule(() => {
@@ -4076,6 +4085,7 @@ ERP Credit Desk`;
             
             schedule(() => {
                 updateBanner("Scenario 5: Opening ERP tab to inspect commission-yielding line-card equivalents...");
+                setView('erp');
                 openCopilotTab('erp');
                 
                 schedule(() => {
@@ -4243,6 +4253,7 @@ Summit Electrical Sales`;
             
             schedule(() => {
                 updateBanner("Scenario 8: Querying stock alternatives database for drop-in equivalents...");
+                setView('erp');
                 openCopilotTab('erp');
                 
                 schedule(() => {
@@ -4298,6 +4309,7 @@ Oddball Sourcing`;
             
             schedule(() => {
                 updateBanner("Scenario 9: Running Threshold Analyzer to identify compatible accessory add-ons...");
+                setView('erp');
                 openCopilotTab('erp');
                 
                 schedule(() => {
@@ -5208,10 +5220,17 @@ function init() {
     initSlideBuilder();
     initWillCall();
     initScratchExplorer();
-    
+
+    // Collapsible Demo Director panel (click header to tuck it away)
+    const dirHeader = document.getElementById('director-header');
+    const dirPanel = document.getElementById('demo-director');
+    if (dirHeader && dirPanel) {
+        dirHeader.addEventListener('click', () => dirPanel.classList.toggle('collapsed'));
+    }
+
     // Set starting active email
     selectMail('mail-1');
-    
+
     // Set default view to ERP
     setView('erp');
 
