@@ -5661,7 +5661,7 @@ function initSlideBuilder() {
         btnGen.disabled = true;
         btnGenOpen.disabled = true;
         
-        showToast('PPTX Compilation Started', 'Re-building data center presentation...', 'success');
+        showToast('PPTX Compilation Started', 'Re-building sales operations presentation...', 'success');
         
         fetch('/api/generate-pptx', {
             method: 'POST',
@@ -5883,7 +5883,7 @@ function initSlideBuilder() {
             `;
             
             // Live Type Cover Title
-            const titleText = config.title || "Solving Data Center Supply Chain Velocity";
+            const titleText = config.title || "Summit Sales Operations & Cognitive Automation Strategy";
             const subText = "Operations Architecture & Cognitive Automation Strategy";
             
             typeWriterEffect('sim-slide-title', titleText, 15, () => {
@@ -5914,7 +5914,7 @@ function initSlideBuilder() {
             ];
             const list2 = [
                 "Static cost sheets lead to bidding discrepancies.",
-                "Data center contracts lock margins for 180+ days.",
+                "Commercial contracts lock margins for 180+ days.",
                 "Real-time indexing required to safeguard profits."
             ];
 
@@ -6011,7 +6011,7 @@ function initSlideBuilder() {
             const list2 = [
                 "60% reduction in staging and loading labor.",
                 "10x inside sales throughput speed.",
-                "Protect margins on multimillion-dollar data center bids."
+                "Protect margins on large-scale commercial bids."
             ];
 
             typeListEffect('sim-slide-list-1', list1, () => {
