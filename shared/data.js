@@ -14,14 +14,14 @@
   // SALES REPRESENTATIVES
   // ═══════════════════════════════════════════
   const reps = [
-    { id: 'REP-001', name: 'Kevin Pollock', role: 'Inside Sales Specialist', email: 'kevin.pollock@summitsales.com', phone: '(856) 555-0101', territory: 'East' },
+    { id: 'REP-001', name: 'Sales Desk', role: 'Inside Sales Specialist', email: 'sales.desk@summitsales.com', phone: '(856) 555-0101', territory: 'East' },
     { id: 'REP-002', name: 'Danielle Russo', role: 'Inside Sales Specialist', email: 'danielle.russo@summitsales.com', phone: '(856) 555-0102', territory: 'East' },
     { id: 'REP-003', name: 'Sarah Jenkins', role: 'Lighting Representative', email: 'sarah.jenkins@summitsales.com', phone: '(856) 555-0103', territory: 'East' },
     { id: 'REP-004', name: 'Todd Sterling', role: 'Territory Account Manager', email: 'todd.sterling@summitsales.com', phone: '(856) 555-0104', territory: 'East' },
   ];
 
   const salespeople = [
-    { id: 'SP-01', name: 'Kevin Pollock', initials: 'KP' },
+    { id: 'SP-01', name: 'Sales Desk', initials: 'SD' },
     { id: 'SP-02', name: 'Danielle Russo', initials: 'DR' },
     { id: 'SP-03', name: 'Sarah Jenkins', initials: 'SJ' },
     { id: 'SP-04', name: 'Todd Sterling', initials: 'TS' },
@@ -213,7 +213,7 @@
       [{ id: 'SO-4421', date: '2026-05-15', total: 12840, status: 'Shipped', desc: 'Strut, EMT, Fittings', po: 'PO-TS-4420' },
        { id: 'SO-4389', date: '2026-04-22', total: 8650, status: 'Shipped', desc: 'MC Cable, Boxes', po: 'PO-TS-4385' },
        { id: 'SO-4290', date: '2026-03-10', total: 15200, status: 'Delivered', desc: 'THHN Wire, Panels', po: 'PO-TS-4288' }],
-      [{ timestamp: '2026-05-28 09:15', user: 'K.Pollock', text: 'Confirmed Net 30 terms for Q3.' }]),
+      [{ timestamp: '2026-05-28 09:15', user: 'Operator', text: 'Confirmed Net 30 terms for Q3.' }]),
 
     makeCust('C-1002', 'Mid-Atlantic Power Systems', '890 Market St, Suite 200, Philadelphia, PA 19107', '(215) 555-8844', '(215) 555-8845', 'j.chen@midatlanticpower.com', 'www.midatlanticpower.com', '23-5567890', 'Philadelphia',
       [{ name: 'Janet Chen', title: 'VP Operations', phone: '(215) 555-8844', email: 'j.chen@midatlanticpower.com', primary: true },
@@ -264,7 +264,7 @@
       60000, 58500, 'Hold', 'Net 30', '2026-03-30',
       [{ id: 'SO-4340', date: '2026-03-30', total: 28500, status: 'Credit Hold', desc: 'Lighting, Wire, Panels', po: 'PO-ACE-890' },
        { id: 'SO-4315', date: '2026-03-15', total: 30000, status: 'Delivered', desc: 'Cable, Conduit', po: 'PO-ACE-885' }],
-      [{ timestamp: '2026-04-05 09:00', user: 'K.Pollock', text: 'CREDIT HOLD placed. Balance at 97.5% of limit. Last payment 30+ days ago.' }]),
+      [{ timestamp: '2026-04-05 09:00', user: 'Operator', text: 'CREDIT HOLD placed. Balance at 97.5% of limit. Last payment 30+ days ago.' }]),
 
     makeCust('C-1008', 'Beacon Electric Supply', '310 Route 73 South, Marlton, NJ 08053', '(609) 555-7788', '', 'f.dimaggio@beaconelec.com', '', '22-9876543', 'South Jersey',
       [{ name: 'Frank DiMaggio', title: 'General Manager', phone: '(609) 555-7788', email: 'f.dimaggio@beaconelec.com', primary: true }],
@@ -307,7 +307,7 @@
       [{ code: 'MAIN', name: 'Main Office', address: '780 Route 206, Hammonton, NJ 08037' }],
       30000, 29800, 'Hold', 'Net 30', '2026-02-10',
       [{ id: 'SO-4280', date: '2026-02-28', total: 15600, status: 'Delivered', desc: 'Wire, Fittings', po: 'PO-PBE-180' }],
-      [{ timestamp: '2026-03-15 10:00', user: 'K.Pollock', text: 'CREDIT HOLD — overdue 90+ days. Collections contacted.' }]),
+      [{ timestamp: '2026-03-15 10:00', user: 'Operator', text: 'CREDIT HOLD — overdue 90+ days. Collections contacted.' }]),
 
     makeCust('C-1014', 'Brandywine Electric Services', '225 Kennett Pike, Chadds Ford, PA 19317', '(610) 555-8800', '', 'k.whitfield@brandywineelec.com', '', '23-2233445', 'Delaware Valley',
       [{ name: 'Karen Whitfield', title: 'Admin Manager', phone: '(610) 555-8800', email: 'k.whitfield@brandywineelec.com', primary: true }],
@@ -364,14 +364,14 @@
       [{ code: 'MAIN', name: 'Applegate Plant', address: '2900 Applegate Way, Runnemede, NJ 08078' }],
       80000, 14500, 'Good', 'Net 30', '2026-05-20',
       [],
-      [{ timestamp: '2026-06-08 09:15', user: 'K.Pollock', text: 'Crown Food Processing (fka Thomas Foods) setup complete.' }]),
+      [{ timestamp: '2026-06-08 09:15', user: 'Operator', text: 'Crown Food Processing (fka Thomas Foods) setup complete.' }]),
     makeCust('C-1022', 'National Rail Service', '2955 Market St, 5th Floor, Philadelphia, PA 19104', '(215) 555-4500', '', 't.zellers@nationalrail.gov', 'www.nationalrail.gov', '23-8877112', 'Philadelphia',
       [{ name: 'T. Zellers', title: 'Lead Purchasing Agent', phone: '(215) 555-4500', email: 't.zellers@nationalrail.gov', primary: true }],
       [{ code: 'MAIN', name: 'Philadelphia HQ', address: '2955 Market St, 5th Floor, Philadelphia, PA 19104' },
        { code: 'SUB1', name: 'Northeast Substation', address: '3025 JFK Blvd, Philadelphia, PA 19104' }],
       150000, 31250, 'Good', 'Net 45', '2026-05-22',
       [],
-      [{ timestamp: '2026-06-08 09:30', user: 'K.Pollock', text: 'National Rail Service (fka Amtrak) setup complete.' }]),
+      [{ timestamp: '2026-06-08 09:30', user: 'Operator', text: 'National Rail Service (fka Amtrak) setup complete.' }]),
   ];
 
   // ═══════════════════════════════════════════
@@ -403,12 +403,12 @@
   const recentActivity = [
     { time: '10:15 AM', event: 'Order SO-4445 created for Apex Lighting — $3,200.00', user: 'S.Jenkins' },
     { time: '10:02 AM', event: 'Customer C-1007 placed on CREDIT HOLD — balance $58,500/$60,000', user: 'SYSTEM' },
-    { time: '09:48 AM', event: 'Quote QT-24-0128 sent to Client Company', user: 'K.Pollock' },
+    { time: '09:48 AM', event: 'Quote QT-24-0128 sent to Client Company', user: 'Operator' },
     { time: '09:30 AM', event: 'Inventory received: 500x CON-EMT34 at WD-01', user: 'A.Pendelton' },
     { time: '09:15 AM', event: 'Price book updated — Titan Conduit Fittings effective 05/15', user: 'SYSTEM' },
-    { time: '09:00 AM', event: 'CNC cut dispatched: 2,400ft THHN 4/0 for C-1001', user: 'K.Pollock' },
+    { time: '09:00 AM', event: 'CNC cut dispatched: 2,400ft THHN 4/0 for C-1001', user: 'Operator' },
     { time: '08:45 AM', event: 'Order SO-4440 shipped — Shore Point Contractors', user: 'J.Whitfield' },
-    { time: '08:30 AM', event: 'Quote QT-24-0125 pending approval — Shore Point', user: 'K.Pollock' },
+    { time: '08:30 AM', event: 'Quote QT-24-0125 pending approval — Shore Point', user: 'Operator' },
     { time: '08:15 AM', event: 'Customer C-1008 credit warning — $800 available', user: 'SYSTEM' },
     { time: '08:00 AM', event: 'System startup — all modules loaded', user: 'SYSTEM' },
   ];

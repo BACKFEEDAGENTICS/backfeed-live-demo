@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backfeed Portal - ERP Distribution | Operations Command Center</title>
     <meta name="description" content="Custom operations portal powered by Backfeed for ERP Distribution, showcasing represented line cards, and bi-directionally linked sales directory.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='13' font-size='13'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
     <!-- Google Fonts — Premium Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -163,7 +164,7 @@
                 </button>
                 <button class="header-icon-btn" title="Settings" id="btn-open-settings"><i class="fa-solid fa-gear"></i></button>
                 <button class="header-icon-btn" title="Help"><i class="fa-solid fa-circle-question"></i></button>
-                <div class="user-avatar-badge" title="Kevin Pollock (Administrator)">KP</div>
+                <div class="user-avatar-badge" title="Sales Operator">SO</div>
             </div>
         </header>
 
@@ -657,7 +658,7 @@
                         <header id="eclipse-titlebar">
                             <div class="titlebar-left">
                                 <div class="eclipse-logo"><i class="fa-solid fa-bolt"></i><span class="logo-text">ERP</span></div>
-                                <span class="titlebar-title">Backfeed ERP — Order Entry System — [T4 : Kevin P]</span>
+                                <span class="titlebar-title">Backfeed ERP — Order Entry System — [T4 : Operator]</span>
                             </div>
                             <div class="titlebar-controls">
                                 <button class="titlebar-btn minimize" title="Minimize"><i class="fa-solid fa-minus"></i></button>
@@ -769,7 +770,7 @@
                             <button class="fkey-btn" data-fkey="F10"><span class="fkey-key">F10</span><span class="fkey-label">Exit</span></button>
                         </div>
                         <footer id="eclipse-statusbar">
-                            <div class="status-section status-user"><i class="fa-solid fa-user"></i><span>Kevin P</span></div>
+                            <div class="status-section status-user"><i class="fa-solid fa-user"></i><span>Operator</span></div>
                             <div class="status-section status-terminal"><i class="fa-solid fa-desktop"></i><span>Terminal T4</span></div>
                             <div class="status-section status-message" id="status-message"><span>Ready</span></div>
                             <div class="status-section status-scenario" id="status-scenario" style="display:none;"><i class="fa-solid fa-stopwatch"></i><span id="scenario-timer">00:00</span></div>
@@ -871,7 +872,7 @@
                         <span class="copilot-tab" data-copilot-tab="smartcut">Logistics</span>
                         <span class="copilot-tab" data-copilot-tab="doc"><i class="fa-solid fa-file-word" style="color: #185abd; margin-right: 4px;"></i> Doc Briefing</span>
                         <span class="copilot-tab" data-copilot-tab="slides"><i class="fa-solid fa-file-powerpoint" style="color: #d24726; margin-right: 4px;"></i> Slide Builder</span>
-                    <button class="copilot-tab" data-tab="memory"><i class="fa-solid fa-brain"></i> Memory</button>
+                    <span class="copilot-tab" data-copilot-tab="memory"><i class="fa-solid fa-brain"></i> Memory</span>
                     </div>
 
                     <div class="copilot-tab-bodies">
@@ -1225,7 +1226,7 @@
                                 </div>
                             </div>
                         </div>
-                <div class="copilot-tab-body" data-tab="memory" style="display: none; height: 100%;">
+                <div class="copilot-tab-body" id="copilot-body-memory" data-copilot-tab="memory" style="height: 100%;">
                     <div class="memory-ledger-container">
                         <div class="memory-totals-bar">
                             <div class="totals-item">
@@ -1348,8 +1349,9 @@
 
         <!-- DEMO INJECTOR FLOATING DIRECT PANEL -->
         <div class="demo-director-panel" id="demo-director">
-            <div class="director-header">
+            <div class="director-header" id="director-header" title="Click to collapse / expand">
                 <i class="fa-solid fa-video"></i> Demo Director Controls
+                <i class="fa-solid fa-chevron-down director-chevron" id="director-chevron"></i>
             </div>
             <div class="director-body">
                 <p>Use these buttons to trigger live events during your video screen recording:</p>
