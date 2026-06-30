@@ -763,7 +763,7 @@ const initialMailItems = [
         date: 'June 8, 2026 10:10 AM',
         subject: 'EMERGENCY RESTORATION: Grid Substation Failure - Hospital feeds',
         snippet: 'Janet Chen from Mid-Atlantic Power requests emergency release of 1,500 ft copper XHHW 6 AWG wire...',
-        body: `Kevin,
+        body: `Hi there,
         
 A severe transformer explosion has knocked out the main substation serving the Mercy General Hospital grid. The governor has declared a state of emergency. 
 
@@ -792,7 +792,7 @@ Mid-Atlantic Power`,
         date: 'June 8, 2026 10:25 AM',
         subject: 'TIGHT DEADLINE BID: Transit Substation RFP - Honor price lock',
         snippet: 'Brian Hayes from Keystone Electric needs 50 panels and 200 GFCI breakers before 3:00 PM bid close...',
-        body: `Kevin,
+        body: `Hi there,
         
 We are submitting our final package for the City Transit Authority Substation project. The bid portal closes at exactly 3:00 PM today. No extensions.
 
@@ -824,7 +824,7 @@ Keystone Electric`,
         date: 'June 8, 2026 9:15 AM',
         subject: 'RFQ: VEG 20HP Flaker Motor replacement - Crown Food',
         snippet: 'Carlos Hernandez from Crown Food requests pricing and availability on VEG 20HP Flaker Motor...',
-        body: `Hi Kevin,
+        body: `Hi there,
 
 Our facility is experiencing an emergency downtime event on our primary flaker line. We need to replace our failed flaker motor as soon as possible.
 
@@ -851,7 +851,7 @@ Crown Food Processing`,
         date: 'June 8, 2026 9:30 AM',
         subject: 'RFQ: Meridian Power Blocks for C+S Transfer Switches',
         snippet: 'T. Zellers from National Rail Service releases 8 pcs Meridian Power Distribution Blocks...',
-        body: `Hello Kevin,
+        body: `Hello there,
 
 Following up on our quote for the C+S Transfer Switches. We would like to release the order for the following items:
 - 8 pcs Meridian Power Distribution Blocks (MPN: FSPDB3C / SKU: PDB-MER-FSPDB3) @ $16.36 each
@@ -900,7 +900,7 @@ National Rail Service`,
         date: 'June 8, 2026 8:40 AM',
         subject: 'RFQ: Subpanel and Breaker Package - Quadra Brand Specified',
         snippet: 'Please quote 150 pcs Quadra Electric Q120 20A breakers and 1,000 ft Union Metal conduit...',
-        body: `Hi Kevin,
+        body: `Hi there,
 
 We need pricing on the following items for a warehouse build-out:
 - 150 pcs Quadra Electric Q120 20A Single Pole Circuit Breaker
@@ -926,7 +926,7 @@ Client Company Solutions`,
         date: 'June 8, 2026 8:48 AM',
         subject: 'EMERGENCY RFQ: Water Treatment Plant Down - Strut & Heaters Needed',
         snippet: 'Plant is down! Need immediate will-call pickup at West Deptford: 4 pcs AeroTherm 5kW heaters...',
-        body: `URGENT Kevin!
+        body: `URGENT!
 
 The Summit Valley Water Treatment Plant has suffered an emergency equipment failure. The facility is down and we need to pull these materials immediately for a will-call pickup today:
 - 4 pcs AeroTherm Electric Unit Heater 5kW (AER-THE-120)
@@ -1061,8 +1061,8 @@ Beacon Electric Supply`,
         senderEmail: 'specialist.d@erp-executives.top',
         date: 'June 8, 2026 7:45 AM',
         subject: 'URGENT: Verify Wire Transfer details immediately',
-        snippet: 'Kevin, I am in an executive board meeting right now and need you to verify and approve a wire release...',
-        body: `Kevin,
+        snippet: 'Hi there, I am in an executive board meeting right now and need you to verify and approve a wire release...',
+        body: `Hi there,
 
 I am in an executive board meeting right now and need you to verify and approve a wire release of $45,000 for a supplier account. The job site shipment is on hold until payment clears.
 
@@ -1206,8 +1206,8 @@ Redwood Electric Operations`,
         senderEmail: 'ap.desk@erpdistribution.com',
         date: 'June 8, 2026 8:15 AM',
         subject: 'Discrepancy: Invoice Variance on PO-99180 (Matrix Fittings)',
-        snippet: 'Kevin, there is a billing mismatch on Vanguard\'s PO-99180. The vendor invoice says $1,890 but the ERP PO is $1,750...',
-        body: `Hi Kevin,
+        snippet: 'Hi there, there is a billing mismatch on Vanguard\'s PO-99180. The vendor invoice says $1,890 but the ERP PO is $1,750...',
+        body: `Hi there,
 
 We received a vendor invoice for order SO-99180 / PO-99180 from Vanguard Contractors (our account Ref: VG-992). The billing doesn't align with what was entered in the ERP system, and we need to reconcile this direct billing variance.
 
@@ -1235,8 +1235,8 @@ Accounts Payable Team`,
         senderEmail: 'ap.desk@erpdistribution.com',
         date: 'June 8, 2026 8:45 AM',
         subject: 'Discrepancy: Direct Billing Margin Variance on PO-99200 (DuraPVC)',
-        snippet: 'Kevin, there is a billing mismatch on Redwood Electric\'s PO-99200. The vendor invoice says $3,750 but ERP is $2,450...',
-        body: `Hi Kevin,
+        snippet: 'Hi there, there is a billing mismatch on Redwood Electric\'s PO-99200. The vendor invoice says $3,750 but ERP is $2,450...',
+        body: `Hi there,
 
 We received a vendor invoice for order SO-99222 / PO-99200 from Redwood Electric (our account Ref: RW-802). The billing doesn't align with what was entered in the ERP system, and we need to reconcile this direct billing variance.
 
@@ -1260,8 +1260,8 @@ Accounts Payable Team`,
         senderEmail: 'finance.VP@erpdistribution.com',
         date: 'May 18, 2021 10:14 AM',
         subject: 'Credit Limit Exception approved: Client Company Solutions',
-        snippet: 'Kevin, the finance department has approved a temporary credit limit extension of $50,000 for Client Company...',
-        body: `Kevin,
+        snippet: 'Hi there, the finance department has approved a temporary credit limit extension of $50,000 for Client Company...',
+        body: `Hi there,
 
 The finance department has approved a temporary credit limit extension of $50,000 for Client Company Solutions (Account TS-441) to cover incoming material orders for their Department of Transportation contracts. This approval will remain active for their storage yard expansion phases.
 
@@ -1281,8 +1281,8 @@ Finance VP`,
         senderEmail: 'contracts@libertywire-mock.com',
         date: 'October 14, 2022 2:45 PM',
         subject: 'Locked Contract Rate Agreement: WIR-THHN12 for Client Company',
-        snippet: 'Kevin, we have locked in a special contract rate of $0.31/ft for WIR-THHN12 for Client Company Solutions...',
-        body: `Kevin,
+        snippet: 'Hi there, we have locked in a special contract rate of $0.31/ft for WIR-THHN12 for Client Company Solutions...',
+        body: `Hi there,
 
 We have locked in a special contract rate of $0.31/ft for WIR-THHN12 (THHN 12 AWG Solid Copper Green) for Client Company Solutions. This contract pricing agreement expires in late 2027. Standard price sheets showing $0.34/ft should be overridden in the billing gateway for all Client Company orders.
 
@@ -1302,8 +1302,8 @@ Liberty Wire Division`,
         senderEmail: 'warehouse.leads@erpdistribution.com',
         date: 'March 22, 2023 9:15 AM',
         subject: 'Palletization Layout Template - Client Company Yard Design Pattern',
-        snippet: 'Hi Kevin, here is the approved freight packaging configuration template for Client Company yard projects...',
-        body: `Hi Kevin,
+        snippet: 'Hi there, here is the approved freight packaging configuration template for Client Company yard projects...',
+        body: `Hi there,
 
 Here is the approved palletization layout configuration template for Client Company yard projects:
 - Standard 48x40 double-stack pallets with heavy-duty strapping and shrinkwrap set to maximize truck volume.
@@ -2508,7 +2508,7 @@ btnSendMail.addEventListener('click', () => {
 
     const newMail = {
         id: `sent-${Date.now()}`,
-        senderName: 'Kevin Pollock',
+        senderName: 'Sales Desk',
         senderEmail: 'sales@erpdistribution.com',
         date: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
         subject: subject || '(No Subject)',
@@ -2656,7 +2656,7 @@ function injectSimulatedReply(originalTo, originalSubject) {
         date: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
         subject: `RE: ${cleanSubject}`,
         snippet: 'Thank you for the quote proposal. The pricing looks aligned. We will submit a PO...',
-        body: `Kevin,
+        body: `Hi there,
 
 Thank you for the quick quote proposal. The pricing and freight consolidation options look aligned. 
 
@@ -3201,7 +3201,7 @@ ${freightMessage}
 Please review the attached Excel worksheet (ERP_Quote_Proposal.xlsx) and submit your purchase order to verify loading scheduling.
 
 Best regards,
-Kevin Pollock
+Sales Desk
 ERP Distribution`;
 
     openComposeMail(mail.senderEmail, `RE: ${mail.subject}`, replyBody, attachmentLabel);
@@ -3640,8 +3640,8 @@ btnInjectRFQ.addEventListener('click', () => {
         senderEmail: 'operations@redwood-electric.com',
         date: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
         subject: 'RFQ Request: Core Fittings Consolidation - Urgent PO release',
-        snippet: 'Kevin, we need pricing details and delivery scheduling confirmation for 8,000 pcs PVC schedule 40...',
-        body: `Kevin,
+        snippet: 'Hi there, we need pricing details and delivery scheduling confirmation for 8,000 pcs PVC schedule 40...',
+        body: `Hi there,
 
 We need pricing details and delivery scheduling confirmation for:
 - 8,000 ft DuraPVC Fittings Schedule 40 Coupling 2"
@@ -3681,8 +3681,8 @@ btnInjectPhish.addEventListener('click', () => {
         senderEmail: 'specialist.a@erp-executives.top',
         date: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
         subject: 'URGENT: Review updated wire pricing list.pdf.exe',
-        snippet: 'Kevin, please open this attachment immediately to review the pricing sheet changes...',
-        body: `Kevin,
+        snippet: 'Hi there, please open this attachment immediately to review the pricing sheet changes...',
+        body: `Hi there,
 
 I made changes to the wiring pricing sheets. Please download and execute the attached statement to update the local databases for:
 - 5,000 ft THHN 12 AWG Solid Copper Black (WIR-THHN12)
@@ -3914,7 +3914,7 @@ ${freightMessage}
 Please review the attached Excel worksheet (ERP_Quote_Proposal.xlsx) and submit your purchase order to verify loading scheduling.
 
 Best regards,
-Kevin Pollock
+Sales Desk
 ERP Distribution`;
                                 openComposeMail(mail.senderEmail, `RE: ${mail.subject}`, replyBody, attachmentLabel, true, () => {
                                     updateBanner("Scenario 1: Dispatching proposal email (logs order in ERP)...");
@@ -3991,7 +3991,7 @@ Thank you for your RFQ. Please note that order entry has triggered a temporary C
 Please submit a 50% deposit payment ($6,900) or contact Credit Desk in credit department to clear the release.
 
 Best,
-Kevin Pollock
+Sales Desk
 ERP Credit Desk`;
                             openComposeMail(mail.senderEmail, `RE: ${mail.subject}`, creditHoldBody, null, true, () => {
                                 updateBanner("Scenario 3: Sending email (Order registered with HOLD status)...");
@@ -4088,7 +4088,7 @@ Thank you for your inquiry. While we do not represent Quadra Electric or Union M
 Total Mapped Quote Value: $1,718.00 (Commission eligible represented line items). Lead time: 2 business days.
 
 Best regards,
-Kevin Pollock
+Sales Desk
 Summit Electrical Sales`;
                         openComposeMail(mail.senderEmail, `RE: ${mail.subject}`, replyBody, "Summit_Quote_Proposal.xlsx", true, () => {
                             updateBanner("Scenario 5: Sending quote with line-card replacements...");
@@ -4144,7 +4144,7 @@ Estimated total including emergency courier delivery: $1,280.00.
 Please confirm if we should release the courier.
 
 Best regards,
-Kevin Pollock
+Sales Desk
 Summit Electrical Sales`;
                                 openComposeMail(mail.senderEmail, `RE: ${mail.subject}`, replyBody, null, true, () => {
                                     updateBanner("Scenario 6: Sending courier staging confirmation...");
@@ -4208,7 +4208,7 @@ To keep the Deptford Storage project on schedule, our engineering desk has calcu
 We have this in stock and can dispatch tomorrow. Let us know if you approve this code-compliant sizing swap.
 
 Best regards,
-Kevin Pollock
+Sales Desk
 Summit Electrical Sales`;
                                 openComposeMail(mail.senderEmail, `RE: ${mail.subject}`, replyBody, null, true, () => {
                                     updateBanner("Scenario 7: Dispatching quote with aluminum alternative...");
@@ -4263,7 +4263,7 @@ To restore your flaker line immediately, our sourcing engine has mapped a drop-i
 Please advise if we should release this represented alternative to clear your downtime.
 
 Best regards,
-Kevin Pollock
+Sales Desk
 Oddball Sourcing`;
                             openComposeMail(mail.senderEmail, `RE: ${mail.subject}`, replyBody, null, true, () => {
                                 updateBanner("Scenario 8: Dispatching alternative motor quote...");
@@ -4315,7 +4315,7 @@ To bypass the manufacturer's $150 minimum order threshold and avoid delivery hol
 This brings your order total to $150.88, successfully releasing the blocks. The anchors are in stock, and the distribution blocks are scheduled on a 6-10 week factory lead time.
 
 Best regards,
-Kevin Pollock
+Sales Desk
 Oddball Sourcing`;
                             openComposeMail(mail.senderEmail, `RE: ${mail.subject}`, replyBody, null, true, () => {
                                 updateBanner("Scenario 9: Sending order release confirmation...");
@@ -4359,7 +4359,7 @@ We have checked the status of your order S144745017 for the 4" HDPE Conduit.
 The factory confirms the Estimated Ship Date remains on track for this Friday, May 29, 2026. We will monitor the shipment and forward carrier tracking details as soon as they are uploaded.
 
 Best regards,
-Kevin Pollock
+Sales Desk
 Oddball Sourcing`;
                         openComposeMail(mail.senderEmail, `RE: ${mail.subject}`, replyBody, null, true, () => {
                             updateBanner("Scenario 10: Sending status update to buyer...");
@@ -4417,7 +4417,7 @@ Order SO-99401 has been registered in the ERP as RELEASED. Total net price: $2,1
 We are contacting the other contractor to steer them to an in-stock aluminum equivalent so no jobs are delayed.
 
 Best regards,
-Kevin Pollock
+Sales Desk
 Oddball Sourcing`;
                                 openComposeMail(mail.senderEmail, `RE: ${mail.subject}`, replyBody, null, true, () => {
                                     updateBanner("Scenario 11: Dispatching emergency release confirmation...");
@@ -4473,7 +4473,7 @@ The quote total is $15,122.00, which exceeds their available credit limit by $12
 To meet their strict deadline, we have already applied the manager price lock matrix to waive the 15% manufacturer surcharge. Can you please review their profile and authorize a temporary credit limit extension to release order SO-99411?
 
 Best regards,
-Kevin Pollock
+Sales Desk
 Oddball Sourcing`;
                                 openComposeMail('credit.manager@erpdistribution.com', `URGENT CREDIT OVERRIDE: Keystone Electric (C-1006) - Bid Deadline 3:00 PM`, escalationBody, null, true, () => {
                                     updateBanner("Scenario 12: Dispatching credit escalation email to Credit Manager...");
@@ -4592,10 +4592,10 @@ function toggleVacationAutopilot() {
 function sendOOOHandoverReport() {
     const reportMail = {
         id: `sent-ooo-${Date.now()}`,
-        senderName: 'Kevin Pollock',
+        senderName: 'Sales Desk',
         senderEmail: 'sales@erpdistribution.com',
         date: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
-        subject: 'HANDOVER SUMMARY: Vacation Autopilot Activated - Kevin OOO',
+        subject: 'HANDOVER SUMMARY: Vacation Autopilot Activated - Operator OOO',
         snippet: 'Team, I am out of office on vacation. Autopilot has been engaged to auto-respond to incoming contractor RFQs...',
         body: `Hi Team,
 
@@ -4616,7 +4616,7 @@ Here is the active operational status handover:
 Autopilot will continue to auto-respond to incoming contractor RFQs and CC the assigned inside specialist.
 
 Best regards,
-Kevin Pollock (Autopilot Agent)`,
+Sales Desk (Autopilot Agent)`,
         folder: 'sent',
         unread: false,
         recipient: 'team@erpdistribution.com',
@@ -4687,11 +4687,11 @@ function handleAutopilotIncomingMail(mail) {
                 const varAmt = isMail9 ? '+$140.00 (Matrix Fittings)' : '+$1,300.00 (DuraPVC)';
                 
                 const oooSubject = `Automatic Out-of-Office Reply: RE: ${mail.subject}`;
-                const oooReplyBody = `Hello AP Team,\n\nI am currently out of office on vacation. My Backfeed Autopilot agent has received your variance inquiry for ${orderRef} and logged it in the billing reconciliation queue.\n\nSummary of logged action:\n- Order Reference: ${orderRef} / ${poRef}\n- Variance amount: ${varAmt}\n- Action: Logged in ERP Billing Resolution Queue and assigned to Specialist A.\n\nBest regards,\nKevin Pollock (Autopilot Agent)`;
+                const oooReplyBody = `Hello AP Team,\n\nI am currently out of office on vacation. My Backfeed Autopilot agent has received your variance inquiry for ${orderRef} and logged it in the billing reconciliation queue.\n\nSummary of logged action:\n- Order Reference: ${orderRef} / ${poRef}\n- Variance amount: ${varAmt}\n- Action: Logged in ERP Billing Resolution Queue and assigned to Specialist A.\n\nBest regards,\nSales Desk (Autopilot Agent)`;
                 
                 const autoReply = {
                     id: `sent-auto-${Date.now()}`,
-                    senderName: 'Kevin Pollock',
+                    senderName: 'Sales Desk',
                     senderEmail: 'sales@erpdistribution.com',
                     date: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
                     subject: oooSubject,
@@ -4736,7 +4736,7 @@ function handleAutopilotIncomingMail(mail) {
                 
                 const availableCredit = account.creditLimit - account.balanceDue;
                 if (total > availableCredit) {
-                    oooReplyBody = `Hello ${mail.senderName},\n\nI am currently out of the office on vacation. My Backfeed Autopilot agent has received your RFQ and processed the details.\n\nWARNING: Order value ($${total.toLocaleString()}) exceeds your account available credit line ($${availableCredit.toLocaleString()}). The order has been automatically placed on Credit Hold.\n\nPlease reply with a 50% deposit release or contact credit department to authorize release.\n\nInside Representative assigned: ${results.items[0] ? results.items[0].insideRep : 'Credit Desk'}.\n\nBest regards,\nKevin Pollock (Autopilot Agent)`;
+                    oooReplyBody = `Hello ${mail.senderName},\n\nI am currently out of the office on vacation. My Backfeed Autopilot agent has received your RFQ and processed the details.\n\nWARNING: Order value ($${total.toLocaleString()}) exceeds your account available credit line ($${availableCredit.toLocaleString()}). The order has been automatically placed on Credit Hold.\n\nPlease reply with a 50% deposit release or contact credit department to authorize release.\n\nInside Representative assigned: ${results.items[0] ? results.items[0].insideRep : 'Credit Desk'}.\n\nBest regards,\nSales Desk (Autopilot Agent)`;
                     
                     lastOrderId++;
                     const orderId = `SO-${lastOrderId}`;
@@ -4753,7 +4753,7 @@ function handleAutopilotIncomingMail(mail) {
                     account.balanceDue += total;
                     addActivityItem(`Autopilot Action: Flagged Credit Hold order ${orderId} for ${account.company} ($${total.toLocaleString()})`, new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
                 } else {
-                    oooReplyBody = `Hello ${mail.senderName},\n\nI am currently out of office on vacation. My Backfeed Autopilot agent has successfully received and parsed your RFQ.\n\nYour quote has been approved (fits in credit limit) and logged in our system. Here are the quote specifications:\n- Total Price Quoted: $${total.toLocaleString()}\n- Estimated Shipping Weight: ${weight.toFixed(0)} lbs\n- ${freightNotice}\n\nInside Representative CC-ed for dispatch scheduling: ${results.items[0] ? results.items[0].insideRep : 'Specialist A'}.\n\nBest regards,\nKevin Pollock (Autopilot Agent)`;
+                    oooReplyBody = `Hello ${mail.senderName},\n\nI am currently out of office on vacation. My Backfeed Autopilot agent has successfully received and parsed your RFQ.\n\nYour quote has been approved (fits in credit limit) and logged in our system. Here are the quote specifications:\n- Total Price Quoted: $${total.toLocaleString()}\n- Estimated Shipping Weight: ${weight.toFixed(0)} lbs\n- ${freightNotice}\n\nInside Representative CC-ed for dispatch scheduling: ${results.items[0] ? results.items[0].insideRep : 'Specialist A'}.\n\nBest regards,\nSales Desk (Autopilot Agent)`;
                     
                     lastOrderId++;
                     const orderId = `SO-${lastOrderId}`;
@@ -4771,12 +4771,12 @@ function handleAutopilotIncomingMail(mail) {
                     addActivityItem(`Autopilot Action: Automatically entered Sales Order ${orderId} for ${account.company} ($${total.toLocaleString()})`, new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
                 }
             } else {
-                oooReplyBody = `Hello,\n\nI am currently out of office on vacation. My Backfeed Autopilot agent has parsed your RFQ. Since your account is not yet registered in our ERP systems, the quote proposal has been routed to our credit desk for review.\n\nInside Representative assigned: Sales Coordinator.\n\nBest regards,\nKevin Pollock (Autopilot Agent)`;
+                oooReplyBody = `Hello,\n\nI am currently out of office on vacation. My Backfeed Autopilot agent has parsed your RFQ. Since your account is not yet registered in our ERP systems, the quote proposal has been routed to our credit desk for review.\n\nInside Representative assigned: Sales Coordinator.\n\nBest regards,\nSales Desk (Autopilot Agent)`;
             }
             
             const autoReply = {
                 id: `sent-auto-${Date.now()}`,
-                senderName: 'Kevin Pollock',
+                senderName: 'Sales Desk',
                 senderEmail: 'sales@erpdistribution.com',
                 date: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
                 subject: oooSubject,

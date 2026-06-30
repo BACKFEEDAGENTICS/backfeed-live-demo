@@ -1696,3 +1696,30 @@ textarea.form-control {
   .credit-overview { grid-template-columns: 1fr; }
   .aging-buckets { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* ----------------------------------------------------------
+   EMBEDDED-IN-PORTAL FIT
+   When the ERP is inlined into the Outlook portal (#erp-view) it lives in a
+   narrow column beside the Copilot, so it can't rely on viewport-width media
+   queries. Force every grid/track to be able to shrink (minmax(0,1fr)) so the
+   dashboard fits its container instead of clipping. Standalone ERP is unaffected.
+---------------------------------------------------------- */
+#erp-view,
+#erp-view #eclipse-erp-container,
+#erp-view .dashboard-container,
+#erp-view .dashboard-section { min-width: 0; }
+/* Key fix: #eclipse-main is position:absolute (left:0;right:0). Without a
+   positioned container it sizes to the full workspace and overflows the column.
+   Making the container relative anchors it to the 1030px column instead. */
+#erp-view #eclipse-erp-container { position: relative; width: 100%; max-width: 100%; overflow: hidden; }
+#erp-view .dashboard-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+#erp-view .dashboard-lower { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+#erp-view .dashboard-section { overflow: hidden; }
+#erp-view .dashboard-section table { width: 100%; table-layout: fixed; }
+#erp-view .dashboard-section td,
+#erp-view .dashboard-section th { overflow: hidden; text-overflow: ellipsis; }
+/* When the column gets genuinely tight, drop the stats to 2-up and stack the lower row */
+@media (max-width: 1200px) {
+  #erp-view .dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #erp-view .dashboard-lower { grid-template-columns: 1fr; }
+}

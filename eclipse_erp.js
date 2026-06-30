@@ -517,7 +517,7 @@
           <i class="fa-solid fa-bolt"></i>
           <div>
             <h2>Welcome to Backfeed ERP</h2>
-            <p>Backfeed Electrical Sourcing — West Deptford, NJ | User: Kevin P | ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            <p>Backfeed Electrical Sourcing — West Deptford, NJ | User: Operator | ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
           </div>
         </div>
 
@@ -905,7 +905,7 @@
           const textEl = panel.querySelector('#new-note-text');
           const text = textEl?.value.trim();
           if (!text) return;
-          customer.notes.unshift({ date: new Date().toISOString().slice(0, 10), user: 'Kevin P', text });
+          customer.notes.unshift({ date: new Date().toISOString().slice(0, 10), user: 'Operator', text });
           panel.querySelector('#cust-detail-body').innerHTML = renderCustTabContent(customer, 'notes');
           bindCustTabEvents(panel, customer, 'notes');
           setStatusMessage('Note added');
