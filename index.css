@@ -2762,19 +2762,223 @@ th, td {
 }
 
 /* ── Routing Modal ERP Target Indicator ─────────────────────── */
-.routing-erp-target {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 20px;
-    background: rgba(56, 189, 248, 0.06);
-    border-bottom: 1px solid rgba(56, 189, 248, 0.12);
-    font-size: 11px;
-    color: #64748b;
-    font-family: var(--font-sans);
-}
-
 .routing-erp-target strong {
     color: #38bdf8;
     font-weight: 600;
+}
+
+/* ==========================================================================
+   BACKFEED COGNITIVE THEME AND MOBILE RESPONSIVENESS OVERRIDES
+   ========================================================================== */
+
+/* ── Backfeed Premium Dark Theme ────────────────────────────────────────── */
+.backfeed-dark-theme {
+    --outlook-blue: #10b981; /* Emerald */
+    --outlook-blue-hover: #059669;
+    --outlook-bg-main: #0b0f19; /* Obsidian Black */
+    --outlook-bg-light: #111827; /* Charcoal */
+    --outlook-bg-hover: #1f2937;
+    --outlook-border: #374151;
+    --text-primary: #f3f4f6;
+    --text-secondary: #9ca3af;
+    --text-light: #6b7280;
+    --desktop-color: #030712;
+}
+
+/* Dark Theme Layout Tweaks */
+.backfeed-dark-theme body {
+    background-color: var(--desktop-color);
+}
+
+.backfeed-dark-theme .m365-header {
+    background: linear-gradient(135deg, #064e3b 0%, #0b0f19 100%) !important;
+    border-bottom: 1px solid var(--outlook-border);
+}
+
+.backfeed-dark-theme .outlook-nav-rail {
+    background: #0f172a !important;
+}
+
+.backfeed-dark-theme .outlook-folders-pane {
+    background: #0b0f19 !important;
+}
+
+.backfeed-dark-theme .outlook-compose-modal .compose-window-frame {
+    background: #111827 !important;
+    border: 1px solid var(--outlook-border);
+}
+
+.backfeed-dark-theme .outlook-compose-modal .compose-window-frame > div {
+    background-color: #111827 !important;
+    color: var(--text-primary) !important;
+}
+
+.backfeed-dark-theme .outlook-compose-modal input,
+.backfeed-dark-theme .outlook-compose-modal select,
+.backfeed-dark-theme .outlook-compose-modal textarea {
+    background-color: #0b0f19 !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--outlook-border) !important;
+}
+
+.backfeed-dark-theme .outlook-compose-modal label {
+    color: var(--text-secondary) !important;
+}
+
+.backfeed-dark-theme .compose-header {
+    background: var(--outlook-blue) !important;
+}
+
+/* Dark Mode Warning Banner Overrides */
+.backfeed-dark-theme .outlook-warning-banner.red {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #fca5a5 !important;
+}
+.backfeed-dark-theme .outlook-warning-banner.yellow {
+    background: rgba(245, 158, 11, 0.15) !important;
+    color: #fde047 !important;
+}
+.backfeed-dark-theme .outlook-warning-banner.green {
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: #86efac !important;
+}
+.backfeed-dark-theme .outlook-warning-banner span,
+.backfeed-dark-theme .outlook-warning-banner strong {
+    color: inherit !important;
+}
+
+/* Dark Mode Maps Visualizer */
+.backfeed-dark-theme .map-visualizer {
+    background: #0f172a !important;
+}
+.backfeed-dark-theme .map-visualizer svg rect[fill="url(#map-grid)"] {
+    fill: #0b0f19 !important;
+}
+.backfeed-dark-theme .map-visualizer svg path[stroke="#f1f5f9"] {
+    stroke: #1e293b !important;
+}
+.backfeed-dark-theme .map-visualizer svg path[stroke="#e2e8f0"] {
+    stroke: #0f172a !important;
+}
+.backfeed-dark-theme .map-visualizer svg g rect {
+    fill: #1e293b !important;
+    stroke: rgba(255, 255, 255, 0.08) !important;
+}
+.backfeed-dark-theme .map-visualizer svg g text {
+    fill: #f3f4f6 !important;
+}
+.backfeed-dark-theme .map-visualizer svg circle[fill="#ffffff"] {
+    fill: #1e293b !important;
+}
+
+/* ── Mobile Layout Media Queries (Phone Responsiveness) ──────────────────── */
+@media (max-width: 768px) {
+    /* Hide desktop folders and nav rail */
+    .outlook-nav-rail {
+        display: none !important;
+    }
+    .outlook-folders-pane {
+        display: none !important;
+    }
+
+    /* Container adjustments */
+    .outlook-main-workspace {
+        height: calc(100vh - 48px) !important;
+    }
+
+    /* Column layout switching */
+    .outlook-list-pane {
+        width: 100% !important;
+        flex: 1 !important;
+    }
+
+    .outlook-reading-pane {
+        width: 100% !important;
+        flex: 1 !important;
+    }
+
+    /* Toggle visibility depending on selected email state */
+    .outlook-main-workspace:not(.reading-pane-active) .outlook-list-pane {
+        display: flex !important;
+    }
+    .outlook-main-workspace:not(.reading-pane-active) .outlook-reading-pane {
+        display: none !important;
+    }
+
+    .outlook-main-workspace.reading-pane-active .outlook-list-pane {
+        display: none !important;
+    }
+    .outlook-main-workspace.reading-pane-active .outlook-reading-pane {
+        display: flex !important;
+    }
+
+    /* Drawer/slide overlay for Copilot on mobile */
+    .backfeed-copilot-pane {
+        position: absolute !important;
+        right: 0 !important;
+        top: 0 !important;
+        height: 100% !important;
+        z-index: 1500 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.5) !important;
+        transition: transform 0.3s ease !important;
+    }
+    .backfeed-copilot-pane.collapsed {
+        transform: translateX(100%) !important;
+        display: none !important;
+    }
+    .backfeed-copilot-pane:not(.collapsed) {
+        transform: translateX(0) !important;
+        display: flex !important;
+    }
+
+    /* Modal dialog sizes for mobile */
+    .compose-window-frame {
+        width: 95vw !important;
+        max-width: 95vw !important;
+    }
+
+    /* Header sizing and search bar layout */
+    .m365-header {
+        padding: 0 8px !important;
+    }
+    .brand-info span {
+        font-size: 14px !important;
+    }
+    .backfeed-connected-badge {
+        padding: 1px 6px !important;
+        font-size: 9px !important;
+    }
+    .header-middle {
+        max-width: 150px !important;
+        margin: 0 auto !important;
+    }
+    .search-box-container {
+        padding: 4px 8px !important;
+    }
+    .header-right {
+        gap: 8px !important;
+    }
+    .header-icon-btn {
+        width: 28px !important;
+        height: 28px !important;
+    }
+
+    /* Statistics row grid adjustment */
+    .statistics-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    /* Split-desk split screen handling on mobile (make it stacked) */
+    .outlook-main-workspace.split-desk-mode .outlook-reading-pane {
+        flex-direction: column !important;
+        overflow-y: auto !important;
+    }
+    .outlook-main-workspace.split-desk-mode #mail-reading-view,
+    .outlook-main-workspace.split-desk-mode #erp-view {
+        width: 100% !important;
+        height: 50% !important;
+    }
 }

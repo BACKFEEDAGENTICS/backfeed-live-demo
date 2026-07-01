@@ -1702,6 +1702,7 @@ function setView(view) {
     // Toggle split-desk class on workspace
     const workspace = document.querySelector('.outlook-main-workspace');
     if (workspace) {
+        workspace.classList.remove('reading-pane-active');
         if (view === 'desk') {
             workspace.classList.add('split-desk-mode');
         } else {
@@ -1897,6 +1898,9 @@ function selectMail(id) {
     // Reading an email always lives in the Outlook window — keeps scenarios
     // visibly moving back to the inbox between ERP steps.
     setView('mail');
+
+    const workspace = document.querySelector('.outlook-main-workspace');
+    if (workspace) workspace.classList.add('reading-pane-active');
 
     // Mark as read
     if (mail.unread) {
@@ -5216,6 +5220,15 @@ function init() {
     initNavigation();
     initMarketTickers();
     updateUnreadCount();
+    
+    // Mobile Back Button event listener
+    const btnMobileBack = document.getElementById('btn-mobile-back');
+    if (btnMobileBack) {
+        btnMobileBack.addEventListener('click', () => {
+            const workspace = document.querySelector('.outlook-main-workspace');
+            if (workspace) workspace.classList.remove('reading-pane-active');
+        });
+    }
     initWordDocAssistant();
     initSlideBuilder();
     initWillCall();
@@ -6778,9 +6791,16 @@ function initSettings() {
     // Load saved settings from localStorage
     const savedTheme = localStorage.getItem('portal-theme-color') || '#0078d4';
     const savedDesktop = localStorage.getItem('portal-desktop-color') || '#f3f2f1';
+    const savedThemeMode = localStorage.getItem('portal-theme-mode') || 'light';
+
+    const settingsThemeMode = document.getElementById('settings-theme-mode');
+    if (settingsThemeMode) {
+        settingsThemeMode.value = savedThemeMode;
+    }
 
     applyThemeColor(savedTheme);
     applyDesktopColor(savedDesktop);
+    applyThemeMode(savedThemeMode);
 
     // Sync input values
     themeColorPicker.value = savedTheme;
@@ -6861,6 +6881,13 @@ function initSettings() {
             localStorage.setItem('portal-theme-color', themeCol);
             localStorage.setItem('portal-desktop-color', desktopCol);
 
+            const settingsThemeMode = document.getElementById('settings-theme-mode');
+            if (settingsThemeMode) {
+                const selectedMode = settingsThemeMode.value;
+                localStorage.setItem('portal-theme-mode', selectedMode);
+                applyThemeMode(selectedMode);
+            }
+
             // Save ERP profile settings
             if (settingsErpProfile) {
                 const selectedProfile = settingsErpProfile.value;
@@ -6910,7 +6937,28 @@ function initSettings() {
     syncERPConnectorUI();
 }
 
+function applyThemeMode(mode) {
+    if (mode === 'dark') {
+        document.body.classList.add('backfeed-dark-theme');
+        // Override style properties to match Backfeed design tokens
+        document.documentElement.style.setProperty('--outlook-blue', '#10b981');
+        document.documentElement.style.setProperty('--outlook-blue-hover', '#059669');
+        document.documentElement.style.setProperty('--desktop-color', '#030712');
+    } else {
+        document.body.classList.remove('backfeed-dark-theme');
+        // Restore standard / saved personalization settings
+        const savedTheme = localStorage.getItem('portal-theme-color') || '#0078d4';
+        const savedDesktop = localStorage.getItem('portal-desktop-color') || '#f3f2f1';
+        applyThemeColor(savedTheme);
+        applyDesktopColor(savedDesktop);
+    }
+}
+
 function applyThemeColor(color) {
+    // Only apply manual theme color overrides if we are not in Backfeed Dark mode
+    const isDarkTheme = document.body.classList.contains('backfeed-dark-theme');
+    if (isDarkTheme) return;
+
     document.documentElement.style.setProperty('--outlook-blue', color);
     
     // Also compute a darker hover color

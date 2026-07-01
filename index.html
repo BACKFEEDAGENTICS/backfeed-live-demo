@@ -359,6 +359,12 @@
 
             <!-- Right Reading Pane -->
             <section class="outlook-reading-pane" id="reading-pane">
+                <!-- Mobile Back Button shared across all pane views -->
+                <div class="mobile-back-row" id="mobile-back-container" style="display: none; padding: 10px 16px; border-bottom: 1px solid var(--outlook-border); background: var(--outlook-bg-light); align-items: center;">
+                    <button id="btn-mobile-back" style="background: none; border: none; color: var(--outlook-blue); font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; font-family: var(--font-sans); padding: 0;">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Inbox
+                    </button>
+                </div>
                 <!-- VIEW 1: MAIL READING PANE -->
                 <div class="reading-pane-content" id="mail-reading-view">
                     <!-- Warning banner (Sentinel Alerts) -->
@@ -1439,6 +1445,15 @@
                             <input type="color" id="desktop-color-picker" value="#f3f2f1" style="width: 32px; height: 32px; border: 1px solid var(--outlook-border); border-radius: 4px; cursor: pointer; padding: 0; background: none;">
                             <input type="text" id="desktop-color-text" value="#f3f2f1" placeholder="#f3f2f1" style="flex: 1; padding: 6px 10px; border: 1px solid var(--outlook-border); border-radius: 4px; font-size: 13px; font-family: var(--font-mono); outline: none;">
                         </div>
+                    </div>
+
+                    <!-- Interface Theme Mode -->
+                    <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 5px; border-top: 1px solid var(--outlook-border); padding-top: 15px;">
+                        <label style="font-size: 12px; font-weight: 700; color: var(--text-primary); font-family: var(--font-sans);">Interface Theme Mode:</label>
+                        <select id="settings-theme-mode" style="padding: 8px; border: 1px solid var(--outlook-border); border-radius: 4px; font-size: 13px; font-family: var(--font-sans); outline: none; cursor: pointer; background: #ffffff; color: var(--text-primary);">
+                            <option value="light">Standard Outlook (Light Mode)</option>
+                            <option value="dark">Backfeed Premium (Dark Mode)</option>
+                        </select>
                     </div>
 
                     <!-- ERP Connection Settings -->

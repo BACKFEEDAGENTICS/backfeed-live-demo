@@ -1702,6 +1702,7 @@ function setView(view) {
     // Toggle split-desk class on workspace
     const workspace = document.querySelector('.outlook-main-workspace');
     if (workspace) {
+        workspace.classList.remove('reading-pane-active');
         if (view === 'desk') {
             workspace.classList.add('split-desk-mode');
         } else {
@@ -1893,6 +1894,13 @@ function selectMail(id) {
     let mail = mailItems.find(m => m.id === id);
     if (!mail) mail = sentMailItems.find(m => m.id === id);
     if (!mail) return;
+
+    // Reading an email always lives in the Outlook window — keeps scenarios
+    // visibly moving back to the inbox between ERP steps.
+    setView('mail');
+
+    const workspace = document.querySelector('.outlook-main-workspace');
+    if (workspace) workspace.classList.add('reading-pane-active');
 
     // Mark as read
     if (mail.unread) {
@@ -2344,6 +2352,7 @@ function typeEmailBody(text, callback) {
 }
 
 function openComposeMail(to = '', subject = '', body = '', attachment = null, simulateTyping = false, typingCallback = null) {
+    setView('mail');   // drafting/replying happens in the Outlook window
     composeTo.value = to;
     composeSubject.value = subject;
     
@@ -2370,11 +2379,20 @@ btnNewMail.addEventListener('click', () => {
     openComposeMail();
 });
 
+// Set true after the first failed /api call so we stop hammering a backend
+// that isn't there (e.g. static GitHub Pages hosting) and use demo data instead.
+var backendOffline = false;
+
 function syncOutlookMailbox(silent = false) {
+    if (backendOffline) {
+        // No live backend — inbox already shows the in-browser demo data.
+        if (!silent) showToast('Sync Complete', 'Inbox is up to date (demo data).', 'info');
+        return Promise.resolve();
+    }
     if (!silent) {
         showToast('Syncing Inbox', 'Checking Outlook inbox for new messages...', 'info');
     }
-    
+
     const icon = btnRefreshMail ? btnRefreshMail.querySelector('i') : null;
     if (icon) icon.classList.add('fa-spin');
     if (btnRefreshMail) btnRefreshMail.disabled = true;
@@ -2436,9 +2454,10 @@ function syncOutlookMailbox(silent = false) {
             }
         })
         .catch(err => {
-            console.error('Error syncing inbox:', err);
+            backendOffline = true;
+            console.info('Backfeed: no live backend detected — running on in-browser demo data.');
             if (!silent) {
-                showToast('Sync Error', 'An error occurred while connecting to the email server.', 'error');
+                showToast('Demo Mode', 'No live backend — showing in-browser demo data.', 'info');
             }
         })
         .finally(() => {
@@ -2547,6 +2566,7 @@ btnSendMail.addEventListener('click', () => {
     const inputEl = document.getElementById('app-cli-input-text');
     
     if (account && term && inputEl) {
+        setView('erp');
         openCopilotTab('erp');
         
         function typeCommand(text, callback) {
@@ -3514,32 +3534,38 @@ document.querySelectorAll('.filter-chip').forEach(chip => {
 
 let currentCommodities = null;
 
+function useMockCommodities() {
+    if (!currentCommodities) {
+        currentCommodities = {
+            "Copper": { price: 6.48, pct: -0.01 },
+            "Aluminum": { price: 2540.0, pct: -0.45 },
+            "Crude Oil": { price: 78.45, pct: 1.6 },
+            "Natural Gas": { price: 2.84, pct: -1.7 },
+            "Steel HRC": { price: 810.0, pct: 1.6 },
+            "PVC Resin": { price: 0.92, pct: 1.6 }
+        };
+    } else {
+        Object.keys(currentCommodities).forEach(name => {
+            const item = currentCommodities[name];
+            const change = (Math.random() - 0.5) * 0.1;
+            item.price = item.price * (1 + change / 100);
+            item.pct = (item.pct || 0) + change;
+        });
+    }
+    renderCommodities(currentCommodities);
+}
+
 function pollCommoditiesData() {
+    // Once we know there's no backend, just animate the demo ticker — no network call.
+    if (backendOffline) { useMockCommodities(); return; }
     fetch('/api/commodities')
     .then(res => res.json())
     .then(data => {
         renderCommodities(data);
     })
     .catch(err => {
-        console.warn('Backend offline. Using mock commodities data.');
-        if (!currentCommodities) {
-            currentCommodities = {
-                "Copper": { price: 6.48, pct: -0.01 },
-                "Aluminum": { price: 2540.0, pct: -0.45 },
-                "Crude Oil": { price: 78.45, pct: 1.6 },
-                "Natural Gas": { price: 2.84, pct: -1.7 },
-                "Steel HRC": { price: 810.0, pct: 1.6 },
-                "PVC Resin": { price: 0.92, pct: 1.6 }
-            };
-        } else {
-            Object.keys(currentCommodities).forEach(name => {
-                const item = currentCommodities[name];
-                const change = (Math.random() - 0.5) * 0.1;
-                item.price = item.price * (1 + change / 100);
-                item.pct = (item.pct || 0) + change;
-            });
-        }
-        renderCommodities(currentCommodities);
+        backendOffline = true;
+        useMockCommodities();
     });
 }
 
@@ -3583,13 +3609,14 @@ const mockNews = [
 ];
 
 function pollNewsData() {
+    if (backendOffline) { renderNews(mockNews); return; }
     fetch('/api/news')
     .then(res => res.json())
     .then(data => {
         renderNews(data);
     })
     .catch(err => {
-        console.warn('Backend offline. Using mock news data.');
+        backendOffline = true;
         renderNews(mockNews);
     });
 }
@@ -3855,6 +3882,7 @@ function startAutomatedDemo(scenario) {
     if (scenario === 'happy-path') {
         // SCENARIO 1: Happy Path (RFQ to Sales Order)
         updateBanner("Scenario 1: Selecting Vanguard RFQ email...");
+        setView('mail');           // start in the Outlook inbox, reading the RFQ
         selectMail('mail-1');
         openCopilotTab('rfq');
         
@@ -3873,10 +3901,13 @@ function startAutomatedDemo(scenario) {
                     
                     schedule(() => {
                         updateBanner("Scenario 1: Verifying ERP account profiles & credit limits...");
+                        setView('erp');            // switch over to the ERP window to verify the account
+                        setView('erp');
                         openCopilotTab('erp');
                         
                         schedule(() => {
                             updateBanner("Scenario 1: Compiling Excel quote proposals...");
+                            setView('mail');       // back to Outlook to draft & send the quote reply
                             const mail = mailItems.find(m => m.id === 'mail-1');
                             if (mail && parsedQuoteData) {
                                 let attachmentLabel = "ERP_Quote_Proposal.xlsx";
@@ -3903,6 +3934,7 @@ ERP Distribution`;
                                     updateBanner("Scenario 1: Dispatching proposal email (logs order in ERP)...");
                                     schedule(() => {
                                         if (btnSendMail) btnSendMail.click();
+                                        setView('erp');    // jump to the ERP window to show the order logged
                                         schedule(() => {
                                             updateBanner("Scenario 1: Staging complete. Waiting for customer response...");
                                             schedule(() => {
@@ -3927,6 +3959,7 @@ ERP Distribution`;
         
         schedule(() => {
             updateBanner("Scenario 2: Inspecting message headers in Security Audit tab...");
+            setView('erp');
             openCopilotTab('erp');
             
             schedule(() => {
@@ -3958,6 +3991,7 @@ ERP Distribution`;
             
             schedule(() => {
                 updateBanner("Scenario 3: Checking ERP account standings...");
+                setView('erp');
                 openCopilotTab('erp');
                 
                 schedule(() => {
@@ -4055,6 +4089,7 @@ ERP Credit Desk`;
             
             schedule(() => {
                 updateBanner("Scenario 5: Opening ERP tab to inspect commission-yielding line-card equivalents...");
+                setView('erp');
                 openCopilotTab('erp');
                 
                 schedule(() => {
@@ -4222,6 +4257,7 @@ Summit Electrical Sales`;
             
             schedule(() => {
                 updateBanner("Scenario 8: Querying stock alternatives database for drop-in equivalents...");
+                setView('erp');
                 openCopilotTab('erp');
                 
                 schedule(() => {
@@ -4277,6 +4313,7 @@ Oddball Sourcing`;
             
             schedule(() => {
                 updateBanner("Scenario 9: Running Threshold Analyzer to identify compatible accessory add-ons...");
+                setView('erp');
                 openCopilotTab('erp');
                 
                 schedule(() => {
@@ -5183,14 +5220,30 @@ function init() {
     initNavigation();
     initMarketTickers();
     updateUnreadCount();
+    
+    // Mobile Back Button event listener
+    const btnMobileBack = document.getElementById('btn-mobile-back');
+    if (btnMobileBack) {
+        btnMobileBack.addEventListener('click', () => {
+            const workspace = document.querySelector('.outlook-main-workspace');
+            if (workspace) workspace.classList.remove('reading-pane-active');
+        });
+    }
     initWordDocAssistant();
     initSlideBuilder();
     initWillCall();
     initScratchExplorer();
-    
+
+    // Collapsible Demo Director panel (click header to tuck it away)
+    const dirHeader = document.getElementById('director-header');
+    const dirPanel = document.getElementById('demo-director');
+    if (dirHeader && dirPanel) {
+        dirHeader.addEventListener('click', () => dirPanel.classList.toggle('collapsed'));
+    }
+
     // Set starting active email
     selectMail('mail-1');
-    
+
     // Set default view to ERP
     setView('erp');
 
@@ -5661,7 +5714,7 @@ function initSlideBuilder() {
         btnGen.disabled = true;
         btnGenOpen.disabled = true;
         
-        showToast('PPTX Compilation Started', 'Re-building data center presentation...', 'success');
+        showToast('PPTX Compilation Started', 'Re-building sales operations presentation...', 'success');
         
         fetch('/api/generate-pptx', {
             method: 'POST',
@@ -5883,7 +5936,7 @@ function initSlideBuilder() {
             `;
             
             // Live Type Cover Title
-            const titleText = config.title || "Solving Data Center Supply Chain Velocity";
+            const titleText = config.title || "Summit Sales Operations & Cognitive Automation Strategy";
             const subText = "Operations Architecture & Cognitive Automation Strategy";
             
             typeWriterEffect('sim-slide-title', titleText, 15, () => {
@@ -5914,7 +5967,7 @@ function initSlideBuilder() {
             ];
             const list2 = [
                 "Static cost sheets lead to bidding discrepancies.",
-                "Data center contracts lock margins for 180+ days.",
+                "Commercial contracts lock margins for 180+ days.",
                 "Real-time indexing required to safeguard profits."
             ];
 
@@ -6011,7 +6064,7 @@ function initSlideBuilder() {
             const list2 = [
                 "60% reduction in staging and loading labor.",
                 "10x inside sales throughput speed.",
-                "Protect margins on multimillion-dollar data center bids."
+                "Protect margins on large-scale commercial bids."
             ];
 
             typeListEffect('sim-slide-list-1', list1, () => {
@@ -6738,9 +6791,16 @@ function initSettings() {
     // Load saved settings from localStorage
     const savedTheme = localStorage.getItem('portal-theme-color') || '#0078d4';
     const savedDesktop = localStorage.getItem('portal-desktop-color') || '#f3f2f1';
+    const savedThemeMode = localStorage.getItem('portal-theme-mode') || 'light';
+
+    const settingsThemeMode = document.getElementById('settings-theme-mode');
+    if (settingsThemeMode) {
+        settingsThemeMode.value = savedThemeMode;
+    }
 
     applyThemeColor(savedTheme);
     applyDesktopColor(savedDesktop);
+    applyThemeMode(savedThemeMode);
 
     // Sync input values
     themeColorPicker.value = savedTheme;
@@ -6821,6 +6881,13 @@ function initSettings() {
             localStorage.setItem('portal-theme-color', themeCol);
             localStorage.setItem('portal-desktop-color', desktopCol);
 
+            const settingsThemeMode = document.getElementById('settings-theme-mode');
+            if (settingsThemeMode) {
+                const selectedMode = settingsThemeMode.value;
+                localStorage.setItem('portal-theme-mode', selectedMode);
+                applyThemeMode(selectedMode);
+            }
+
             // Save ERP profile settings
             if (settingsErpProfile) {
                 const selectedProfile = settingsErpProfile.value;
@@ -6870,7 +6937,28 @@ function initSettings() {
     syncERPConnectorUI();
 }
 
+function applyThemeMode(mode) {
+    if (mode === 'dark') {
+        document.body.classList.add('backfeed-dark-theme');
+        // Override style properties to match Backfeed design tokens
+        document.documentElement.style.setProperty('--outlook-blue', '#10b981');
+        document.documentElement.style.setProperty('--outlook-blue-hover', '#059669');
+        document.documentElement.style.setProperty('--desktop-color', '#030712');
+    } else {
+        document.body.classList.remove('backfeed-dark-theme');
+        // Restore standard / saved personalization settings
+        const savedTheme = localStorage.getItem('portal-theme-color') || '#0078d4';
+        const savedDesktop = localStorage.getItem('portal-desktop-color') || '#f3f2f1';
+        applyThemeColor(savedTheme);
+        applyDesktopColor(savedDesktop);
+    }
+}
+
 function applyThemeColor(color) {
+    // Only apply manual theme color overrides if we are not in Backfeed Dark mode
+    const isDarkTheme = document.body.classList.contains('backfeed-dark-theme');
+    if (isDarkTheme) return;
+
     document.documentElement.style.setProperty('--outlook-blue', color);
     
     // Also compute a darker hover color
