@@ -390,6 +390,10 @@
           return;
         }
         const total = state.lines.reduce(function (s, l) { return s + (l.extended || 0); }, 0);
+        // Credit check: an order over the customer's available credit goes on hold.
+        const cust = (window.BACKFEED_DATA && window.BACKFEED_DATA.customers || []).find(function (c) { return c.id === state.customerId; });
+        const available = (cust && cust.credit && typeof cust.credit.available === 'number') ? cust.credit.available : null;
+        const creditHold = state.mode === 'order' && available !== null && total > available;
         const order = {
           orderNum: state.orderNum,
           mode: state.mode,
@@ -399,14 +403,18 @@
           orderDate: state.orderDate,
           total: total,
           lineCount: state.lines.length,
-          status: state.mode === 'quote' ? 'Quote' : 'Open',
+          status: state.mode === 'quote' ? 'Quote' : (creditHold ? 'Credit Hold' : 'Open'),
           savedAt: new Date().toISOString(),
           lines: state.lines.map(function (l) { return { sku: l.sku, desc: l.desc, qty: l.qty, uom: l.uom, netPrice: l.netPrice, extended: l.extended, status: l.status || 'Open' }; })
         };
         setStatusMessage('Saving...');
         persistOrder(order);
         setTimeout(() => {
-          showModal('Saved', '<i class="fa-solid fa-check-circle modal-icon-large success"></i>' + (state.mode === 'quote' ? 'Quote ' : 'Order ') + escapeHtml(state.orderNum) + ' saved — ' + formatCurrency(total) + '.<br><small>Stored to this session. Open <b>Orders &rsaquo; Search Orders</b> to see it.</small>', [{ label: 'OK', className: 'modal-btn primary', action: closeModal }], 'success');
+          if (creditHold) {
+            showModal('Saved — Credit Hold', '<i class="fa-solid fa-triangle-exclamation modal-icon-large warning"></i>Order ' + escapeHtml(state.orderNum) + ' (' + formatCurrency(total) + ') exceeds ' + escapeHtml(state.customerName) + '’s available credit (' + formatCurrency(available) + ').<br><b>Placed on Credit Hold.</b><br><small>Saved to this session. See it under <b>Orders &rsaquo; Search Orders</b>.</small>', [{ label: 'OK', className: 'modal-btn primary', action: closeModal }], 'warning');
+          } else {
+            showModal('Saved', '<i class="fa-solid fa-check-circle modal-icon-large success"></i>' + (state.mode === 'quote' ? 'Quote ' : 'Order ') + escapeHtml(state.orderNum) + ' saved — ' + formatCurrency(total) + '.<br><small>Stored to this session. Open <b>Orders &rsaquo; Search Orders</b> to see it.</small>', [{ label: 'OK', className: 'modal-btn primary', action: closeModal }], 'success');
+          }
           setStatusMessage('Saved ' + state.orderNum);
         }, 400);
       }
@@ -1017,7 +1025,11 @@
       '<div><b>Date:</b> ' + escapeHtml(o.date || '—') + ' &nbsp; <b>Status:</b> ' + orderStatusBadge(o.status) + '</div>' +
       '<div><b>Total:</b> ' + formatCurrency(o.total) + '</div>' +
       rows + '</div>',
-      [{ label: 'Close', className: 'modal-btn primary', action: closeModal }], 'info');
+      (o.session
+        ? [{ label: 'Open in Order Entry', className: 'modal-btn primary', action: function () { closeModal(); openTab('order-entry', 'Order Entry — ' + o.id, renderOrderEntry, { mode: o.mode || 'order', savedOrder: o.raw }); } },
+           { label: 'Close', className: 'modal-btn', action: closeModal }]
+        : [{ label: 'Close', className: 'modal-btn primary', action: closeModal }]),
+      'info');
   }
 
   function renderOrdersList(panel, data) {
@@ -1096,12 +1108,14 @@
       quoteData = (window.BACKFEED_DATA.quotes || []).find(q => q.id === data.quoteId);
     }
 
+    const savedOrder = data?.savedOrder || null;
     const defaultCustomer = window.BACKFEED_DATA.customers[0];
     const customer = scenario ? window.SCENARIO_ENGINE.getCustomerForScenario(scenarioId) :
                      (quoteData ? window.BACKFEED_DATA.customers.find(c => c.id === quoteData.customer) :
-                     (data?.customerId ? window.BACKFEED_DATA.customers.find(c => c.id === data.customerId) : defaultCustomer));
+                     (savedOrder ? window.BACKFEED_DATA.customers.find(c => c.id === savedOrder.customerId) :
+                     (data?.customerId ? window.BACKFEED_DATA.customers.find(c => c.id === data.customerId) : defaultCustomer)));
 
-    const orderNum = isQuote ? 'QT-24-0' + APP.nextQuoteNum++ : 'SO-24-0' + APP.nextOrderNum++;
+    const orderNum = savedOrder ? savedOrder.orderNum : (isQuote ? 'QT-24-0' + APP.nextQuoteNum++ : 'SO-24-0' + APP.nextOrderNum++);
     const today = new Date().toISOString().slice(0, 10);
     const reqDate = new Date(Date.now() + 7 * 24 * 3600000).toISOString().slice(0, 10);
 
@@ -1142,6 +1156,17 @@
         status: 'Open'
       }));
       state.nextLine = state.lines.length + 1;
+    }
+
+    // Reopening a session-saved order into the editable form
+    if (savedOrder && Array.isArray(savedOrder.lines)) {
+      state.lines = savedOrder.lines.map((l, i) => ({
+        lineNum: i + 1, sku: l.sku, desc: l.desc, qty: l.qty, uom: l.uom,
+        listPrice: l.listPrice || l.netPrice, mult: l.mult || 1, netPrice: l.netPrice,
+        extended: l.extended, warehouse: state.warehouse, status: l.status || 'Open'
+      }));
+      state.nextLine = state.lines.length + 1;
+      state.po = savedOrder.po || state.po;
     }
 
     if (mode === 'order') {
