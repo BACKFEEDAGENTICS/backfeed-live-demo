@@ -396,6 +396,80 @@ DATA_DIR = os.environ.get("BACKFEED_DATA_DIR", os.path.join(os.path.dirname(os.p
 CODES_PATH = os.path.join(DATA_DIR, "codes.json")
 SESSIONS_DIR = os.path.join(DATA_DIR, "sessions")
 
+# Optional GitHub-backed persistence ("memory card" storage that survives
+# free-tier restarts). Set BACKFEED_STATE_REPO to a PRIVATE repo, e.g.
+# "BACKFEEDAGENTICS/backfeed-sessions", plus the existing GH_TOKEN.
+STATE_REPO = os.environ.get("BACKFEED_STATE_REPO", "").strip()
+STATE_BRANCH = os.environ.get("BACKFEED_STATE_BRANCH", "main").strip() or "main"
+_gh_push_lock = None  # created lazily (threading.Lock)
+
+
+def _gh_enabled():
+    return bool(STATE_REPO and os.environ.get("GH_TOKEN", "").strip())
+
+
+def _gh_request(path_url, method="GET", payload=None):
+    import urllib.request
+    token = os.environ.get("GH_TOKEN", "").strip()
+    url = f"https://api.github.com/repos/{STATE_REPO}/contents/{path_url}"
+    data = json.dumps(payload).encode("utf-8") if payload is not None else None
+    req = urllib.request.Request(url, method=method, data=data)
+    req.add_header("Authorization", f"token {token}")
+    req.add_header("Accept", "application/vnd.github.v3+json")
+    req.add_header("User-Agent", "Backfeed-State-Store")
+    if payload is not None:
+        req.add_header("Content-Type", "application/json")
+    with urllib.request.urlopen(req, timeout=15) as res:
+        return json.loads(res.read().decode("utf-8"))
+
+
+def gh_read_json(rel_path):
+    """Read a JSON file from the state repo. Returns dict or None."""
+    if not _gh_enabled():
+        return None
+    import base64
+    try:
+        meta = _gh_request(f"{rel_path}?ref={STATE_BRANCH}")
+        content = base64.b64decode(meta.get("content", "")).decode("utf-8")
+        return json.loads(content)
+    except Exception:
+        return None
+
+
+def gh_write_json(rel_path, obj, message):
+    """Write JSON to the state repo (create-or-update). Best-effort."""
+    if not _gh_enabled():
+        return False
+    import base64
+    global _gh_push_lock
+    if _gh_push_lock is None:
+        import threading
+        _gh_push_lock = threading.Lock()
+    with _gh_push_lock:
+        try:
+            sha = ""
+            try:
+                sha = _gh_request(f"{rel_path}?ref={STATE_BRANCH}").get("sha", "")
+            except Exception:
+                pass
+            payload = {
+                "message": message,
+                "content": base64.b64encode(json.dumps(obj, indent=2).encode("utf-8")).decode("utf-8"),
+                "branch": STATE_BRANCH,
+            }
+            if sha:
+                payload["sha"] = sha
+            _gh_request(rel_path, method="PUT", payload=payload)
+            return True
+        except Exception as e:
+            print(f"[STATE Warning] GitHub push failed for {rel_path}: {e}")
+            return False
+
+
+def gh_write_json_async(rel_path, obj, message):
+    import threading
+    threading.Thread(target=gh_write_json, args=(rel_path, obj, message), daemon=True).start()
+
 
 def _now_iso():
     import datetime
@@ -411,13 +485,25 @@ def load_codes():
         with open(CODES_PATH, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception:
-        return {}
+        pass
+    # Local store empty (fresh container) — recover from GitHub if configured.
+    remote = gh_read_json("codes.json")
+    if isinstance(remote, dict) and remote:
+        try:
+            _ensure_data_dirs()
+            with open(CODES_PATH, "w", encoding="utf-8") as f:
+                json.dump(remote, f, indent=2)
+        except Exception:
+            pass
+        return remote
+    return {}
 
 
 def save_codes(codes):
     _ensure_data_dirs()
     with open(CODES_PATH, "w", encoding="utf-8") as f:
         json.dump(codes, f, indent=2)
+    gh_write_json_async("codes.json", codes, "state: update access codes")
 
 
 def generate_access_code():
@@ -455,18 +541,37 @@ def _session_path(sid):
     return os.path.join(SESSIONS_DIR, f"{safe}.json")
 
 
+def _session_rel(sid):
+    import re
+    return "sessions/" + re.sub(r"[^A-Za-z0-9_-]", "_", str(sid)) + ".json"
+
+
 def load_session(sid):
     try:
         with open(_session_path(sid), "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception:
-        return None
+        pass
+    # Fresh container — pull this memory card back from GitHub if configured.
+    remote = gh_read_json(_session_rel(sid))
+    if isinstance(remote, dict):
+        try:
+            save_session_local(sid, remote)
+        except Exception:
+            pass
+        return remote
+    return None
 
 
-def save_session(sid, state):
+def save_session_local(sid, state):
     _ensure_data_dirs()
     with open(_session_path(sid), "w", encoding="utf-8") as f:
         json.dump(state, f, indent=2)
+
+
+def save_session(sid, state):
+    save_session_local(sid, state)
+    gh_write_json_async(_session_rel(sid), state, f"state: save session {sid}")
 
 
 def get_or_create_session(sid):

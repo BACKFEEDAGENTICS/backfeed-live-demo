@@ -5229,6 +5229,21 @@ if (btnClearMemory) {
 // that later (Phase 2) ERP/order/customer changes call to persist.
 window.backfeedSession = null;
 window.backfeedSessionId = null;
+
+// "Memory card" backup: every save is mirrored to this browser, keyed by the
+// session id. If the free-tier server forgets (redeploy wipes its disk), the
+// browser restores the card on next login.
+function _bfBackupKey(sid) { return 'bf-card:' + sid; }
+function _bfWriteBackup(sid, state) {
+    try { localStorage.setItem(_bfBackupKey(sid), JSON.stringify({ state: state, at: Date.now() })); } catch (e) {}
+}
+function _bfReadBackup(sid) {
+    try { const raw = localStorage.getItem(_bfBackupKey(sid)); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+}
+function _bfStateHasContent(s) {
+    return !!(s && ((s.orders && s.orders.length) || (s.quotes && s.quotes.length) || (s.simDay && s.simDay > 0)));
+}
+
 function loadBackfeedSession() {
     return fetch('/api/session')
         .then(r => r.ok ? r.json() : null)
@@ -5236,13 +5251,26 @@ function loadBackfeedSession() {
             if (d && d.success) {
                 window.backfeedSession = d.state;
                 window.backfeedSessionId = d.sessionId;
-                document.dispatchEvent(new CustomEvent('backfeed-session-loaded', { detail: d.state }));
+                // Server came back empty but this browser holds the card? Restore it.
+                const backup = _bfReadBackup(d.sessionId);
+                if (!_bfStateHasContent(d.state) && backup && _bfStateHasContent(backup.state)) {
+                    window.backfeedSession = Object.assign({}, d.state, backup.state);
+                    window.saveBackfeedSession(backup.state);
+                    console.info('Backfeed: restored session from browser memory-card backup.');
+                } else {
+                    _bfWriteBackup(d.sessionId, window.backfeedSession);
+                }
+                document.dispatchEvent(new CustomEvent('backfeed-session-loaded', { detail: window.backfeedSession }));
             }
             return window.backfeedSession;
         })
         .catch(() => null);
 }
 window.saveBackfeedSession = function (partial) {
+    // Keep the in-memory session + browser backup current even if the network save fails.
+    if (!window.backfeedSession) window.backfeedSession = {};
+    if (partial && typeof partial === 'object') Object.assign(window.backfeedSession, partial);
+    if (window.backfeedSessionId) _bfWriteBackup(window.backfeedSessionId, window.backfeedSession);
     return fetch('/api/session/save', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ state: partial })
