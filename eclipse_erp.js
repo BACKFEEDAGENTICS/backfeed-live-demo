@@ -982,6 +982,59 @@
            'color:#fff;background:' + color + ';">' + escapeHtml(status || 'Open') + '</span>';
   }
 
+  /* ----------------------------------------------------------
+     COMMODITY RE-PRICING (Phase 3)
+     A live Merton shock (window.backfeedShock) drives real re-pricing:
+     wire/PVC/steel SKUs are mapped to their commodity, and open orders
+     that contain shocked lines can be re-quoted (prices persisted).
+  ---------------------------------------------------------- */
+  function getActiveShock() {
+    var s = window.backfeedShock;
+    return (s && s.active && s.multipliers) ? s : null;
+  }
+
+  function skuToCommodity(sku) {
+    var b = (window.BACKFEED_DATA && window.BACKFEED_DATA.getBrandForSku) ? window.BACKFEED_DATA.getBrandForSku(sku) : null;
+    var name = b ? b.name : '';
+    if (/Copper/i.test(name)) return 'Copper';
+    if (/Aluminum/i.test(name)) return 'Aluminum';
+    if (/PVC/i.test(name)) return 'PVC Resin';
+    if (/Conduit Fittings|Rigid|B-Line|Strut|Transformer|Fuse/i.test(name)) return 'Steel HRC';
+    return null;
+  }
+
+  function shockMultForSku(shock, sku) {
+    var c = skuToCommodity(sku);
+    if (!c) return 1;
+    var m = shock.multipliers[c];
+    return (typeof m === 'number' && m > 0) ? m : 1;
+  }
+
+  function orderNeedsRequote(order, shock) {
+    if (!shock || !order.session) return false;
+    var lines = (order.raw && order.raw.lines) || [];
+    return lines.some(function (l) { return shockMultForSku(shock, l.sku) > 1.001; });
+  }
+
+  function requoteOrder(order) {
+    var shock = getActiveShock();
+    if (!shock || !order.raw) return;
+    var raw = order.raw, newTotal = 0;
+    (raw.lines || []).forEach(function (l) {
+      var m = shockMultForSku(shock, l.sku);
+      if (m > 1.001) {
+        l.netPrice = Math.round((l.netPrice || 0) * m * 10000) / 10000;
+        l.extended = Math.round((l.netPrice * (parseFloat(l.qty) || 0)) * 100) / 100;
+        l.repriced = true;
+      }
+      newTotal += (l.extended || 0);
+    });
+    raw.total = Math.round(newTotal * 100) / 100;
+    raw.status = 'Price Review';
+    raw.requotedAt = new Date().toISOString();
+    persistOrder(raw);
+  }
+
   function collectAllOrders() {
     var list = [];
     // Session-saved orders the operator created this/last session
@@ -1039,6 +1092,15 @@
     });
     all.sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
 
+    var shock = getActiveShock();
+    var affected = shock ? all.filter(function (o) { return orderNeedsRequote(o, shock); }) : [];
+    var copperM = shock ? (shock.multipliers['Copper'] || 1) : 1;
+    var banner = (shock && affected.length)
+      ? '<div style="margin:0 16px 10px;padding:10px 12px;border-radius:8px;background:#fff4e5;border:1px solid #f0c000;color:#7a4f00;font-size:12.5px;">' +
+        '<b>⚠ Merton price shock active</b> — Copper +' + (Math.round((copperM - 1) * 1000) / 10) + '%. ' +
+        affected.length + ' order(s) contain shocked lines — hit <b>Re-quote</b> to reprice.</div>'
+      : '';
+
     var title = filter === 'quote' ? 'Quotes' : 'Orders';
     var head =
       '<div style="padding:12px 16px;">' +
@@ -1063,16 +1125,26 @@
           '<td>' + escapeHtml(o.date || '—') + '</td>' +
           '<td style="text-align:right;">' + formatCurrency(o.total) + '</td>' +
           '<td>' + orderStatusBadge(o.status) + '</td>' +
-          '<td style="text-align:right;color:#2563eb;">Open ›</td></tr>';
+          (orderNeedsRequote(o, shock)
+            ? '<td style="text-align:right;"><button class="ol-requote" data-ridx="' + idx + '" style="background:#e65100;color:#fff;border:none;border-radius:5px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;">⚠ Re-quote</button></td>'
+            : '<td style="text-align:right;color:#2563eb;">Open ›</td>') + '</tr>';
       }).join('');
     }
 
-    panel.innerHTML = head + tableTop + rowsHtml(all) + '</tbody></table></div>';
+    panel.innerHTML = head + banner + tableTop + rowsHtml(all) + '</tbody></table></div>';
 
     var body = panel.querySelector('#ol-body');
     function bindRows(items) {
       panel.querySelectorAll('.ol-row').forEach(function (tr) {
         tr.addEventListener('click', function () { showOrderDetail(items[parseInt(tr.dataset.idx, 10)]); });
+      });
+      panel.querySelectorAll('.ol-requote').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          requoteOrder(items[parseInt(btn.dataset.ridx, 10)]);
+          setStatusMessage('Re-quoted at current copper rate');
+          renderOrdersList(panel, data);
+        });
       });
     }
     bindRows(all);

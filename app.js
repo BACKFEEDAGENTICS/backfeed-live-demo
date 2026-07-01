@@ -3795,6 +3795,9 @@ btnInjectStochastic.addEventListener('click', () => {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
+            // Phase 3: remember the active shock so the ERP can re-price affected lines.
+            window.backfeedShock = { active: true, multipliers: data.multipliers || {} };
+            document.dispatchEvent(new CustomEvent('backfeed-shock', { detail: window.backfeedShock }));
             showToast('Merton Shock Active', 'Discontinuous price surge applied to commodities.', 'error');
             addActivityItem('ERP System: Injected Merton stochastic price shock. Commodities surged +8% to +15%.', new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
             
