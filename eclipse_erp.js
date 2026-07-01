@@ -311,6 +311,12 @@
       case 'open-customer-search':
         openTab('customer-search', 'Customer Lookup', renderCustomerSearch);
         break;
+      case 'order-search':
+        openTab('orders-list', 'Orders', renderOrdersList, { filter: 'order' });
+        break;
+      case 'quote-search':
+        openTab('orders-list', 'Quotes', renderOrdersList, { filter: 'quote' });
+        break;
       case 'open-inventory':
         openTab('inventory', 'Inventory Inquiry', renderInventoryInquiry);
         break;
@@ -352,17 +358,57 @@
     }
   }
 
+  /* ----------------------------------------------------------
+     SESSION-BACKED ORDERS (Phase 2)
+     Saved orders persist to the per-code session (Phase 1 store)
+     so the same access code reloads its orders next time.
+  ---------------------------------------------------------- */
+  function getSessionOrders() {
+    var s = window.backfeedSession;
+    return (s && Array.isArray(s.orders)) ? s.orders : [];
+  }
+
+  function persistOrder(order) {
+    if (!window.backfeedSession) window.backfeedSession = {};
+    if (!Array.isArray(window.backfeedSession.orders)) window.backfeedSession.orders = [];
+    var arr = window.backfeedSession.orders;
+    var i = arr.findIndex(function (o) { return o.orderNum === order.orderNum; });
+    if (i >= 0) arr[i] = order; else arr.unshift(order);
+    if (typeof window.saveBackfeedSession === 'function') {
+      window.saveBackfeedSession({ orders: arr });
+    }
+  }
+
   function handleSave() {
     const tab = getActiveTab();
     if (!tab) return;
     if (tab.type === 'order-entry') {
       const state = APP.orderStates[tab.id] || APP.quoteStates[tab.id];
       if (state) {
+        if (!state.lines || state.lines.length === 0) {
+          showModal('Nothing to Save', '<i class="fa-solid fa-triangle-exclamation modal-icon-large warning"></i>Add at least one line item before saving.', [{ label: 'OK', className: 'modal-btn primary', action: closeModal }], 'warning');
+          return;
+        }
+        const total = state.lines.reduce(function (s, l) { return s + (l.extended || 0); }, 0);
+        const order = {
+          orderNum: state.orderNum,
+          mode: state.mode,
+          customerId: state.customerId,
+          customerName: state.customerName,
+          po: state.po,
+          orderDate: state.orderDate,
+          total: total,
+          lineCount: state.lines.length,
+          status: state.mode === 'quote' ? 'Quote' : 'Open',
+          savedAt: new Date().toISOString(),
+          lines: state.lines.map(function (l) { return { sku: l.sku, desc: l.desc, qty: l.qty, uom: l.uom, netPrice: l.netPrice, extended: l.extended, status: l.status || 'Open' }; })
+        };
         setStatusMessage('Saving...');
+        persistOrder(order);
         setTimeout(() => {
-          showModal('Saved', '<i class="fa-solid fa-check-circle modal-icon-large success"></i>Record saved successfully.', [{ label: 'OK', className: 'modal-btn primary', action: closeModal }], 'success');
-          setStatusMessage('Saved');
-        }, 500);
+          showModal('Saved', '<i class="fa-solid fa-check-circle modal-icon-large success"></i>' + (state.mode === 'quote' ? 'Quote ' : 'Order ') + escapeHtml(state.orderNum) + ' saved — ' + formatCurrency(total) + '.<br><small>Stored to this session. Open <b>Orders &rsaquo; Search Orders</b> to see it.</small>', [{ label: 'OK', className: 'modal-btn primary', action: closeModal }], 'success');
+          setStatusMessage('Saved ' + state.orderNum);
+        }, 400);
       }
     } else {
       setStatusMessage('Nothing to save');
@@ -917,6 +963,124 @@
   /* ----------------------------------------------------------
      SCREEN: ORDER ENTRY / QUOTE ENTRY
   ---------------------------------------------------------- */
+  function orderStatusBadge(status) {
+    var map = {
+      'Open': '#2563eb', 'Processing': '#2563eb', 'Quote': '#6b7280',
+      'Credit Hold': '#c62828', 'Partial Ship': '#e65100', 'Backordered': '#e65100',
+      'Shipped': '#137333', 'Complete': '#137333'
+    };
+    var color = map[status] || '#6b7280';
+    return '<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;' +
+           'color:#fff;background:' + color + ';">' + escapeHtml(status || 'Open') + '</span>';
+  }
+
+  function collectAllOrders() {
+    var list = [];
+    // Session-saved orders the operator created this/last session
+    getSessionOrders().forEach(function (o) {
+      list.push({
+        id: o.orderNum, customerName: o.customerName || o.customerId || '—',
+        date: (o.orderDate || (o.savedAt || '').slice(0, 10)), total: o.total || 0,
+        status: o.status || 'Open', mode: o.mode || 'order', session: true, raw: o
+      });
+    });
+    // Seeded order history from the data set
+    var custs = (window.BACKFEED_DATA && window.BACKFEED_DATA.customers) || [];
+    custs.forEach(function (c) {
+      (c.orders || []).forEach(function (o) {
+        list.push({
+          id: o.id || o.orderNum || o.po || '—', customerName: c.name,
+          date: o.date || o.orderDate || '', total: o.total || 0,
+          status: o.status || 'Open', mode: (o.status === 'Quote' ? 'quote' : 'order'),
+          session: false, raw: o
+        });
+      });
+    });
+    return list;
+  }
+
+  function showOrderDetail(o) {
+    var lines = (o.raw && o.raw.lines) || [];
+    var rows = lines.length
+      ? '<table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;">' +
+        '<thead><tr style="text-align:left;color:#666;border-bottom:1px solid #ccc;">' +
+        '<th style="padding:4px 6px;">Item</th><th>Description</th><th class="numeric" style="text-align:right;">Qty</th><th class="numeric" style="text-align:right;">Net</th><th class="numeric" style="text-align:right;">Ext</th></tr></thead><tbody>' +
+        lines.map(function (l) {
+          return '<tr style="border-bottom:1px solid #eee;"><td style="padding:4px 6px;font-family:monospace;">' + escapeHtml(l.sku || '') +
+            '</td><td>' + escapeHtml(l.desc || '') + '</td><td style="text-align:right;">' + escapeHtml(String(l.qty || '')) +
+            '</td><td style="text-align:right;">' + formatCurrency(l.netPrice || 0) + '</td><td style="text-align:right;">' + formatCurrency(l.extended || 0) + '</td></tr>';
+        }).join('') + '</tbody></table>'
+      : '<p style="color:#888;margin-top:8px;">No line detail stored for this record.</p>';
+    showModal('Order ' + escapeHtml(o.id),
+      '<div style="text-align:left;">' +
+      '<div><b>Customer:</b> ' + escapeHtml(o.customerName) + '</div>' +
+      '<div><b>Date:</b> ' + escapeHtml(o.date || '—') + ' &nbsp; <b>Status:</b> ' + orderStatusBadge(o.status) + '</div>' +
+      '<div><b>Total:</b> ' + formatCurrency(o.total) + '</div>' +
+      rows + '</div>',
+      [{ label: 'Close', className: 'modal-btn primary', action: closeModal }], 'info');
+  }
+
+  function renderOrdersList(panel, data) {
+    var filter = (data && data.filter) || 'all';
+    var all = collectAllOrders().filter(function (o) {
+      return filter === 'all' ? true : (filter === 'quote' ? o.mode === 'quote' : o.mode !== 'quote');
+    });
+    all.sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
+
+    var title = filter === 'quote' ? 'Quotes' : 'Orders';
+    var head =
+      '<div style="padding:12px 16px;">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">' +
+      '<h2 style="margin:0;font-size:16px;">' + title + ' <span style="color:#888;font-weight:400;">(' + all.length + ')</span></h2>' +
+      '<button class="modal-btn primary" id="ol-new" style="font-size:12px;">+ New ' + (filter === 'quote' ? 'Quote' : 'Order') + '</button>' +
+      '</div>' +
+      '<input id="ol-search" placeholder="Filter by customer, #, status…" style="width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:6px;margin-bottom:10px;font-size:13px;">';
+
+    var tableTop =
+      '<table style="width:100%;border-collapse:collapse;font-size:13px;">' +
+      '<thead><tr style="text-align:left;color:#555;border-bottom:2px solid #ccc;">' +
+      '<th style="padding:6px 8px;">#</th><th>Customer</th><th>Date</th>' +
+      '<th class="numeric" style="text-align:right;">Total</th><th>Status</th><th></th></tr></thead><tbody id="ol-body">';
+
+    function rowsHtml(items) {
+      if (!items.length) return '<tr><td colspan="6" style="padding:16px;color:#888;text-align:center;">No records. Create one with “New Order”.</td></tr>';
+      return items.map(function (o, idx) {
+        return '<tr data-idx="' + idx + '" class="ol-row" style="border-bottom:1px solid #eee;cursor:pointer;">' +
+          '<td style="padding:6px 8px;font-family:monospace;">' + escapeHtml(o.id) + (o.session ? ' <span style="color:#06b6d4;font-size:9px;">●session</span>' : '') + '</td>' +
+          '<td>' + escapeHtml(o.customerName) + '</td>' +
+          '<td>' + escapeHtml(o.date || '—') + '</td>' +
+          '<td style="text-align:right;">' + formatCurrency(o.total) + '</td>' +
+          '<td>' + orderStatusBadge(o.status) + '</td>' +
+          '<td style="text-align:right;color:#2563eb;">Open ›</td></tr>';
+      }).join('');
+    }
+
+    panel.innerHTML = head + tableTop + rowsHtml(all) + '</tbody></table></div>';
+
+    var body = panel.querySelector('#ol-body');
+    function bindRows(items) {
+      panel.querySelectorAll('.ol-row').forEach(function (tr) {
+        tr.addEventListener('click', function () { showOrderDetail(items[parseInt(tr.dataset.idx, 10)]); });
+      });
+    }
+    bindRows(all);
+
+    var search = panel.querySelector('#ol-search');
+    if (search) search.addEventListener('input', function () {
+      var q = search.value.toLowerCase();
+      var filtered = all.filter(function (o) {
+        return (o.id + ' ' + o.customerName + ' ' + o.status).toLowerCase().indexOf(q) >= 0;
+      });
+      body.innerHTML = rowsHtml(filtered);
+      bindRows(filtered);
+    });
+
+    var newBtn = panel.querySelector('#ol-new');
+    if (newBtn) newBtn.addEventListener('click', function () {
+      handleAction(filter === 'quote' ? 'new-quote' : 'new-order');
+    });
+  }
+
   function renderOrderEntry(panel, data) {
     const mode = data?.mode || 'order';
     const scenarioId = data?.scenarioId || null;
